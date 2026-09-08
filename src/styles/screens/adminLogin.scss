@@ -1,0 +1,399 @@
+@use "../colors" as *;
+
+.admin-app {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  overflow: hidden;
+  background: #ffffff;
+
+  .sidebar {
+    width: 15rem;
+    height: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.25s ease;
+    background-color: #ffffff;
+    border-right: 0.05rem solid $border;
+
+    &.closed {
+      width: 5rem;
+
+      .brand {
+        justify-content: center;
+        padding: 0;
+      }
+
+      .sidebar-menu {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+      }
+
+      .menu-item {
+        justify-content: center;
+      }
+
+      .admin-profile {
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .brand {
+      min-height: 5.5rem;
+      display: flex;
+      align-items: center;
+      padding: 0 1.15rem;
+      gap: 0.75rem;
+      flex-shrink: 0;
+
+      i {
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: -0.04rem;
+
+        span {
+          color: $brand-blue;
+        }
+      }
+
+      p {
+        margin-top: 0.15rem;
+        font-size: 0.72rem;
+      }
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 0 1rem;
+      overflow-y: auto;
+      scrollbar-width: none;
+
+      .menu-item {
+        width: 100%;
+        min-height: 2.6rem;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 0.2rem;
+        background: transparent;
+        font-size: 0.85rem;
+        text-align: left;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
+
+        &:hover {
+          background: #f0f0f0;
+        }
+
+        &.active {
+          background: #e1e1fb;
+          color: #000000;
+        }
+
+        .menu-icon {
+          width: 1.4rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          font-size: 1rem;
+        }
+
+        .menu-badge {
+          margin-left: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.3rem;
+          background: $primary;
+          color: $text-white;
+          font-size: 0.5rem;
+          font-weight: 700;
+          padding: 0.25rem;
+        }
+      }
+    }
+
+    .admin-profile-container {
+      position: relative;
+      margin: 0 0.7rem;
+      flex-shrink: 0;
+
+      .profile-menu {
+        position: absolute;
+        bottom: calc(100% + 0.35rem);
+        left: 0;
+        right: 0;
+        background: $white;
+        border: 0.05rem solid $border;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.12);
+        padding: 0.35rem;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+
+        .profile-menu-item {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          padding: 0.55rem 0.75rem;
+          border: none;
+          border-radius: 0.35rem;
+          background: transparent;
+          color: $text;
+          font-size: 0.78rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background 0.15s ease;
+
+          i {
+            font-size: 0.9rem;
+            color: $text-muted;
+          }
+
+          &:hover {
+            background: $surface-hover;
+          }
+
+          &.danger {
+            color: #d9534f;
+
+            i {
+              color: #d9534f;
+            }
+
+            &:hover {
+              background: #fdf2f2;
+            }
+          }
+        }
+      }
+
+      .admin-profile {
+        min-height: 4.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.6rem 0.7rem;
+        border-top: 0.05rem solid $border;
+        border-radius: 0.4rem;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s ease;
+
+        &:hover {
+          background: $surface-hover;
+        }
+
+        .avatar {
+          width: 2.3rem;
+          aspect-ratio: 1 / 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          border-radius: 50%;
+          background: $blue-light;
+          color: $primary;
+          font-weight: 700;
+        }
+
+        .admin-info {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+
+          strong {
+            font-size: 0.78rem;
+            color: $text;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.65rem;
+            color: $text-muted;
+          }
+        }
+
+        .profile-chevron {
+          margin-left: auto;
+          color: $text-muted;
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .topbar {
+      width: 100%;
+      min-height: 5.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0 1.5rem;
+      flex-shrink: 0;
+      background: $white;
+      border-bottom: 0.05rem solid $border;
+
+      .topbar-left {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .sidebar-toggle {
+          width: 2.4rem;
+          aspect-ratio: 1 / 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          border: 0.05rem solid $border;
+          border-radius: $radius-medium;
+          background: $white;
+          color: $text;
+          font-size: 1rem;
+          cursor: pointer;
+
+          &:hover {
+            background: $surface-hover;
+          }
+        }
+
+        h1 {
+          margin: 0;
+          font-size: 1.25rem;
+          font-weight: 700;
+          letter-spacing: -0.03rem;
+        }
+
+        p {
+          margin-top: 0.15rem;
+          color: $text-muted;
+          font-size: 0.72rem;
+        }
+      }
+    }
+
+    .page-content {
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+  }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .admin-app {
+    .sidebar {
+      width: 13rem;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-app {
+    .sidebar {
+      width: 5rem;
+
+      .brand {
+        justify-content: center;
+        padding: 0;
+      }
+
+      .sidebar-menu {
+        padding-left: 0.6rem;
+        padding-right: 0.6rem;
+      }
+
+      .menu-item {
+        justify-content: center;
+
+        span:not(.menu-icon):not(.menu-badge) {
+          display: none;
+        }
+      }
+
+      .admin-profile {
+        justify-content: center;
+        margin: 0;
+        padding: 0.8rem 0;
+
+        .admin-info,
+        .profile-chevron {
+          display: none;
+        }
+      }
+    }
+
+    .main-content {
+      .topbar {
+        min-height: 4.5rem;
+        padding: 0 1rem;
+
+        .topbar-left p {
+          display: none;
+        }
+      }
+
+      .page-content {
+        padding: 0 1rem 1rem 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-app {
+    .sidebar {
+      display: none;
+    }
+  }
+}
