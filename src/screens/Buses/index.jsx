@@ -4,7 +4,8 @@ import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import BusModal from "./BusModal.jsx";
-import { getBuses } from "../../api/buses.js";
+import AssignDriverModal from "./AssignDriverModal.jsx";
+import { getBuses, unassignDriver } from "../../api/buses.js";
 
 export default function Buses() {
   const { me } = useOutletContext() || {};
@@ -15,6 +16,10 @@ export default function Buses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [busToEdit, setBusToEdit] = useState(null);
+  const [busToAssign, setBusToAssign] = useState(null);
+  const [busToUnassign, setBusToUnassign] = useState(null);
+  const [isUnassigning, setIsUnassigning] = useState(false);
+  const [unassignError, setUnassignError] = useState("");
 
   // Load buses on mount
   useEffect(() => {
@@ -46,6 +51,22 @@ export default function Buses() {
       setBuses(data);
     } catch (err) {
       setError(err.message || "Failed to reload buses.");
+    }
+  };
+
+  const handleConfirmUnassign = async () => {
+    if (!busToUnassign) return;
+    setIsUnassigning(true);
+    setUnassignError("");
+
+    try {
+      await unassignDriver(busToUnassign.id);
+      setBusToUnassign(null);
+      await reloadBuses();
+    } catch (err) {
+      setUnassignError(err.message || "Failed to unassign driver.");
+    } finally {
+      setIsUnassigning(false);
     }
   };
 
@@ -122,6 +143,7 @@ export default function Buses() {
             "Bus Name",
             "Registration",
             "Capacity",
+            "Driver",
             "Branch",
             "Status",
             "Actions",
@@ -135,6 +157,14 @@ export default function Buses() {
               </span>
             ),
             bus.capacity,
+            // Raw driver_id shown until backend returns driver_name directly
+            bus.driverId ? (
+              <code key={`driver-${bus.id}`}>{bus.driverId}</code>
+            ) : (
+              <span key={`driver-${bus.id}`} className="muted-cell">
+                No driver
+              </span>
+            ),
             // Raw branch_id shown until backend returns branch_name directly
             bus.branchId ? (
               <code key={`branch-${bus.id}`}>{bus.branchId}</code>
@@ -156,6 +186,28 @@ export default function Buses() {
               >
                 <i className="bi bi-pencil"></i>
               </button>
+              {bus.driverId ? (
+                <button
+                  type="button"
+                  className="action-icon danger"
+                  title="Unassign driver"
+                  onClick={() => {
+                    setUnassignError("");
+                    setBusToUnassign(bus);
+                  }}
+                >
+                  <i className="bi bi-person-dash"></i>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="action-icon"
+                  title="Assign driver"
+                  onClick={() => setBusToAssign(bus)}
+                >
+                  <i className="bi bi-person-plus"></i>
+                </button>
+              )}
             </div>,
           ])}
           withoutFilter={false}
@@ -171,6 +223,74 @@ export default function Buses() {
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadBuses}
         />
+      )}
+
+      {Boolean(busToAssign) && (
+        <AssignDriverModal
+          isOpen={Boolean(busToAssign)}
+          bus={busToAssign}
+          onClose={() => setBusToAssign(null)}
+          onSaved={reloadBuses}
+        />
+      )}
+
+      {busToUnassign && (
+        <div
+          className="add-user-overlay"
+          onMouseDown={() => !isUnassigning && setBusToUnassign(null)}
+        >
+          <div
+            className="add-user-modal"
+            style={{ width: "28rem" }}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="add-user-header">
+              <div>
+                <h2>Unassign Driver</h2>
+                <p>{busToUnassign.busName}</p>
+              </div>
+              <button
+                type="button"
+                className="add-user-close"
+                onClick={() => setBusToUnassign(null)}
+                disabled={isUnassigning}
+              >
+                <i className="bi bi-x"></i>
+              </button>
+            </div>
+
+            <div className="add-user-body" style={{ padding: "1.25rem" }}>
+              <p style={{ margin: 0, color: "#475467", fontSize: "0.9rem" }}>
+                Remove this driver from the bus? The driver stays in the system.
+              </p>
+              {unassignError && (
+                <div className="add-user-error" style={{ marginTop: "1rem" }}>
+                  {unassignError}
+                </div>
+              )}
+            </div>
+
+            <div className="add-user-footer">
+              <button
+                type="button"
+                className="modal-cancel"
+                onClick={() => setBusToUnassign(null)}
+                disabled={isUnassigning}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="modal-save"
+                style={{ background: "#d9534f", borderColor: "#d9534f" }}
+                onClick={handleConfirmUnassign}
+                disabled={isUnassigning}
+              >
+                {isUnassigning ? "Unassigning..." : "Unassign Driver"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -728,8 +728,17 @@
 }
 
 .table-card.users-table-card {
-  height: 69%;
-  max-height: 69%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+
+  .table-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
 }
 
 .table-card.branches-table-card,
@@ -763,6 +772,15 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &.actions-cell,
+  &:last-child,
+  &:has(.actions-menu-container),
+  &:has(.action-buttons) {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
 
   strong {
     color: $text;
@@ -824,7 +842,7 @@ tbody tr:hover {
 
 .pagination {
   height: 3.5rem;
-  min-height: 20%;
+  min-height: 3.5rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -874,6 +892,114 @@ tbody tr:hover {
   &:hover {
     background: $background;
     color: $primary;
+  }
+
+  &.danger {
+    color: $red;
+
+    &:hover {
+      background: $red-light;
+      color: $red-dark;
+    }
+  }
+}
+
+.actions-menu-container {
+  position: relative;
+  display: inline-block;
+
+  .actions-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    right: 0;
+    min-width: 9.5rem;
+    background: $white;
+    border: 0.05rem solid $border;
+    border-radius: $radius-medium;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.14);
+    padding: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    z-index: 1000;
+
+    .dropdown-item {
+      width: 100%;
+      border: none;
+      border-radius: $radius-small;
+      background: transparent;
+      color: $text;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.45rem 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+
+      i {
+        font-size: 0.85rem;
+        color: $text-light;
+      }
+
+      &:hover {
+        background: $surface-hover;
+        color: $primary;
+
+        i {
+          color: $primary;
+        }
+      }
+    }
+  }
+}
+
+.parents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.parent-detail-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  background: $background;
+  border: 0.05rem solid $border;
+  border-radius: $radius-small;
+  font-size: 0.75rem;
+
+  .parent-detail-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    strong {
+      color: $text;
+      font-weight: 600;
+    }
+
+    .parent-relationship-badge {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 1rem;
+      background: $blue-light;
+      color: $primary;
+      font-size: 0.6rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+  }
+
+  .parent-detail-phone {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: $text-light;
+    font-size: 0.7rem;
   }
 }
 

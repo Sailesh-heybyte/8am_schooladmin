@@ -48,7 +48,14 @@ export default function DataTable({
                   }}
                 >
                   {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
+                    <td
+                      key={cellIndex}
+                      className={
+                        cellIndex === headers.length - 1 ? "actions-cell" : ""
+                      }
+                    >
+                      {cell}
+                    </td>
                   ))}
                 </tr>
               ))
