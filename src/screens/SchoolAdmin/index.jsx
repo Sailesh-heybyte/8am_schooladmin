@@ -37,6 +37,12 @@ const menuItems = [
     label: "Stops",
   },
   {
+    id: "routes",
+    path: "/routes",
+    icon: <i className="bi bi-signpost-split"></i>,
+    label: "Routes",
+  },
+  {
     id: "parents",
     path: "/parents",
     icon: <i className="bi bi-people"></i>,

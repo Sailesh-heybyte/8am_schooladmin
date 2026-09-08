@@ -10,6 +10,8 @@ import Buses from "./screens/Buses/index.jsx";
 import Drivers from "./screens/Drivers/index.jsx";
 import Students from "./screens/Students/index.jsx";
 import Parents from "./screens/Parents/index.jsx";
+import Stops from "./screens/Stops/index.jsx";
+import RoutesScreen from "./screens/Routes/index.jsx";
 
 // Placeholders until each feature screen is built.
 const Placeholder = ({ name }) => <p>{name} screen coming soon.</p>;
@@ -58,7 +60,8 @@ export default function App() {
           <Route path="/students" element={<Students />} />
           <Route path="/buses" element={<Buses />} />
           <Route path="/drivers" element={<Drivers />} />
-          <Route path="/stops" element={<Placeholder name="Stops" />} />
+          <Route path="/stops" element={<Stops />} />
+          <Route path="/routes" element={<RoutesScreen />} />
           <Route path="/parents" element={<Parents />} />
           <Route path="/branch-users" element={<BranchUsers />} />
           <Route path="/roles" element={<Roles />} />
