@@ -6,6 +6,12 @@ const formatDate = (dateStr) => {
   return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
 };
 
+function hasValue(val) {
+  if (val === undefined || val === null) return false;
+  if (typeof val === "string" && val.trim() === "") return false;
+  return true;
+}
+
 const toUiBus = (bus) => ({
   id: bus.id,
   schoolId: bus.school_id,
@@ -27,50 +33,56 @@ const toApiBus = (bus) => ({
 
 const toApiBusUpdate = (bus) => {
   const body = {};
+  const name = bus.busName;
+  const regNumber = bus.registrationNumber;
+  const capacity = bus.capacity;
 
-  if (bus.busName !== undefined && bus.busName !== null && bus.busName !== "") {
-    body.name = bus.busName;
+  if (hasValue(name)) {
+    body.name = name;
   }
-  if (
-    bus.registrationNumber !== undefined &&
-    bus.registrationNumber !== null &&
-    bus.registrationNumber !== ""
-  ) {
-    body.registration_number = bus.registrationNumber;
+  if (hasValue(regNumber)) {
+    body.registration_number = regNumber;
   }
-  if (bus.capacity !== undefined && bus.capacity !== null && bus.capacity !== "") {
-    body.capacity = Number(bus.capacity);
+  if (hasValue(capacity)) {
+    body.capacity = Number(capacity);
   }
 
   return body;
 };
 
-// GET /api/v1/fleet/buses
-// Uses the /fleet prefix rather than /iam endpoints used elsewhere.
 export const getBuses = async () => {
   const data = await apiCall("/fleet/buses");
   return data.map(toUiBus);
 };
 
-// GET /api/v1/fleet/buses/{id}
-// Uses the /fleet prefix rather than /iam endpoints used elsewhere.
 export const getBus = async (id) => {
   const data = await apiCall(`/fleet/buses/${id}`);
   return toUiBus(data);
 };
 
-// POST /api/v1/fleet/buses
-// Uses the /fleet prefix rather than /iam endpoints used elsewhere.
 export const createBus = (data) =>
   apiCall("/fleet/buses", {
     method: "POST",
     body: toApiBus(data),
   });
 
-// PATCH /api/v1/fleet/buses/{id}
-// Uses the /fleet prefix rather than /iam endpoints used elsewhere.
 export const updateBus = (id, data) =>
   apiCall(`/fleet/buses/${id}`, {
     method: "PATCH",
     body: toApiBusUpdate(data),
   });
+
+export const assignDriver = async (busId, driverId) => {
+  const data = await apiCall(`/fleet/buses/${busId}/assign-driver`, {
+    method: "POST",
+    body: { driver_id: driverId },
+  });
+  return toUiBus(data);
+};
+
+export const unassignDriver = async (busId) => {
+  const data = await apiCall(`/fleet/buses/${busId}/unassign-driver`, {
+    method: "POST",
+  });
+  return toUiBus(data);
+};

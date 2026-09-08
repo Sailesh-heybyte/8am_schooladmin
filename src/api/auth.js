@@ -1,63 +1,55 @@
 import { apiCall } from "./client.js";
 
-const ACCESS_TOKEN_KEY = "school_access_token";
-const REFRESH_TOKEN_KEY = "school_refresh_token";
-
 export async function login(identifier, password) {
   const data = await apiCall("/iam/login", {
     method: "POST",
-    skipAuth: true,
     body: { identifier, password },
+    skipAuth: true,
   });
 
-  if (data?.access_token) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
-  }
-  if (data?.refresh_token) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
-  }
-
+  localStorage.setItem("school_access_token", data.access_token);
+  localStorage.setItem("school_refresh_token", data.refresh_token);
   return data;
 }
 
 export async function refreshAccessToken() {
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-  if (!refreshToken) {
-    throw new Error("No refresh token available");
+  const refresh_token = localStorage.getItem("school_refresh_token");
+
+  if (!refresh_token) {
+    throw new Error("No refresh token");
   }
 
   const data = await apiCall("/iam/refresh", {
     method: "POST",
+    body: { refresh_token },
     skipAuth: true,
-    body: { refresh_token: refreshToken },
   });
 
-  if (data?.access_token) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, data.access_token);
-  }
-  if (data?.refresh_token) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
+  localStorage.setItem("school_access_token", data.access_token);
+
+  if (data.refresh_token) {
+    localStorage.setItem("school_refresh_token", data.refresh_token);
   }
 
-  return data;
+  return data.access_token;
 }
 
 export async function logout() {
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  const refresh_token = localStorage.getItem("school_refresh_token");
+
   try {
-    if (refreshToken) {
+    if (refresh_token) {
       await apiCall("/iam/logout", {
         method: "POST",
-        skipAuth: true,
-        body: { refresh_token: refreshToken },
+        body: { refresh_token },
       });
     }
-  } catch (error) {
-    console.error("Logout request failed:", error);
-  } finally {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
+  } catch (err) {
+    console.error("Logout request failed", err);
   }
+
+  localStorage.removeItem("school_access_token");
+  localStorage.removeItem("school_refresh_token");
 }
 
 export async function getMe() {

@@ -7,8 +7,6 @@ export const getPermissions = async (scope = "school") => {
 
 export const getRoles = () => apiCall("/iam/school-roles");
 
-export const getRole = (id) => apiCall(`/iam/school-roles/${id}`);
-
 export const assignPermissions = (roleId, codenames) =>
   apiCall(`/iam/school-roles/${roleId}/permissions`, {
     method: "POST",

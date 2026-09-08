@@ -60,18 +60,14 @@ function toUiUser(apiUser = {}) {
     state: address.state || "",
     country: address.country || "",
     postalCode: address.postal_code || "",
-
     emergencyName: emergency.emergency_contact_name || "",
     emergencyRelationship: emergency.emergency_contact_relationship || "",
     emergencyPhone: emergency.emergency_contact_phone || "",
-
     bankName: bank.bank_name || "",
     bankAccountNumber: bank.bank_account_number || "",
     bankIfscCode: bank.bank_ifsc_code || "",
-
     panNumber: government.pan_number || "",
     aadhaarNumber: government.aadhaar_number || "",
-
     skills: apiUser.skills || [],
     notes: apiUser.notes || "",
   };
