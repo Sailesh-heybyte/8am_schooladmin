@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../../App.scss";
-
 import { logout, getMe } from "../../api/auth.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
 
@@ -36,12 +35,12 @@ const menuItems = [
     icon: <i className="bi bi-geo-alt"></i>,
     label: "Stops",
   },
-  {
-    id: "routes",
-    path: "/routes",
-    icon: <i className="bi bi-signpost-split"></i>,
-    label: "Routes",
-  },
+  // {
+  //   id: "routes",
+  //   path: "/routes",
+  //   icon: <i className="bi bi-signpost-split"></i>,
+  //   label: "Routes",
+  // },
   {
     id: "parents",
     path: "/parents",

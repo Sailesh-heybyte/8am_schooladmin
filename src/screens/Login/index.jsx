@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.scss";
-import { login, getMe } from "../../api/auth.js";
+import { login } from "../../api/auth.js";
 
 export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
@@ -25,18 +25,9 @@ export default function Login({ onLoginSuccess }) {
 
     try {
       await login(identifier, password);
-
-      // The temporary password from the welcome email must be
-      // replaced before anything else is reachable.
-      const me = await getMe();
-
+      sessionStorage.setItem("school_login_identifier", identifier);
       onLoginSuccess?.();
-
-      if (me.must_change_password) {
-        navigate("/change-password", { replace: true });
-      } else {
-        navigate("/dashboard", { replace: true });
-      }
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       setError(
         err.message || "Login failed. Check your details and try again.",

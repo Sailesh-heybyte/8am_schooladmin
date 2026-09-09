@@ -150,7 +150,6 @@ export default function Stops() {
       .then((data) => {
         if (!isMounted) return;
         setStops(data);
-        console.log(data);
       })
       .catch((err) => {
         if (!isMounted) return;

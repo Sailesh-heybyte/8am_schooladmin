@@ -61,30 +61,22 @@ const toApiStopUpdate = (stop) => {
   return body;
 };
 
-// GET /api/v1/routing/stops
-// /routing is a separate service from /people and /fleet.
 export const getStops = async () => {
   const data = await apiCall("/routing/stops");
   return data.map(toUiStop);
 };
 
-// GET /api/v1/routing/stops/{stop_id}
-// /routing is a separate service from /people and /fleet.
 export const getStop = async (id) => {
   const data = await apiCall(`/routing/stops/${id}`);
   return toUiStop(data);
 };
 
-// POST /api/v1/routing/stops
-// /routing is a separate service from /people and /fleet.
 export const createStop = (data) =>
   apiCall("/routing/stops", {
     method: "POST",
     body: toApiStop(data),
   });
 
-// PATCH /api/v1/routing/stops/{stop_id}
-// /routing is a separate service from /people and /fleet.
 export const updateStop = (id, data) =>
   apiCall(`/routing/stops/${id}`, {
     method: "PATCH",

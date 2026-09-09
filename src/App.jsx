@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import Login from "./screens/Login/index.jsx";
 import ChangePassword from "./screens/ChangePassword/index.jsx";
 import SchoolAdmin from "./screens/SchoolAdmin/index.jsx";
@@ -53,15 +52,11 @@ export default function App() {
             )
           }
         >
-          <Route
-            path="/dashboard"
-            element={<Placeholder name="Dashboard" />}
-          />
+          <Route path="/dashboard" element={<Placeholder name="Dashboard" />} />
           <Route path="/students" element={<Students />} />
           <Route path="/buses" element={<Buses />} />
           <Route path="/drivers" element={<Drivers />} />
           <Route path="/stops" element={<Stops />} />
-          <Route path="/routes" element={<RoutesScreen />} />
           <Route path="/parents" element={<Parents />} />
           <Route path="/branch-users" element={<BranchUsers />} />
           <Route path="/roles" element={<Roles />} />

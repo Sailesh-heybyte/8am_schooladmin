@@ -15,7 +15,6 @@ export default function RouteModal({
   const [routeName, setRouteName] = useState("");
   const [branchId, setBranchId] = useState("");
   const [isActive, setIsActive] = useState(true);
-
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [branchesError, setBranchesError] = useState("");
@@ -92,7 +91,6 @@ export default function RouteModal({
 
     try {
       if (isEditMode) {
-        // Do NOT send branchId or busId on update
         await updateRoute(route.id, {
           routeName: routeName.trim(),
           isActive,

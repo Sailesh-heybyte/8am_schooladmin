@@ -62,19 +62,16 @@ const toApiRouteUpdate = (route) => {
   return body;
 };
 
-// GET /api/v1/routing/routes
 export const getRoutes = async () => {
   const data = await apiCall("/routing/routes");
   return data.map(toUiRoute);
 };
 
-// GET /api/v1/routing/routes/{route_id}
 export const getRoute = async (id) => {
   const data = await apiCall(`/routing/routes/${id}`);
   return toUiRoute(data);
 };
 
-// POST /api/v1/routing/routes
 export const createRoute = async (data) => {
   const res = await apiCall("/routing/routes", {
     method: "POST",
@@ -83,7 +80,6 @@ export const createRoute = async (data) => {
   return toUiRoute(res);
 };
 
-// PATCH /api/v1/routing/routes/{route_id}
 export const updateRoute = async (id, data) => {
   const res = await apiCall(`/routing/routes/${id}`, {
     method: "PATCH",
@@ -92,7 +88,6 @@ export const updateRoute = async (id, data) => {
   return toUiRoute(res);
 };
 
-// POST /api/v1/routing/routes/{route_id}/assign-bus
 export const assignBus = async (routeId, busId) => {
   const data = await apiCall(`/routing/routes/${routeId}/assign-bus`, {
     method: "POST",
@@ -101,7 +96,6 @@ export const assignBus = async (routeId, busId) => {
   return toUiRoute(data);
 };
 
-// POST /api/v1/routing/routes/{route_id}/unassign-bus
 export const unassignBus = async (routeId) => {
   const data = await apiCall(`/routing/routes/${routeId}/unassign-bus`, {
     method: "POST",
@@ -109,8 +103,6 @@ export const unassignBus = async (routeId) => {
   return toUiRoute(data);
 };
 
-// POST /api/v1/routing/routes/{route_id}/stops
-// Appends to the end of the sequence.
 export const addStopToRoute = async (routeId, stopId) => {
   const data = await apiCall(`/routing/routes/${routeId}/stops`, {
     method: "POST",
@@ -119,8 +111,6 @@ export const addStopToRoute = async (routeId, stopId) => {
   return toUiRoute(data);
 };
 
-// PATCH /api/v1/routing/routes/{route_id}/stops/order
-// The stop_ids array must contain every stop currently on the route; a partial list would drop stops.
 export const reorderRouteStops = async (routeId, stopIds) => {
   const data = await apiCall(`/routing/routes/${routeId}/stops/order`, {
     method: "PATCH",
@@ -129,8 +119,6 @@ export const reorderRouteStops = async (routeId, stopIds) => {
   return toUiRoute(data);
 };
 
-// DELETE /api/v1/routing/routes/{route_id}/stops/{stop_id}
-// No request body. The backend re-indexes the remaining stops.
 export const removeStopFromRoute = async (routeId, stopId) => {
   const data = await apiCall(`/routing/routes/${routeId}/stops/${stopId}`, {
     method: "DELETE",

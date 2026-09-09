@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../Login/Login.scss";
-import { changePassword } from "../../api/auth.js";
+import { changePassword, login, getMe } from "../../api/auth.js";
 
 export default function ChangePassword() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [temporaryPassword, setTemporaryPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -37,7 +38,29 @@ export default function ChangePassword() {
     setIsSubmitting(true);
 
     try {
-      await changePassword(temporaryPassword, newPassword);
+      const data = await changePassword(temporaryPassword, newPassword);
+      if (data?.access_token) {
+        localStorage.setItem("school_access_token", data.access_token);
+        if (data?.refresh_token) {
+          localStorage.setItem("school_refresh_token", data.refresh_token);
+        }
+      } else {
+        let identifier =
+          location.state?.identifier ||
+          sessionStorage.getItem("school_login_identifier");
+        if (!identifier) {
+          try {
+            const me = await getMe();
+            identifier = me?.email;
+          } catch {
+            // fallback ignored
+          }
+        }
+        if (identifier) {
+          await login(identifier, newPassword);
+          sessionStorage.removeItem("school_login_identifier");
+        }
+      }
       navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Could not change password. Please try again.");

@@ -11,26 +11,25 @@ export default function StopModal({
   onSaved,
 }) {
   const isEditMode = Boolean(stop?.id);
-
   const [stopName, setStopName] = useState("");
+  const [mapsPaste, setMapsPaste] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [branchId, setBranchId] = useState("");
   const [isActive, setIsActive] = useState(true);
-
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [branchesError, setBranchesError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Prefill in edit mode, reset in create mode
-  // A null latitude or longitude prefills as an empty string, never 0
+  // Prefill fields in edit mode, reset in create mode
   useEffect(() => {
     if (!isOpen) return;
 
     if (stop) {
       setStopName(stop.stopName || "");
+      // A null latitude or longitude must prefill as an empty string, never as 0
       setLatitude(
         stop.latitude !== null && stop.latitude !== undefined
           ? String(stop.latitude)
@@ -41,20 +40,22 @@ export default function StopModal({
           ? String(stop.longitude)
           : "",
       );
+      setBranchId(stop.branchId || "");
       setIsActive(Boolean(stop.isActive));
-      setBranchId("");
+      setMapsPaste("");
     } else {
       setStopName("");
       setLatitude("");
       setLongitude("");
       setBranchId("");
       setIsActive(true);
+      setMapsPaste("");
     }
     setError("");
     setIsSubmitting(false);
   }, [isOpen, stop]);
 
-  // Load branches only in create mode
+  // Load branches inside the modal only for create mode
   useEffect(() => {
     if (!isOpen) return;
     if (stop) return; // Skip fetch entirely in edit mode
@@ -89,6 +90,24 @@ export default function StopModal({
 
   if (!isOpen) return null;
 
+  const handlePasteChange = (e) => {
+    const val = e.target.value;
+    setMapsPaste(val);
+
+    // If matches two numbers separated by a comma, split and fill latitude and longitude
+    const parts = val.split(",");
+    if (parts.length === 2) {
+      const latStr = parts[0].trim();
+      const lngStr = parts[1].trim();
+
+      const numRegex = /^-?\d+(\.\d+)?$/;
+      if (numRegex.test(latStr) && numRegex.test(lngStr)) {
+        setLatitude(latStr);
+        setLongitude(lngStr);
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -98,28 +117,32 @@ export default function StopModal({
       return;
     }
 
-    if (!isEditMode) {
-      if (latitude === "" || isNaN(Number(latitude))) {
-        setError("Latitude is required and must be a valid number.");
-        return;
-      }
-      if (longitude === "" || isNaN(Number(longitude))) {
-        setError("Longitude is required and must be a valid number.");
-        return;
-      }
-      if (!branchId) {
-        setError("Please select a branch.");
-        return;
-      }
-    } else {
-      if (latitude !== "" && isNaN(Number(latitude))) {
-        setError("Latitude must be a valid number.");
-        return;
-      }
-      if (longitude !== "" && isNaN(Number(longitude))) {
-        setError("Longitude must be a valid number.");
-        return;
-      }
+    if (latitude === "" || latitude === null || latitude === undefined) {
+      setError("Latitude is required.");
+      return;
+    }
+
+    if (longitude === "" || longitude === null || longitude === undefined) {
+      setError("Longitude is required.");
+      return;
+    }
+
+    const latNum = Number(latitude);
+    const lngNum = Number(longitude);
+
+    if (isNaN(latNum) || latNum < -90 || latNum > 90) {
+      setError("Latitude must be between -90 and 90.");
+      return;
+    }
+
+    if (isNaN(lngNum) || lngNum < -180 || lngNum > 180) {
+      setError("Longitude must be between -180 and 180.");
+      return;
+    }
+
+    if (!isEditMode && !branchId) {
+      setError("Please select a branch.");
+      return;
     }
 
     setIsSubmitting(true);
@@ -129,15 +152,15 @@ export default function StopModal({
         // Do NOT send branchId, routeId or sequence on update
         await updateStop(stop.id, {
           stopName: stopName.trim(),
-          latitude: latitude !== "" ? Number(latitude) : undefined,
-          longitude: longitude !== "" ? Number(longitude) : undefined,
+          latitude: latNum,
+          longitude: lngNum,
           isActive,
         });
       } else {
         await createStop({
           stopName: stopName.trim(),
-          latitude: Number(latitude),
-          longitude: Number(longitude),
+          latitude: latNum,
+          longitude: lngNum,
           branchId,
         });
       }
@@ -160,17 +183,14 @@ export default function StopModal({
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
-      <div
-        className="add-user-modal"
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+      <div className="add-user-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="add-user-header">
           <div>
             <h2>{isEditMode ? "Edit Stop" : "Add Stop"}</h2>
             <p>
               {isEditMode
-                ? "Update stop information and status."
-                : "Add a new stop to your school."}
+                ? "Update stop name, coordinates, and active status."
+                : "Add a new stop location for school routes."}
             </p>
           </div>
           <button
@@ -203,11 +223,38 @@ export default function StopModal({
                 </div>
               </div>
 
+              {/* Paste from Google Maps helper */}
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  <label htmlFor="stop-latitude">
-                    Latitude {isEditMode ? "" : "*"}
+                  <label htmlFor="stop-maps-paste">
+                    Paste from Google Maps
                   </label>
+                  <input
+                    id="stop-maps-paste"
+                    type="text"
+                    value={mapsPaste}
+                    onChange={handlePasteChange}
+                    placeholder="17.385044, 78.486671"
+                    disabled={isSubmitting}
+                  />
+                  <small
+                    className="roles-message"
+                    style={{
+                      display: "block",
+                      marginTop: "0.25rem",
+                      color: "#667085",
+                      fontSize: "0.68rem",
+                    }}
+                  >
+                    Right click a location in Google Maps and click the
+                    coordinates to copy them.
+                  </small>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <label htmlFor="stop-latitude">Latitude *</label>
                   <input
                     id="stop-latitude"
                     type="number"
@@ -215,15 +262,13 @@ export default function StopModal({
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
                     placeholder="e.g. 17.385044"
-                    required={!isEditMode}
+                    required
                     disabled={isSubmitting}
                   />
                 </div>
 
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  <label htmlFor="stop-longitude">
-                    Longitude {isEditMode ? "" : "*"}
-                  </label>
+                  <label htmlFor="stop-longitude">Longitude *</label>
                   <input
                     id="stop-longitude"
                     type="number"
@@ -231,81 +276,130 @@ export default function StopModal({
                     value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
                     placeholder="e.g. 78.486671"
-                    required={!isEditMode}
+                    required
                     disabled={isSubmitting}
                   />
                 </div>
               </div>
 
-              {!isEditMode && (
-                <div className="form-row">
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                    <label htmlFor="stop-branch">Branch *</label>
-                    <select
-                      id="stop-branch"
-                      value={branchId}
-                      onChange={(e) => setBranchId(e.target.value)}
-                      required
-                      disabled={
-                        isSubmitting ||
-                        branchesLoading ||
-                        Boolean(branchesError)
-                      }
-                    >
-                      {branchesLoading ? (
-                        <option value="" disabled>
-                          Loading branches...
-                        </option>
-                      ) : (
-                        <>
-                          <option value="">Select a branch...</option>
-                          {branches.map((b) => (
-                            <option key={b.id} value={b.id}>
-                              {b.branchName}
-                            </option>
-                          ))}
-                        </>
-                      )}
-                    </select>
-                    {branchesError && (
+              {/* Branch Selection (Create Mode) or Read-only Display (Edit Mode) */}
+              <div className="form-row">
+                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  {isEditMode ? (
+                    <>
+                      <label htmlFor="stop-branch">Branch</label>
+                      <input
+                        id="stop-branch"
+                        type="text"
+                        value={stop.branchId || "Not assigned"}
+                        readOnly
+                        disabled
+                      />
                       <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
+                        className="roles-message"
+                        style={{ marginTop: "0.25rem", display: "block" }}
                       >
-                        {branchesError}
+                        A stop cannot be moved between branches.
                       </span>
-                    )}
+                    </>
+                  ) : (
+                    <>
+                      <label htmlFor="stop-branch">Branch *</label>
+                      <select
+                        id="stop-branch"
+                        value={branchId}
+                        onChange={(e) => setBranchId(e.target.value)}
+                        required
+                        disabled={
+                          isSubmitting ||
+                          branchesLoading ||
+                          Boolean(branchesError)
+                        }
+                      >
+                        {branchesLoading ? (
+                          <option value="" disabled>
+                            Loading branches...
+                          </option>
+                        ) : (
+                          <>
+                            <option value="">Select a branch...</option>
+                            {branches.map((b) => (
+                              <option key={b.id} value={b.id}>
+                                {b.branchName}
+                              </option>
+                            ))}
+                          </>
+                        )}
+                      </select>
+                      {branchesError && (
+                        <span
+                          className="roles-error"
+                          style={{
+                            marginTop: "0.25rem",
+                            display: "block",
+                            color: "#d9534f",
+                          }}
+                        >
+                          {branchesError}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Route Display in Edit Mode if Stop is on a Route */}
+              {isEditMode && stop.routeId && (
+                <div className="form-row">
+                  <div
+                    className="form-field"
+                    style={{ flex: 1, width: "100%" }}
+                  >
+                    <label htmlFor="stop-route">Route</label>
+                    <input
+                      id="stop-route"
+                      type="text"
+                      value={`${stop.routeId}${
+                        stop.sequence !== null && stop.sequence !== undefined
+                          ? ` · stop ${stop.sequence}`
+                          : ""
+                      }`}
+                      readOnly
+                      disabled
+                    />
+                    <span
+                      className="roles-message"
+                      style={{ marginTop: "0.25rem", display: "block" }}
+                    >
+                      Route membership is managed from the Routes screen.
+                    </span>
                   </div>
                 </div>
               )}
 
+              {/* Active Checkbox in Edit Mode */}
               {isEditMode && (
                 <div className="form-row" style={{ marginTop: "0.5rem" }}>
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                    <label
-                      htmlFor="stop-active"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <input
-                        id="stop-active"
-                        type="checkbox"
-                        checked={isActive}
-                        onChange={(e) => setIsActive(e.target.checked)}
-                        disabled={isSubmitting}
-                        style={{ width: "1.1rem", height: "1.1rem" }}
-                      />
-                      <span>Active Stop</span>
-                    </label>
-                  </div>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      cursor: "pointer",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      color: "#344054",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isActive}
+                      onChange={(e) => setIsActive(e.target.checked)}
+                      disabled={isSubmitting}
+                      style={{ width: "1rem", height: "1rem" }}
+                    />
+                    Active stop
+                  </label>
                 </div>
               )}
             </div>
