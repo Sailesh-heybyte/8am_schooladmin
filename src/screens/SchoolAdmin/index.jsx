@@ -35,12 +35,12 @@ const menuItems = [
     icon: <i className="bi bi-geo-alt"></i>,
     label: "Stops",
   },
-  // {
-  //   id: "routes",
-  //   path: "/routes",
-  //   icon: <i className="bi bi-signpost-split"></i>,
-  //   label: "Routes",
-  // },
+  {
+    id: "routes",
+    path: "/routes",
+    icon: <i className="bi bi-signpost-split"></i>,
+    label: "Routes",
+  },
   {
     id: "parents",
     path: "/parents",

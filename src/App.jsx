@@ -57,6 +57,7 @@ export default function App() {
           <Route path="/buses" element={<Buses />} />
           <Route path="/drivers" element={<Drivers />} />
           <Route path="/stops" element={<Stops />} />
+          <Route path="/routes" element={<RoutesScreen />} />
           <Route path="/parents" element={<Parents />} />
           <Route path="/branch-users" element={<BranchUsers />} />
           <Route path="/roles" element={<Roles />} />

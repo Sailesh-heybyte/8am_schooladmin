@@ -56,3 +56,16 @@ h5,
 h6 {
   margin: 0;
 }
+
+/* Remove number input increase/decrease spinner buttons globally */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+

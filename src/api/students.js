@@ -125,3 +125,18 @@ export const addStudentParents = async (studentId, parents) => {
   });
   return toUiStudent(data);
 };
+
+export const assignStop = async (studentId, stopId) => {
+  const data = await apiCall(`/people/students/${studentId}/assign-stop`, {
+    method: "POST",
+    body: { stop_id: stopId },
+  });
+  return toUiStudent(data);
+};
+
+export const unassignStop = async (studentId) => {
+  const data = await apiCall(`/people/students/${studentId}/unassign-stop`, {
+    method: "POST",
+  });
+  return toUiStudent(data);
+};

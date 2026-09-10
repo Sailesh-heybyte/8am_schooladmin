@@ -24,6 +24,7 @@ export default function BranchUsers() {
       .then((usersData) => {
         if (!isMounted) return;
         setUsers(usersData);
+        console.log("Users", usersData);
       })
       .catch((err) => {
         if (!isMounted) return;

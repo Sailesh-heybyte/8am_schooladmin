@@ -7,7 +7,8 @@ import StudentModal from "./StudentModal.jsx";
 import StudentDetailsModal from "./StudentDetailsModal.jsx";
 import StudentParentsModal from "./StudentParentsModal.jsx";
 import AddParentModal from "./AddParentModal.jsx";
-import { getStudents } from "../../api/students.js";
+import AssignStopModal from "./AssignStopModal.jsx";
+import { getStudents, unassignStop } from "../../api/students.js";
 
 function renderParentsCell(parents = []) {
   if (!parents || parents.length === 0) {
@@ -37,6 +38,10 @@ export default function Students() {
   const [studentForDetails, setStudentForDetails] = useState(null);
   const [studentForParents, setStudentForParents] = useState(null);
   const [studentForAddParent, setStudentForAddParent] = useState(null);
+  const [studentToAssign, setStudentToAssign] = useState(null);
+  const [studentToUnassign, setStudentToUnassign] = useState(null);
+  const [isUnassigning, setIsUnassigning] = useState(false);
+  const [unassignError, setUnassignError] = useState("");
 
   // Track the open three-dot menu by student id (only one open at a time)
   const [openMenuStudentId, setOpenMenuStudentId] = useState(null);
@@ -86,6 +91,22 @@ export default function Students() {
       console.log(data);
     } catch (err) {
       setError(err.message || "Failed to reload students.");
+    }
+  };
+
+  const handleConfirmUnassign = async () => {
+    if (!studentToUnassign) return;
+    setIsUnassigning(true);
+    setUnassignError("");
+
+    try {
+      await unassignStop(studentToUnassign.id);
+      setStudentToUnassign(null);
+      await reloadStudents();
+    } catch (err) {
+      setUnassignError(err.message || "Failed to unassign stop.");
+    } finally {
+      setIsUnassigning(false);
     }
   };
 
@@ -163,6 +184,7 @@ export default function Students() {
             "Admission No.",
             "Branch",
             "Parents",
+            "Stop",
             "Status",
             "Actions",
           ]}
@@ -185,6 +207,14 @@ export default function Students() {
             <span key={`parents-${student.id}`}>
               {renderParentsCell(student.parents)}
             </span>,
+            // Raw stop_id shown until backend returns stop_name directly
+            student.stopId ? (
+              <code key={`stop-${student.id}`}>{student.stopId}</code>
+            ) : (
+              <span key={`stop-${student.id}`} className="muted-cell">
+                No stop
+              </span>
+            ),
             <StatusBadge
               key={`status-${student.id}`}
               status={student.isActive ? "Active" : "Inactive"}
@@ -253,6 +283,32 @@ export default function Students() {
                     <i className="bi bi-person-plus"></i>
                     <span>Add parent</span>
                   </button>
+                  {student.stopId ? (
+                    <button
+                      type="button"
+                      className="dropdown-item"
+                      onClick={() => {
+                        setOpenMenuStudentId(null);
+                        setUnassignError("");
+                        setStudentToUnassign(student);
+                      }}
+                    >
+                      <i className="bi bi-geo-alt"></i>
+                      <span>Unassign stop</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="dropdown-item"
+                      onClick={() => {
+                        setOpenMenuStudentId(null);
+                        setStudentToAssign(student);
+                      }}
+                    >
+                      <i className="bi bi-geo-alt"></i>
+                      <span>Assign stop</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>,
@@ -295,6 +351,75 @@ export default function Students() {
           onClose={() => setStudentForAddParent(null)}
           onSaved={reloadStudents}
         />
+      )}
+
+      {Boolean(studentToAssign) && (
+        <AssignStopModal
+          isOpen={Boolean(studentToAssign)}
+          student={studentToAssign}
+          onClose={() => setStudentToAssign(null)}
+          onSaved={reloadStudents}
+        />
+      )}
+
+      {studentToUnassign && (
+        <div
+          className="add-user-overlay"
+          onMouseDown={() => !isUnassigning && setStudentToUnassign(null)}
+        >
+          <div
+            className="add-user-modal"
+            style={{ width: "28rem" }}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="add-user-header">
+              <div>
+                <h2>Unassign Stop</h2>
+                <p>{studentToUnassign.fullName}</p>
+              </div>
+              <button
+                type="button"
+                className="add-user-close"
+                onClick={() => setStudentToUnassign(null)}
+                disabled={isUnassigning}
+              >
+                <i className="bi bi-x"></i>
+              </button>
+            </div>
+
+            <div className="add-user-body" style={{ padding: "1.25rem" }}>
+              <p style={{ margin: 0, color: "#475467", fontSize: "0.9rem" }}>
+                Remove this student&apos;s stop? They will no longer be picked up
+                at that location.
+              </p>
+              {unassignError && (
+                <div className="add-user-error" style={{ marginTop: "1rem" }}>
+                  {unassignError}
+                </div>
+              )}
+            </div>
+
+            <div className="add-user-footer">
+              <button
+                type="button"
+                className="modal-cancel"
+                onClick={() => setStudentToUnassign(null)}
+                disabled={isUnassigning}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="modal-save"
+                style={{ background: "#d9534f", borderColor: "#d9534f" }}
+                onClick={handleConfirmUnassign}
+                disabled={isUnassigning}
+              >
+                {isUnassigning ? "Unassigning..." : "Unassign Stop"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

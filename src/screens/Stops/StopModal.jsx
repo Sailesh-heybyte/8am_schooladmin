@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createStop, updateStop } from "../../api/stops.js";
 import { getBranches } from "../../api/branches.js";
+import LocationPicker from "../../components/LocationPicker.jsx";
 import "../Roles/RoleModal.scss";
 
 export default function StopModal({
@@ -223,32 +224,19 @@ export default function StopModal({
                 </div>
               </div>
 
-              {/* Paste from Google Maps helper */}
+              {/* Map Location Picker */}
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  <label htmlFor="stop-maps-paste">
-                    Paste from Google Maps
-                  </label>
-                  <input
-                    id="stop-maps-paste"
-                    type="text"
-                    value={mapsPaste}
-                    onChange={handlePasteChange}
-                    placeholder="17.385044, 78.486671"
+                  <label>Stop Location (Map)</label>
+                  <LocationPicker
+                    latitude={latitude}
+                    longitude={longitude}
+                    onChange={(lat, lng) => {
+                      setLatitude(String(lat));
+                      setLongitude(String(lng));
+                    }}
                     disabled={isSubmitting}
                   />
-                  <small
-                    className="roles-message"
-                    style={{
-                      display: "block",
-                      marginTop: "0.25rem",
-                      color: "#667085",
-                      fontSize: "0.68rem",
-                    }}
-                  >
-                    Right click a location in Google Maps and click the
-                    coordinates to copy them.
-                  </small>
                 </div>
               </div>
 
@@ -282,7 +270,6 @@ export default function StopModal({
                 </div>
               </div>
 
-              {/* Branch Selection (Create Mode) or Read-only Display (Edit Mode) */}
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
                   {isEditMode ? (

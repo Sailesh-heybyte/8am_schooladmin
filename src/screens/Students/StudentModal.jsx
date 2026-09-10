@@ -324,13 +324,6 @@ export default function StudentModal({
                 </div>
               </div>
 
-              <span
-                className="roles-message"
-                style={{ marginTop: "0.25rem", display: "block" }}
-              >
-                Optional. Used to find the nearest bus stop.
-              </span>
-
               {isEditMode && (
                 <div className="form-row" style={{ marginTop: "1rem" }}>
                   <div
