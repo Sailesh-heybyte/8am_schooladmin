@@ -5,6 +5,10 @@ import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import BusModal from "./BusModal.jsx";
 import AssignDriverModal from "./AssignDriverModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getBuses, unassignDriver } from "../../api/buses.js";
 
 export default function Buses() {
@@ -46,11 +50,15 @@ export default function Buses() {
   }, []);
 
   const reloadBuses = async () => {
+    setLoading(true);
+    setError("");
     try {
       const data = await getBuses();
       setBuses(data);
     } catch (err) {
       setError(err.message || "Failed to reload buses.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,6 +97,31 @@ export default function Buses() {
     setBusToEdit(bus);
     setIsModalOpen(true);
   };
+
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Buses"
+          description="Manage school buses and fleet assignments."
+        />
+        <AccessRestricted resource="buses" onRetry={reloadBuses} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Buses"
+          description="Manage school buses and fleet assignments."
+        />
+      </>
+    );
+  }
 
   return (
     <>

@@ -12,10 +12,16 @@ const menuItems = [
     label: "Dashboard",
   },
   {
-    id: "students",
-    path: "/students",
-    icon: <i className="bi bi-mortarboard"></i>,
-    label: "Students",
+    id: "roles",
+    path: "/roles",
+    icon: <i className="bi bi-shield-lock"></i>,
+    label: "Roles",
+  },
+  {
+    id: "branch-users",
+    path: "/branch-users",
+    icon: <i className="bi bi-person-gear"></i>,
+    label: "Branch Users",
   },
   {
     id: "buses",
@@ -30,6 +36,18 @@ const menuItems = [
     label: "Drivers",
   },
   {
+    id: "parents",
+    path: "/parents",
+    icon: <i className="bi bi-people"></i>,
+    label: "Parents",
+  },
+  {
+    id: "students",
+    path: "/students",
+    icon: <i className="bi bi-mortarboard"></i>,
+    label: "Students",
+  },
+  {
     id: "stops",
     path: "/stops",
     icon: <i className="bi bi-geo-alt"></i>,
@@ -40,24 +58,6 @@ const menuItems = [
     path: "/routes",
     icon: <i className="bi bi-signpost-split"></i>,
     label: "Routes",
-  },
-  {
-    id: "parents",
-    path: "/parents",
-    icon: <i className="bi bi-people"></i>,
-    label: "Parents",
-  },
-  {
-    id: "branch-users",
-    path: "/branch-users",
-    icon: <i className="bi bi-person-gear"></i>,
-    label: "Branch Users",
-  },
-  {
-    id: "roles",
-    path: "/roles",
-    icon: <i className="bi bi-shield-lock"></i>,
-    label: "Roles",
   },
 ];
 

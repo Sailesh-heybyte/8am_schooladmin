@@ -1873,6 +1873,12 @@ tbody tr:hover {
   text-align: center;
   box-shadow: 0 1px 3px rgba(16, 24, 40, 0.04);
 
+  &.standalone {
+    border-top: 0.05rem solid $border;
+    border-radius: $radius;
+    margin-top: 1rem;
+  }
+
   .state-icon-badge {
     width: 3.2rem;
     height: 3.2rem;

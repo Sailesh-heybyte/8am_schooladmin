@@ -8,6 +8,10 @@ import StudentDetailsModal from "./StudentDetailsModal.jsx";
 import StudentParentsModal from "./StudentParentsModal.jsx";
 import AddParentModal from "./AddParentModal.jsx";
 import AssignStopModal from "./AssignStopModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getStudents, unassignStop } from "../../api/students.js";
 
 function renderParentsCell(parents = []) {
@@ -85,12 +89,16 @@ export default function Students() {
   }, [openMenuStudentId]);
 
   const reloadStudents = async () => {
+    setLoading(true);
+    setError("");
     try {
       const data = await getStudents();
       setStudents(data);
       console.log(data);
     } catch (err) {
       setError(err.message || "Failed to reload students.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,6 +137,31 @@ export default function Students() {
     setStudentToEdit(student);
     setIsModalOpen(true);
   };
+
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Students"
+          description="Manage student records, parent contacts, and enrollments."
+        />
+        <AccessRestricted resource="students" onRetry={reloadStudents} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Students"
+          description="Manage student records, parent contacts, and enrollments."
+        />
+      </>
+    );
+  }
 
   return (
     <>

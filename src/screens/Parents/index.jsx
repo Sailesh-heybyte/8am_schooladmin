@@ -5,6 +5,10 @@ import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import ParentModal from "./ParentModal.jsx";
 import ParentDetailsModal from "./ParentDetailsModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getParents, setParentActive } from "../../api/parents.js";
 
 export default function Parents() {
@@ -60,11 +64,15 @@ export default function Parents() {
   }, [openMenuParentId]);
 
   const reloadParents = async () => {
+    setLoading(true);
+    setError("");
     try {
       const data = await getParents();
       setParents(data);
     } catch (err) {
       setError(err.message || "Failed to reload parents.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,6 +103,31 @@ export default function Parents() {
   const openCreate = () => {
     setIsModalOpen(true);
   };
+
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Parents"
+          description="Manage parents and guardians."
+        />
+        <AccessRestricted resource="parents" onRetry={reloadParents} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Parents"
+          description="Manage parents and guardians."
+        />
+      </>
+    );
+  }
 
   return (
     <>

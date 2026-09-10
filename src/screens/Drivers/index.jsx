@@ -4,6 +4,10 @@ import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import DriverModal from "./DriverModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getDrivers } from "../../api/drivers.js";
 
 export default function Drivers() {
@@ -41,11 +45,15 @@ export default function Drivers() {
   }, []);
 
   const reloadDrivers = async () => {
+    setLoading(true);
+    setError("");
     try {
       const data = await getDrivers();
       setDrivers(data);
     } catch (err) {
       setError(err.message || "Failed to reload drivers.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,6 +77,31 @@ export default function Drivers() {
     setDriverToEdit(driver);
     setIsModalOpen(true);
   };
+
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Drivers"
+          description="Manage school drivers and licenses."
+        />
+        <AccessRestricted resource="drivers" onRetry={reloadDrivers} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Drivers"
+          description="Manage school drivers and licenses."
+        />
+      </>
+    );
+  }
 
   return (
     <>

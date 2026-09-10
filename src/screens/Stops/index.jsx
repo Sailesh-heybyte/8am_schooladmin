@@ -4,6 +4,10 @@ import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import StopModal from "./StopModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getStops } from "../../api/stops.js";
 import "../SchoolAdmin/popups/ProfileModal.scss";
 
@@ -207,7 +211,30 @@ export default function Stops() {
     setIsModalOpen(true);
   };
 
-  const isPermissionError = error && error.toLowerCase().includes("permission");
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Stops"
+          description="Manage bus stops and locations."
+        />
+        <AccessRestricted resource="routing stops" onRetry={reloadStops} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Stops"
+          description="Manage bus stops and locations."
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -243,18 +270,10 @@ export default function Stops() {
       {error ? (
         <div className="table-state-card">
           <div className="state-icon-badge danger">
-            <i
-              className={`bi ${isPermissionError ? "bi-shield-lock" : "bi-exclamation-triangle"}`}
-            ></i>
+            <i className="bi bi-exclamation-triangle"></i>
           </div>
-          <h3>
-            {isPermissionError ? "Access Restricted" : "Unable to load stops"}
-          </h3>
-          <p>
-            {isPermissionError
-              ? "You do not have permission to view routing stops for this school. Please contact your system administrator."
-              : error}
-          </p>
+          <h3>Unable to load stops</h3>
+          <p>{error}</p>
           <button
             type="button"
             className="state-action-btn secondary"

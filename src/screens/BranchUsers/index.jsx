@@ -3,6 +3,10 @@ import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import BranchUserModal from "./BranchUserModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getUsers } from "../../api/users.js";
 
 export default function BranchUsers() {
@@ -40,11 +44,15 @@ export default function BranchUsers() {
   }, []);
 
   const reloadUsers = async () => {
+    setLoading(true);
+    setError("");
     try {
       const usersData = await getUsers();
       setUsers(usersData);
     } catch (err) {
       setError(err.message || "Failed to reload users.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,6 +68,31 @@ export default function BranchUsers() {
     setIsModalOpen(true);
   };
 
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Branch Users"
+          description="Manage branch users and their access permissions."
+        />
+        <AccessRestricted resource="branch users" onRetry={reloadUsers} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Branch Users"
+          description="Manage branch users and their access permissions."
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <PageTitle
@@ -70,41 +103,63 @@ export default function BranchUsers() {
       />
 
       <div className="filter-card search-only">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search branch users..."
-        />
+        <div className="table-search-box">
+          <i className="bi bi-search"></i>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search branch users..."
+            disabled={Boolean(error)}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className="search-clear-btn"
+              title="Clear search"
+              onClick={() => setSearchQuery("")}
+            >
+              <i className="bi bi-x"></i>
+            </button>
+          )}
+        </div>
       </div>
 
-      {error && (
-        <div
-          className="roles-error"
-          style={{ margin: "1rem 0", color: "#d9534f" }}
-        >
-          {error}
+      {error ? (
+        <div className="table-state-card">
+          <div className="state-icon-badge danger">
+            <i className="bi bi-exclamation-triangle"></i>
+          </div>
+          <h3>Unable to load branch users</h3>
+          <p>{error}</p>
+          <button
+            type="button"
+            className="state-action-btn secondary"
+            onClick={reloadUsers}
+          >
+            <i className="bi bi-arrow-clockwise"></i>
+            <span>Retry</span>
+          </button>
         </div>
-      )}
-
-      {loading ? (
-        <p
-          className="roles-message"
-          style={{ margin: "1.5rem 0", color: "#667085" }}
-        >
-          Loading branch users...
-        </p>
+      ) : loading ? (
+        <div className="table-state-card">
+          <div className="state-spinner"></div>
+          <p>Loading branch users...</p>
+        </div>
       ) : users.length === 0 && !searchQuery ? (
-        <div className="branch-empty-card">
-          <i className="bi bi-people"></i>
+        <div className="table-state-card">
+          <div className="state-icon-badge neutral">
+            <i className="bi bi-people"></i>
+          </div>
           <h3>No branch users found</h3>
           <p>Get started by adding the first user to your school branches.</p>
           <button
             type="button"
-            className="branch-empty-action"
+            className="state-action-btn primary"
             onClick={openCreate}
           >
-            + Create User
+            <i className="bi bi-plus-lg"></i>
+            <span>+ Create User</span>
           </button>
         </div>
       ) : (

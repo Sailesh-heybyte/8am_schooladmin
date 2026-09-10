@@ -6,6 +6,10 @@ import StatusBadge from "../../components/StatusBadge.jsx";
 import RouteModal from "./RouteModal.jsx";
 import RouteStopsModal from "./RouteStopsModal.jsx";
 import AssignBusModal from "./AssignBusModal.jsx";
+import AccessRestricted, {
+  isPermissionDenied,
+  useDebouncedLoading,
+} from "../../components/AccessRestricted.jsx";
 import { getRoutes, unassignBus } from "../../api/routes.js";
 
 export default function Routes() {
@@ -110,7 +114,30 @@ export default function Routes() {
     setIsModalOpen(true);
   };
 
-  const isPermissionError = error && error.toLowerCase().includes("permission");
+  const showLoading = useDebouncedLoading(loading, 250);
+
+  if (isPermissionDenied(error)) {
+    return (
+      <>
+        <PageTitle
+          title="Routes"
+          description="Manage school bus routes and stop sequences."
+        />
+        <AccessRestricted resource="routes" onRetry={reloadRoutes} />
+      </>
+    );
+  }
+
+  if (loading && !showLoading) {
+    return (
+      <>
+        <PageTitle
+          title="Routes"
+          description="Manage school bus routes and stop sequences."
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -146,20 +173,10 @@ export default function Routes() {
       {error ? (
         <div className="table-state-card">
           <div className="state-icon-badge danger">
-            <i
-              className={`bi ${
-                isPermissionError ? "bi-shield-lock" : "bi-exclamation-triangle"
-              }`}
-            ></i>
+            <i className="bi bi-exclamation-triangle"></i>
           </div>
-          <h3>
-            {isPermissionError ? "Access Restricted" : "Unable to load routes"}
-          </h3>
-          <p>
-            {isPermissionError
-              ? "You do not have permission to view routes for this school. Please contact your system administrator."
-              : error}
-          </p>
+          <h3>Unable to load routes</h3>
+          <p>{error}</p>
           <button
             type="button"
             className="state-action-btn secondary"
