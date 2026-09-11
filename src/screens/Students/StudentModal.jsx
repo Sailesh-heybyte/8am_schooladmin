@@ -20,7 +20,6 @@ export default function StudentModal({
   const [isActive, setIsActive] = useState(true);
   const [parentId, setParentId] = useState("");
   const [relationship, setRelationship] = useState("father");
-
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [branchesError, setBranchesError] = useState("");
@@ -35,7 +34,6 @@ export default function StudentModal({
       setFullName(student.fullName || "");
       setAdmissionNumber(student.admissionNumber || "");
       setBranchId(student.branchId || "");
-      // A null latitude or longitude must prefill as an empty string, never as 0
       setHomeLatitude(
         student.homeLatitude !== null && student.homeLatitude !== undefined
           ? String(student.homeLatitude)
@@ -63,10 +61,9 @@ export default function StudentModal({
     setIsSubmitting(false);
   }, [isOpen, student]);
 
-  // Load branches inside the modal only for create mode
   useEffect(() => {
     if (!isOpen) return;
-    if (student) return; // Skip fetch entirely in edit mode
+    if (student) return;
 
     let isMounted = true;
     setBranchesLoading(true);

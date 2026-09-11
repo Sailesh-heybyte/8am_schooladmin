@@ -21,7 +21,6 @@ export default function RouteModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Prefill in edit mode, reset in create mode
   useEffect(() => {
     if (!isOpen) return;
 
@@ -120,10 +119,7 @@ export default function RouteModal({
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
-      <div
-        className="add-user-modal"
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+      <div className="add-user-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="add-user-header">
           <div>
             <h2>{isEditMode ? "Edit Route" : "Add Route"}</h2>
@@ -230,7 +226,10 @@ export default function RouteModal({
 
               {isEditMode && (
                 <div className="form-row" style={{ marginTop: "0.5rem" }}>
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div
+                    className="form-field"
+                    style={{ flex: 1, width: "100%" }}
+                  >
                     <label
                       htmlFor="route-active"
                       style={{
