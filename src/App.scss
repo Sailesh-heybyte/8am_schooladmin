@@ -1104,6 +1104,48 @@ tbody tr:hover {
 }
 
 /* =========================
+   DIRECTION BADGE
+========================= */
+
+.direction-badge {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 2rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1.2;
+
+  i {
+    font-size: 0.68rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &.am-pickup {
+    background: #fff8eb;
+    color: #b54708;
+    border: 0.05rem solid #fedf89;
+  }
+
+  &.pm-drop {
+    background: #f4f3ff;
+    color: #5925dc;
+    border: 0.05rem solid #d9d6fe;
+  }
+
+  &.default {
+    background: #f2f4f7;
+    color: #344054;
+    border: 0.05rem solid #eaecf0;
+  }
+}
+
+/* =========================
    LIVE FLEET
 ========================= */
 

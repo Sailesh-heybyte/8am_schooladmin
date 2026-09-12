@@ -59,6 +59,12 @@ const menuItems = [
     icon: <i className="bi bi-signpost-split"></i>,
     label: "Routes",
   },
+  {
+    id: "trips",
+    path: "/trips",
+    icon: <i className="bi bi-clock-history"></i>,
+    label: "Trips",
+  },
 ];
 
 function SchoolAdmin({ onLogout }) {
