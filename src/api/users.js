@@ -1,4 +1,5 @@
 import { apiCall } from "./client.js";
+import { formatDate, hasValue } from "../utils/helpers.js";
 
 function parseSkills(skills) {
   if (typeof skills === "string") {
@@ -13,12 +14,6 @@ function parseSkills(skills) {
   return [];
 }
 
-function hasValue(val) {
-  if (val === undefined || val === null) return false;
-  if (typeof val === "string" && val.trim() === "") return false;
-  return true;
-}
-
 function buildCleanObject(fields) {
   const cleanObj = {};
   for (const [key, value] of Object.entries(fields)) {
@@ -27,12 +22,6 @@ function buildCleanObject(fields) {
     }
   }
   return Object.keys(cleanObj).length > 0 ? cleanObj : undefined;
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
 }
 
 function toUiUser(apiUser = {}) {

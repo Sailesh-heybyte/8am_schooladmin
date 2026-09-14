@@ -1,10 +1,5 @@
 import { apiCall } from "./client.js";
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-};
+import { formatDate } from "../utils/helpers.js";
 
 const toUiParent = (parent) => ({
   id: parent.id,

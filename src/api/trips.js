@@ -1,10 +1,7 @@
 import { apiCall } from "./client.js";
+import { formatDate } from "../utils/helpers.js";
 
-export const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-};
+export { formatDate };
 
 const toUiTrip = (trip) => ({
   id: trip.id,

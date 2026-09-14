@@ -2,13 +2,8 @@ import { useState, useEffect } from "react";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import DirectionBadge from "../../components/DirectionBadge.jsx";
 import { getTrip } from "../../api/trips.js";
+import { formatDateTime } from "../../utils/helpers.js";
 import "../SchoolAdmin/popups/ProfileModal.scss";
-
-const formatDateTime = (dateStr) => {
-  if (!dateStr) return "-";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "-" : d.toLocaleString();
-};
 
 export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
   const [trip, setTrip] = useState(null);

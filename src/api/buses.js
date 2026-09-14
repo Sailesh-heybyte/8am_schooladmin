@@ -1,16 +1,5 @@
 import { apiCall } from "./client.js";
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-};
-
-function hasValue(val) {
-  if (val === undefined || val === null) return false;
-  if (typeof val === "string" && val.trim() === "") return false;
-  return true;
-}
+import { formatDate, hasValue } from "../utils/helpers.js";
 
 const toUiBus = (bus) => ({
   id: bus.id,

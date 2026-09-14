@@ -1,16 +1,5 @@
 import { apiCall } from "./client.js";
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-};
-
-function hasValue(val) {
-  if (val === undefined || val === null) return false;
-  if (typeof val === "string" && val.trim() === "") return false;
-  return true;
-}
+import { formatDate, hasValue } from "../utils/helpers.js";
 
 const toUiParent = (parent) => ({
   parentId: parent.parent_id,
@@ -85,39 +74,33 @@ const toApiStudentUpdate = (student) => {
   return body;
 };
 
-// GET /api/v1/people/students
 export const getStudents = async () => {
   const data = await apiCall("/people/students");
   return data.map(toUiStudent);
 };
 
-// GET /api/v1/people/students/{student_id}
 export const getStudent = async (id) => {
   const data = await apiCall(`/people/students/${id}`);
   return toUiStudent(data);
 };
 
-// POST /api/v1/people/students
 export const createStudent = (data) =>
   apiCall("/people/students", {
     method: "POST",
     body: toApiStudent(data),
   });
 
-// PATCH /api/v1/people/students/{student_id}
 export const updateStudent = (id, data) =>
   apiCall(`/people/students/${id}`, {
     method: "PATCH",
     body: toApiStudentUpdate(data),
   });
 
-// GET /api/v1/people/students/{student_id}/parents
 export const getStudentParents = async (studentId) => {
   const data = await apiCall(`/people/students/${studentId}/parents`);
   return data.map(toUiParent);
 };
 
-// POST /api/v1/people/students/{student_id}/parents
 export const addStudentParents = async (studentId, parents) => {
   const data = await apiCall(`/people/students/${studentId}/parents`, {
     method: "POST",

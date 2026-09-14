@@ -72,7 +72,6 @@ export default function LocationPicker({
   const mapInstanceRef = useRef(null);
   const idleListenerRef = useRef(null);
   const lastEmittedRef = useRef(null);
-  const initialEmittedRef = useRef(false);
 
   const onChangeRef = useRef(onChange);
   useEffect(() => {
@@ -106,12 +105,8 @@ export default function LocationPicker({
 
         mapInstanceRef.current = map;
 
-        // If coordinates were empty, call onChange ONCE with default coordinates
-        // so inputs are never empty while the pin is visibly sitting somewhere.
-        if (!hasInitialCoords && !initialEmittedRef.current) {
-          initialEmittedRef.current = true;
+        if (!hasInitialCoords) {
           lastEmittedRef.current = { lat: LAT, lng: LNG };
-          onChangeRef.current?.(LAT, LNG);
         } else if (hasInitialCoords) {
           lastEmittedRef.current = {
             lat: Number(Number(latitude).toFixed(6)),
