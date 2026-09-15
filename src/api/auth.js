@@ -7,8 +7,6 @@ export async function login(identifier, password) {
     skipAuth: true,
   });
 
-  localStorage.setItem("school_access_token", data.access_token);
-  localStorage.setItem("school_refresh_token", data.refresh_token);
   return data;
 }
 

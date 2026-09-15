@@ -94,7 +94,6 @@ export default function Students() {
     try {
       const data = await getStudents();
       setStudents(data);
-      console.log(data);
     } catch (err) {
       setError(err.message || "Failed to reload students.");
     } finally {

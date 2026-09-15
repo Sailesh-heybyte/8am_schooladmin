@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
@@ -21,6 +21,9 @@ export default function Trips() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [direction, setDirection] = useState("");
+  const [status, setStatus] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [selectedTripId, setSelectedTripId] = useState(null);
 
   // Load trips on mount. This is the ONLY request this screen makes on page load.
@@ -58,13 +61,42 @@ export default function Trips() {
     }
   };
 
-  const filteredTrips = trips.filter((trip) => {
+  const filteredTrips = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const busMatch = trip.busId.toLowerCase().includes(query);
-    const routeMatch = trip.routeId.toLowerCase().includes(query);
-    return busMatch || routeMatch;
-  });
+
+    return trips.filter((trip) => {
+      if (query) {
+        const busMatch = (trip.busId || "").toLowerCase().includes(query);
+        const routeMatch = (trip.routeId || "").toLowerCase().includes(query);
+        if (!busMatch && !routeMatch) return false;
+      }
+
+      if (direction && trip.direction !== direction) {
+        return false;
+      }
+
+      if (status && trip.status !== status) {
+        return false;
+      }
+
+      if (selectedDate && trip.tripDate !== selectedDate) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [trips, searchQuery, direction, status, selectedDate]);
+
+  const hasActiveFilters = Boolean(
+    searchQuery || direction || status || selectedDate
+  );
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setDirection("");
+    setStatus("");
+    setSelectedDate("");
+  };
 
   const showLoading = useDebouncedLoading(loading, 250);
 
@@ -98,13 +130,59 @@ export default function Trips() {
         description="View driver trips and transport runs."
       />
 
-      <div className="filter-card search-only">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by bus or route ID..."
-        />
+      <div className="filter-card">
+        <div className="filter-group">
+          <input
+            id="trip-search"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by bus or route ID..."
+          />
+        </div>
+
+        <div className="filter-group">
+          <select
+            id="trip-direction"
+            value={direction}
+            onChange={(e) => setDirection(e.target.value)}
+          >
+            <option value="">All directions</option>
+            <option value="AM_PICKUP">Morning pickup</option>
+            <option value="PM_DROP">Evening drop</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <select
+            id="trip-status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="ended">Ended</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <input
+            id="trip-date"
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
+        </div>
+
+        {hasActiveFilters && (
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={handleClearFilters}
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
       {error && (
@@ -123,11 +201,27 @@ export default function Trips() {
         >
           Loading trips...
         </p>
-      ) : trips.length === 0 && !searchQuery ? (
+      ) : trips.length === 0 ? (
         <div className="branch-empty-card">
           <i className="bi bi-clock-history"></i>
           <h3>No trips found</h3>
           <p>Trips started by drivers will appear here.</p>
+        </div>
+      ) : filteredTrips.length === 0 ? (
+        <div className="branch-empty-card">
+          <i className="bi bi-funnel"></i>
+          <h3>No matching trips found</h3>
+          <p>
+            No trips match your filter criteria. Try adjusting or clearing your
+            filters.
+          </p>
+          <button
+            type="button"
+            className="branch-empty-action"
+            onClick={handleClearFilters}
+          >
+            Clear filters
+          </button>
         </div>
       ) : (
         <DataTable
@@ -165,7 +259,11 @@ export default function Trips() {
             </div>,
           ])}
           withoutFilter={false}
-          footer={`Showing ${filteredTrips.length} of ${trips.length} trips`}
+          footer={
+            hasActiveFilters
+              ? `Showing ${filteredTrips.length} of ${trips.length} trips`
+              : `Showing ${trips.length} trips`
+          }
         />
       )}
 
@@ -179,3 +277,4 @@ export default function Trips() {
     </>
   );
 }
+

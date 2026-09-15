@@ -18,13 +18,11 @@ const toUiTrip = (trip) => ({
   createdAt: trip.created_at,
 });
 
-// GET /trips
 export const getTrips = async () => {
   const data = await apiCall("/trips");
   return data.map(toUiTrip);
 };
 
-// GET /trips/{trip_id}
 export const getTrip = async (id) => {
   const data = await apiCall(`/trips/${id}`);
   return toUiTrip(data);

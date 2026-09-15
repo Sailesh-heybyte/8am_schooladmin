@@ -20,7 +20,6 @@ export default function Drivers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [driverToEdit, setDriverToEdit] = useState(null);
 
-  // Load drivers on mount. This is the ONLY request this screen makes on page load.
   useEffect(() => {
     let isMounted = true;
     setLoading(true);

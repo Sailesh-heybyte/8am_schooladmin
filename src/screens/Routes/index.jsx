@@ -40,7 +40,6 @@ export default function Routes() {
       .then((data) => {
         if (!isMounted) return;
         setRoutes(data || []);
-        console.log(data);
       })
       .catch((err) => {
         if (!isMounted) return;

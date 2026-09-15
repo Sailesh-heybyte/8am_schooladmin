@@ -17,7 +17,6 @@ export default function DriverModal({
   const [licenseNumber, setLicenseNumber] = useState("");
   const [licenseExpiry, setLicenseExpiry] = useState("");
   const [branchId, setBranchId] = useState("");
-
   const [branches, setBranches] = useState([]);
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [branchesError, setBranchesError] = useState("");
@@ -30,11 +29,9 @@ export default function DriverModal({
 
     if (driver) {
       setFullName(driver.fullName || "");
-      // API sends "+91-9800000001". Strip everything except the last 10 digits for input display
       const rawPhone = driver.phone || "";
       const plainPhone = rawPhone.replace(/\D/g, "").slice(-10);
       setPhone(plainPhone);
-      // Raw YYYY-MM-DD string passed directly to date input unformatted
       setLicenseNumber(driver.licenseNumber || "");
       setLicenseExpiry(driver.licenseExpiry || "");
       setBranchId(driver.branchId || "");
