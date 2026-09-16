@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createUser } from "../../api/users.js";
-import { useBranches } from "../../context/BranchesContext.jsx";
+import { getBranches } from "../../api/branches.js";
 import { getRoles } from "../../api/roles.js";
 import "../Roles/RoleModal.scss";
 import "./BranchUserModal.scss";
@@ -43,8 +43,7 @@ export default function BranchUserModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const { branches, branchesLoading, branchesError, loadBranches } =
-    useBranches();
+  const [branches, setBranches] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
@@ -57,20 +56,23 @@ export default function BranchUserModal({
     setError("");
     setIsSubmitting(false);
 
-    loadBranches();
-
     let isMounted = true;
     setLoading(true);
     setLoadError("");
 
-    getRoles()
-      .then((rolesData) => {
+    const branchesRequest = schoolId
+      ? getBranches(schoolId)
+      : Promise.resolve([]);
+
+    Promise.all([branchesRequest, getRoles()])
+      .then(([branchesData, rolesData]) => {
         if (!isMounted) return;
+        setBranches(branchesData);
         setRoles(rolesData);
       })
       .catch((err) => {
         if (!isMounted) return;
-        setLoadError(err.message || "Failed to load roles.");
+        setLoadError(err.message || "Failed to load branches and roles.");
       })
       .finally(() => {
         if (isMounted) {
@@ -81,7 +83,7 @@ export default function BranchUserModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen, loadBranches]);
+  }, [isOpen, schoolId]);
 
   if (!isOpen) return null;
 
@@ -115,13 +117,7 @@ export default function BranchUserModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      loading ||
-      branchesLoading ||
-      Boolean(loadError) ||
-      Boolean(branchesError)
-    )
-      return;
+    if (loading || Boolean(loadError)) return;
     setError("");
 
     if (!formData.fullName.trim()) {
@@ -205,12 +201,7 @@ export default function BranchUserModal({
     }
   };
 
-  const isSaveDisabled =
-    isSubmitting ||
-    loading ||
-    branchesLoading ||
-    Boolean(loadError) ||
-    Boolean(branchesError);
+  const isSaveDisabled = isSubmitting || loading || Boolean(loadError);
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -287,13 +278,9 @@ export default function BranchUserModal({
                     value={formData.branchId}
                     onChange={(e) => handleChange("branchId", e.target.value)}
                     required
-                    disabled={
-                      isSubmitting ||
-                      branchesLoading ||
-                      Boolean(branchesError)
-                    }
+                    disabled={isSubmitting || loading || Boolean(loadError)}
                   >
-                    {branchesLoading ? (
+                    {loading ? (
                       <option value="" disabled>
                         Loading branches...
                       </option>
@@ -653,15 +640,6 @@ export default function BranchUserModal({
               style={{ margin: "0 1.5rem 1rem", color: "#d9534f" }}
             >
               {loadError}
-            </div>
-          )}
-
-          {branchesError && (
-            <div
-              className="roles-error"
-              style={{ margin: "0 1.5rem 1rem", color: "#d9534f" }}
-            >
-              {branchesError}
             </div>
           )}
 

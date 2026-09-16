@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createBus, updateBus } from "../../api/buses.js";
-import { useBranches } from "../../context/BranchesContext.jsx";
+import { getBranches } from "../../api/branches.js";
 import "../Roles/RoleModal.scss";
 
 export default function BusModal({
@@ -16,8 +16,9 @@ export default function BusModal({
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [capacity, setCapacity] = useState("");
   const [branchId, setBranchId] = useState("");
-  const { branches, branchesLoading, branchesError, loadBranches } =
-    useBranches();
+  const [branches, setBranches] = useState([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
+  const [branchesError, setBranchesError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -49,8 +50,33 @@ export default function BusModal({
     if (!isOpen) return;
     if (bus) return; // Edit mode does not need branches
 
-    loadBranches();
-  }, [isOpen, bus, loadBranches]);
+    let isMounted = true;
+    setBranchesLoading(true);
+    setBranchesError("");
+
+    const branchesRequest = schoolId
+      ? getBranches(schoolId)
+      : Promise.resolve([]);
+
+    branchesRequest
+      .then((data) => {
+        if (!isMounted) return;
+        setBranches(data);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        setBranchesError(err.message || "Failed to load branches.");
+      })
+      .finally(() => {
+        if (isMounted) {
+          setBranchesLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, schoolId]);
 
   if (!isOpen) return null;
 

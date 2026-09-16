@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createDriver, updateDriver } from "../../api/drivers.js";
-import { useBranches } from "../../context/BranchesContext.jsx";
+import { getBranches } from "../../api/branches.js";
 import "../Roles/RoleModal.scss";
 
 export default function DriverModal({
@@ -17,8 +17,9 @@ export default function DriverModal({
   const [licenseNumber, setLicenseNumber] = useState("");
   const [licenseExpiry, setLicenseExpiry] = useState("");
   const [branchId, setBranchId] = useState("");
-  const { branches, branchesLoading, branchesError, loadBranches } =
-    useBranches();
+  const [branches, setBranches] = useState([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
+  const [branchesError, setBranchesError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -50,8 +51,33 @@ export default function DriverModal({
     if (!isOpen) return;
     if (driver) return; // Skip fetch entirely in edit mode
 
-    loadBranches();
-  }, [isOpen, driver, loadBranches]);
+    let isMounted = true;
+    setBranchesLoading(true);
+    setBranchesError("");
+
+    const branchesRequest = schoolId
+      ? getBranches(schoolId)
+      : Promise.resolve([]);
+
+    branchesRequest
+      .then((data) => {
+        if (!isMounted) return;
+        setBranches(data);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        setBranchesError(err.message || "Failed to load branches.");
+      })
+      .finally(() => {
+        if (isMounted) {
+          setBranchesLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, schoolId]);
 
   if (!isOpen) return null;
 
