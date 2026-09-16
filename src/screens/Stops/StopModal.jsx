@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createStop, updateStop } from "../../api/stops.js";
-import { getBranches } from "../../api/branches.js";
+import { useBranches } from "../../context/BranchesContext.jsx";
 import LocationPicker from "../../components/LocationPicker.jsx";
 import "../Roles/RoleModal.scss";
 
@@ -18,9 +18,8 @@ export default function StopModal({
   const [longitude, setLongitude] = useState("");
   const [branchId, setBranchId] = useState("");
   const [isActive, setIsActive] = useState(true);
-  const [branches, setBranches] = useState([]);
-  const [branchesLoading, setBranchesLoading] = useState(false);
-  const [branchesError, setBranchesError] = useState("");
+  const { branches, branchesLoading, branchesError, loadBranches } =
+    useBranches();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -61,33 +60,8 @@ export default function StopModal({
     if (!isOpen) return;
     if (stop) return; // Skip fetch entirely in edit mode
 
-    let isMounted = true;
-    setBranchesLoading(true);
-    setBranchesError("");
-
-    const branchesRequest = schoolId
-      ? getBranches(schoolId)
-      : Promise.resolve([]);
-
-    branchesRequest
-      .then((data) => {
-        if (!isMounted) return;
-        setBranches(data);
-      })
-      .catch((err) => {
-        if (!isMounted) return;
-        setBranchesError(err.message || "Failed to load branches.");
-      })
-      .finally(() => {
-        if (isMounted) {
-          setBranchesLoading(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isOpen, schoolId, stop]);
+    loadBranches();
+  }, [isOpen, stop, loadBranches]);
 
   if (!isOpen) return null;
 

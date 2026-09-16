@@ -3,6 +3,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "../../App.scss";
 import { logout, getMe } from "../../api/auth.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
+import { BranchesProvider } from "../../context/BranchesContext.jsx";
 
 const menuItems = [
   {
@@ -217,7 +218,9 @@ function SchoolAdmin({ onLogout }) {
         </header>
 
         <section className="page-content">
-          <Outlet context={{ me }} />
+          <BranchesProvider schoolId={me?.school_id}>
+            <Outlet context={{ me }} />
+          </BranchesProvider>
         </section>
       </main>
 

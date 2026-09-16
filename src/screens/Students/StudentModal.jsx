@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createStudent, updateStudent } from "../../api/students.js";
-import { getBranches } from "../../api/branches.js";
+import { useBranches } from "../../context/BranchesContext.jsx";
 import "../Roles/RoleModal.scss";
 
 export default function StudentModal({
@@ -20,9 +20,8 @@ export default function StudentModal({
   const [isActive, setIsActive] = useState(true);
   const [parentId, setParentId] = useState("");
   const [relationship, setRelationship] = useState("father");
-  const [branches, setBranches] = useState([]);
-  const [branchesLoading, setBranchesLoading] = useState(false);
-  const [branchesError, setBranchesError] = useState("");
+  const { branches, branchesLoading, branchesError, loadBranches } =
+    useBranches();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -65,33 +64,8 @@ export default function StudentModal({
     if (!isOpen) return;
     if (student) return;
 
-    let isMounted = true;
-    setBranchesLoading(true);
-    setBranchesError("");
-
-    const branchesRequest = schoolId
-      ? getBranches(schoolId)
-      : Promise.resolve([]);
-
-    branchesRequest
-      .then((data) => {
-        if (!isMounted) return;
-        setBranches(data);
-      })
-      .catch((err) => {
-        if (!isMounted) return;
-        setBranchesError(err.message || "Failed to load branches.");
-      })
-      .finally(() => {
-        if (isMounted) {
-          setBranchesLoading(false);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isOpen, schoolId]);
+    loadBranches();
+  }, [isOpen, student, loadBranches]);
 
   if (!isOpen) return null;
 
