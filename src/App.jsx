@@ -12,6 +12,7 @@ import Parents from "./screens/Parents/index.jsx";
 import Stops from "./screens/Stops/index.jsx";
 import RoutesScreen from "./screens/Routes/index.jsx";
 import Trips from "./screens/Trips/index.jsx";
+import NotFound from "./components/NotFound.jsx";
 
 // Placeholders until each feature screen is built.
 const Placeholder = ({ name }) => <p>{name} screen coming soon.</p>;
@@ -21,13 +22,18 @@ export default function App() {
     () => !!localStorage.getItem("school_access_token"),
   );
 
+  // A session is only valid when memory and storage agree. If they
+  // disagree the app can bounce between /login and /dashboard forever.
+  const hasSession =
+    isAuthenticated && Boolean(localStorage.getItem("school_access_token"));
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/login"
           element={
-            isAuthenticated && Boolean(localStorage.getItem("school_access_token")) ? (
+            hasSession ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <Login onLoginSuccess={() => setIsAuthenticated(true)} />
@@ -37,16 +43,12 @@ export default function App() {
         <Route
           path="/change-password"
           element={
-            isAuthenticated ? (
-              <ChangePassword />
-            ) : (
-              <Navigate to="/login" replace />
-            )
+            hasSession ? <ChangePassword /> : <Navigate to="/login" replace />
           }
         />
         <Route
           element={
-            isAuthenticated && Boolean(localStorage.getItem("school_access_token")) ? (
+            hasSession ? (
               <SchoolAdmin onLogout={() => setIsAuthenticated(false)} />
             ) : (
               <Navigate to="/login" replace />
@@ -64,13 +66,11 @@ export default function App() {
           <Route path="/routes" element={<RoutesScreen />} />
           <Route path="/trips" element={<Trips />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
         <Route
           path="*"
-          element={
-            <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
-          }
+          element={<Navigate to={hasSession ? "/dashboard" : "/login"} replace />}
         />
       </Routes>
     </BrowserRouter>
