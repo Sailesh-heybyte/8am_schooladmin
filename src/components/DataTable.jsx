@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import emptySearchIcon from "../assets/emptySearch.png";
 
 const PAGE_SIZE = 10;
@@ -12,6 +12,11 @@ export default function DataTable({
   className = "",
 }) {
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [rows.length]);
+
   const totalPages = Math.ceil(rows.length / PAGE_SIZE);
   const currentPage = Math.min(page, Math.max(totalPages, 1));
   const visibleRows = rows.slice(
