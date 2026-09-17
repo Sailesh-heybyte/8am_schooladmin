@@ -27,7 +27,7 @@ export default function App() {
         <Route
           path="/login"
           element={
-            isAuthenticated ? (
+            isAuthenticated && Boolean(localStorage.getItem("school_access_token")) ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <Login onLoginSuccess={() => setIsAuthenticated(true)} />
@@ -46,7 +46,7 @@ export default function App() {
         />
         <Route
           element={
-            isAuthenticated ? (
+            isAuthenticated && Boolean(localStorage.getItem("school_access_token")) ? (
               <SchoolAdmin onLogout={() => setIsAuthenticated(false)} />
             ) : (
               <Navigate to="/login" replace />

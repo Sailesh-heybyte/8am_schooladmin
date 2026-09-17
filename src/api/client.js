@@ -102,6 +102,11 @@ export async function apiCall(path, options = {}) {
       `${BASE_URL}${path}`,
       buildRequest({ ...options, isRetry: true }),
     );
+
+    if (response.status === 401) {
+      localStorage.removeItem("school_access_token");
+      localStorage.removeItem("school_refresh_token");
+    }
   }
 
   if (!response.ok) {
