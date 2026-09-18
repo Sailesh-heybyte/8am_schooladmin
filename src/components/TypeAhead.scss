@@ -1,0 +1,191 @@
+@use "../styles/colors" as *;
+
+.typeahead-container {
+  position: relative;
+  width: 100%;
+
+  &.is-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.typeahead-control {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .typeahead-input {
+    width: 100%;
+    height: 2.2rem;
+    padding: 0 2.2rem 0 0.7rem;
+    border: 0.05rem solid $border;
+    border-radius: $radius-small;
+    background: $white;
+    color: $text;
+    font-family: inherit;
+    font-size: 0.68rem;
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 0.15rem rgba(21, 94, 239, 0.1);
+    }
+
+    &::placeholder {
+      color: $text-muted;
+    }
+
+    &:disabled {
+      background: $background;
+      color: $text-muted;
+      cursor: not-allowed;
+    }
+  }
+
+  .typeahead-actions {
+    position: absolute;
+    right: 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+
+    .typeahead-clear {
+      border: none;
+      background: transparent;
+      color: $text-muted;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+
+      &:hover {
+        color: $text;
+      }
+    }
+
+    .typeahead-chevron {
+      font-size: 0.65rem;
+      color: $text-light;
+      pointer-events: none;
+      transition: transform 0.2s ease;
+
+      &.is-open {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+.typeahead-dropdown {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: $white;
+  border: 0.05rem solid $border;
+  border-radius: $radius-small;
+  box-shadow: $shadow-hover;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.typeahead-options {
+  max-height: 12.5rem;
+  overflow-y: auto;
+  padding: 0.3rem;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $scrollbar;
+    border-radius: 2px;
+
+    &:hover {
+      background: $scrollbar-hover;
+    }
+  }
+}
+
+.typeahead-option {
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.3rem;
+  font-size: 0.68rem;
+  color: $text;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+
+  &:hover,
+  &.is-highlighted {
+    background: $surface-hover;
+    color: $brand-navy-dark;
+  }
+
+  &.is-selected {
+    background: $primary-light;
+    color: $primary;
+    font-weight: 600;
+
+    .check-icon {
+      font-size: 0.8rem;
+      color: $primary;
+    }
+  }
+
+  &.is-selected.is-highlighted {
+    background: $primary-hover-light;
+  }
+}
+
+.typeahead-status {
+  padding: 0.85rem;
+  text-align: center;
+  color: $text-muted;
+  font-size: 0.68rem;
+}
+
+.typeahead-more {
+  padding: 0.5rem 0.65rem;
+  text-align: center;
+  color: $text-light;
+  font-size: 0.62rem;
+  border-top: 0.05rem solid $border-light;
+  background: $background;
+}
+
+// Prevent panel from being clipped by the scroll container of modal popups (such as .add-school-body in CardMapModal)
+.add-school-body:has(.typeahead-container),
+.add-school-body:has(.typeahead-dropdown) {
+  overflow: visible;
+}
+
+.add-school-modal:has(.typeahead-container) {
+  overflow: visible;
+}
+
+// Integration with filter bars (e.g. Branches screen)
+.filter-group .typeahead-container {
+  width: 13rem;
+}
+

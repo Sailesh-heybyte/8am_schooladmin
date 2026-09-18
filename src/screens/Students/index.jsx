@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import StudentModal from "./StudentModal.jsx";
-import StudentDetailsModal from "./StudentDetailsModal.jsx";
+import StudentViewModal from "./StudentViewModal.jsx";
 import StudentParentsModal from "./StudentParentsModal.jsx";
 import AddParentModal from "./AddParentModal.jsx";
 import AssignStopModal from "./AssignStopModal.jsx";
@@ -30,8 +29,6 @@ function renderParentsCell(parents = []) {
 }
 
 export default function Students() {
-  const { me } = useOutletContext() || {};
-
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,7 +36,7 @@ export default function Students() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
-  const [studentForDetails, setStudentForDetails] = useState(null);
+  const [studentForView, setStudentForView] = useState(null);
   const [studentForParents, setStudentForParents] = useState(null);
   const [studentForAddParent, setStudentForAddParent] = useState(null);
   const [studentToAssign, setStudentToAssign] = useState(null);
@@ -253,96 +250,96 @@ export default function Students() {
             />,
             <div
               key={`actions-${student.id}`}
-              className="actions-menu-container"
+              className="action-buttons"
             >
               <button
                 type="button"
                 className="action-icon"
-                title="Actions"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenMenuStudentId((prev) =>
-                    prev === student.id ? null : student.id,
-                  );
-                }}
+                title="View"
+                onClick={() => setStudentForView(student)}
               >
-                <i className="bi bi-three-dots-vertical"></i>
+                <i className="bi bi-eye"></i>
               </button>
 
-              {openMenuStudentId === student.id && (
-                <div className="actions-dropdown-menu">
-                  <button
-                    type="button"
-                    className="dropdown-item"
-                    onClick={() => {
-                      setOpenMenuStudentId(null);
-                      setStudentForDetails(student);
-                    }}
-                  >
-                    <i className="bi bi-eye"></i>
-                    <span>View details</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="dropdown-item"
-                    onClick={() => {
-                      setOpenMenuStudentId(null);
-                      setStudentForParents(student);
-                    }}
-                  >
-                    <i className="bi bi-people"></i>
-                    <span>List parents</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="dropdown-item"
-                    onClick={() => {
-                      setOpenMenuStudentId(null);
-                      openEdit(student);
-                    }}
-                  >
-                    <i className="bi bi-pencil"></i>
-                    <span>Edit</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="dropdown-item"
-                    onClick={() => {
-                      setOpenMenuStudentId(null);
-                      setStudentForAddParent(student);
-                    }}
-                  >
-                    <i className="bi bi-person-plus"></i>
-                    <span>Add parent</span>
-                  </button>
-                  {student.stopId ? (
+              <div className="actions-menu-container">
+                <button
+                  type="button"
+                  className="action-icon"
+                  title="Actions"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenMenuStudentId((prev) =>
+                      prev === student.id ? null : student.id,
+                    );
+                  }}
+                >
+                  <i className="bi bi-three-dots-vertical"></i>
+                </button>
+
+                {openMenuStudentId === student.id && (
+                  <div className="actions-dropdown-menu">
                     <button
                       type="button"
                       className="dropdown-item"
                       onClick={() => {
                         setOpenMenuStudentId(null);
-                        setUnassignError("");
-                        setStudentToUnassign(student);
+                        setStudentForParents(student);
                       }}
                     >
-                      <i className="bi bi-geo-alt"></i>
-                      <span>Unassign stop</span>
+                      <i className="bi bi-people"></i>
+                      <span>List parents</span>
                     </button>
-                  ) : (
                     <button
                       type="button"
                       className="dropdown-item"
                       onClick={() => {
                         setOpenMenuStudentId(null);
-                        setStudentToAssign(student);
+                        openEdit(student);
                       }}
                     >
-                      <i className="bi bi-geo-alt"></i>
-                      <span>Assign stop</span>
+                      <i className="bi bi-pencil"></i>
+                      <span>Edit</span>
                     </button>
-                  )}
-                </div>
-              )}
+                    <button
+                      type="button"
+                      className="dropdown-item"
+                      onClick={() => {
+                        setOpenMenuStudentId(null);
+                        setStudentForAddParent(student);
+                      }}
+                    >
+                      <i className="bi bi-person-plus"></i>
+                      <span>Add parent</span>
+                    </button>
+                    {student.stopId ? (
+                      <button
+                        type="button"
+                        className="dropdown-item"
+                        onClick={() => {
+                          setOpenMenuStudentId(null);
+                          setUnassignError("");
+                          setStudentToUnassign(student);
+                        }}
+                      >
+                        <i className="bi bi-geo-alt"></i>
+                        <span>Unassign stop</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="dropdown-item"
+                        onClick={() => {
+                          setOpenMenuStudentId(null);
+                          setStudentToAssign(student);
+                        }}
+                      >
+                        <i className="bi bi-geo-alt"></i>
+                        <span>Assign stop</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>,
           ])}
           withoutFilter={false}
@@ -354,17 +351,16 @@ export default function Students() {
         <StudentModal
           isOpen={isModalOpen}
           student={studentToEdit}
-          schoolId={me?.school_id}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadStudents}
         />
       )}
 
-      {Boolean(studentForDetails) && (
-        <StudentDetailsModal
-          isOpen={Boolean(studentForDetails)}
-          student={studentForDetails}
-          onClose={() => setStudentForDetails(null)}
+      {Boolean(studentForView) && (
+        <StudentViewModal
+          isOpen={Boolean(studentForView)}
+          student={studentForView}
+          onClose={() => setStudentForView(null)}
         />
       )}
 

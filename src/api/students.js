@@ -10,7 +10,7 @@ const toUiParent = (parent) => ({
 
 const toApiParent = (parent) => ({
   parent_id: parent.parentId,
-  relationship: parent.relationship,
+  relationship: hasValue(parent.relationship) ? parent.relationship : null,
 });
 
 const toUiStudent = (student) => ({
@@ -40,9 +40,14 @@ const toApiStudent = (student) => {
   if (hasValue(student.homeLongitude)) {
     body.home_longitude = Number(student.homeLongitude);
   }
-  if (Array.isArray(student.parents) && student.parents.length > 0) {
-    body.parents = student.parents.map(toApiParent);
-  }
+  body.parents = [
+    {
+      parent_id: student.parentId,
+      relationship: hasValue(student.relationship)
+        ? student.relationship
+        : null,
+    },
+  ];
 
   return body;
 };

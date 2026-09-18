@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { createStudent, updateStudent } from "../../api/students.js";
+import { getParents } from "../../api/parents.js";
 import { useBranches } from "../../context/BranchesContext.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import "../Roles/RoleModal.scss";
 
 export default function StudentModal({
   isOpen,
   student = null,
-  schoolId,
   onClose,
   onSaved,
 }) {
@@ -19,7 +20,10 @@ export default function StudentModal({
   const [homeLongitude, setHomeLongitude] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [parentId, setParentId] = useState("");
-  const [relationship, setRelationship] = useState("father");
+  const [relationship, setRelationship] = useState("");
+  const [parents, setParents] = useState([]);
+  const [parentsLoading, setParentsLoading] = useState(false);
+  const [parentsError, setParentsError] = useState("");
   const { branches, branchesLoading, branchesError, loadBranches } =
     useBranches();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,7 +49,7 @@ export default function StudentModal({
       );
       setIsActive(Boolean(student.isActive));
       setParentId("");
-      setRelationship("father");
+      setRelationship("");
     } else {
       setFullName("");
       setAdmissionNumber("");
@@ -54,20 +58,37 @@ export default function StudentModal({
       setHomeLongitude("");
       setIsActive(true);
       setParentId("");
-      setRelationship("father");
+      setRelationship("");
     }
     setError("");
     setIsSubmitting(false);
   }, [isOpen, student]);
 
   useEffect(() => {
-    if (!isOpen) return;
-    if (student) return;
+    if (!isOpen || isEditMode) return;
 
     loadBranches();
-  }, [isOpen, student, loadBranches]);
+    setParentsLoading(true);
+    setParentsError("");
+
+    getParents()
+      .then((data) => {
+        setParents(data);
+      })
+      .catch((err) => {
+        setParentsError(err.message || "Failed to load parents.");
+      })
+      .finally(() => {
+        setParentsLoading(false);
+      });
+  }, [isOpen, isEditMode, loadBranches]);
 
   if (!isOpen) return null;
+
+  const parentOptions = parents.map((p) => ({
+    value: p.id,
+    label: p.phone ? `${p.fullName} · ${p.phone}` : p.fullName,
+  }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,12 +110,8 @@ export default function StudentModal({
     }
 
     if (!isEditMode) {
-      if (!parentId.trim()) {
-        setError("Parent ID is required.");
-        return;
-      }
-      if (!relationship || !relationship.trim()) {
-        setError("Please select a relationship.");
+      if (!parentId || !parentId.trim()) {
+        setError("Please select a parent.");
         return;
       }
     }
@@ -122,12 +139,8 @@ export default function StudentModal({
             homeLatitude.trim() !== "" ? Number(homeLatitude) : undefined,
           homeLongitude:
             homeLongitude.trim() !== "" ? Number(homeLongitude) : undefined,
-          parents: [
-            {
-              parentId: parentId.trim(),
-              relationship,
-            },
-          ],
+          parentId: parentId.trim(),
+          relationship: relationship.trim(),
         });
       }
 
@@ -145,7 +158,8 @@ export default function StudentModal({
   const isSaveDisabled =
     isSubmitting ||
     (!isEditMode && branchesLoading) ||
-    (!isEditMode && Boolean(branchesError));
+    (!isEditMode && Boolean(branchesError)) ||
+    (!isEditMode && parentsLoading);
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -327,7 +341,7 @@ export default function StudentModal({
 
             {!isEditMode && (
               <div className="form-section">
-                <h3 className="form-section-title">Guardian</h3>
+                <h3 className="form-section-title">Parents</h3>
                 <span
                   className="roles-message"
                   style={{
@@ -336,46 +350,57 @@ export default function StudentModal({
                     display: "block",
                   }}
                 >
-                  At least one guardian is required.
+                  At least one parent is required.
                 </span>
 
                 <div className="form-row">
                   <div
                     className="form-field"
-                    style={{ flex: 1, width: "100%" }}
+                    style={{ flex: 2, width: "100%" }}
                   >
-                    <label htmlFor="add-parent-id">Parent</label>
-                    <input
-                      id="add-parent-id"
-                      type="text"
+                    <label>Parent *</label>
+                    <TypeAhead
+                      options={parentOptions}
                       value={parentId}
-                      onChange={(e) => setParentId(e.target.value)}
-                      placeholder="e.g. f8512064-4b0b-471c-bf60-5ef7c610baa0"
-                      required
-                      disabled={isSubmitting}
+                      onChange={(val) => setParentId(val)}
+                      placeholder={
+                        parentsLoading
+                          ? "Loading parents..."
+                          : "Select a parent..."
+                      }
+                      disabled={isSubmitting || parentsLoading}
+                      loading={parentsLoading}
+                      emptyMessage="No parents available"
+                      noMatchMessage="No parents found"
                     />
+                    {parentsError && (
+                      <span
+                        className="roles-error"
+                        style={{
+                          marginTop: "0.25rem",
+                          display: "block",
+                          color: "#d9534f",
+                        }}
+                      >
+                        {parentsError}
+                      </span>
+                    )}
                   </div>
-                </div>
 
-                <div className="form-row">
                   <div
                     className="form-field"
                     style={{ flex: 1, width: "100%" }}
                   >
-                    <label htmlFor="add-parent-relationship">
-                      Relationship *
-                    </label>
+                    <label htmlFor="student-relationship">Relationship</label>
                     <select
-                      id="add-parent-relationship"
+                      id="student-relationship"
                       value={relationship}
                       onChange={(e) => setRelationship(e.target.value)}
-                      required
                       disabled={isSubmitting}
                     >
                       <option value="father">Father</option>
                       <option value="mother">Mother</option>
                       <option value="guardian">Guardian</option>
-                      <option value="other">Other</option>
                     </select>
                   </div>
                 </div>
