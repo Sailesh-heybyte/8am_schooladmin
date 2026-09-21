@@ -12,7 +12,7 @@ const toUiSchoolRole = (data) => ({
 
 const toApiRoleCreate = (role) => ({
   name: role.name,
-  branch_id: null,
+  branch_id: role.branchId,
   permission_codenames: role.permissionCodenames,
 });
 

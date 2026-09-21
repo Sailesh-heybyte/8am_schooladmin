@@ -7,7 +7,7 @@ import {
 } from "../../api/roles.js";
 import "./RoleModal.scss";
 
-export default function RoleModal({ isOpen, role, onClose, onSaved }) {
+export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
   const isEditMode = Boolean(role && role.id);
 
   const [name, setName] = useState(role ? role.name : "");
@@ -120,6 +120,7 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
         await createRole({
           name: name.trim(),
           permissionCodenames: checkedCodenames,
+          branchId: me.branch_id,
         });
       }
 

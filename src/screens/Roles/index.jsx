@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import RoleModal from "./RoleModal.jsx";
@@ -9,6 +10,7 @@ import AccessRestricted, {
 import { getRoles } from "../../api/roles.js";
 
 export default function Roles() {
+  const { me } = useOutletContext();
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -175,6 +177,7 @@ export default function Roles() {
         <RoleModal
           isOpen={isModalOpen}
           role={roleToEdit}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={fetchRoles}
         />
