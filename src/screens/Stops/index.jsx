@@ -403,6 +403,7 @@ export default function Stops() {
           isOpen={isModalOpen}
           stop={stopToEdit}
           schoolId={me?.school_id}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadStops}
         />

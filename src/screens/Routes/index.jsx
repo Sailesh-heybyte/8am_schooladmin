@@ -313,6 +313,7 @@ export default function Routes() {
           isOpen={isModalOpen}
           route={routeToEdit}
           schoolId={me?.school_id}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadRoutes}
         />

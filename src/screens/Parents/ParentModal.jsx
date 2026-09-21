@@ -6,9 +6,11 @@ import "../Roles/RoleModal.scss";
 export default function ParentModal({
   isOpen,
   schoolId,
+  me,
   onClose,
   onSaved,
 }) {
+  const isPinned = Boolean(me.branch_id);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [branchId, setBranchId] = useState("");
@@ -24,17 +26,18 @@ export default function ParentModal({
 
     setFullName("");
     setPhone("");
-    setBranchId("");
+    setBranchId(isPinned ? me.branch_id : "");
     setError("");
     setIsSubmitting(false);
-  }, [isOpen]);
+  }, [isOpen, isPinned, me.branch_id]);
 
   // Load branches inside the modal only
   useEffect(() => {
     if (!isOpen) return;
+    if (isPinned) return;
 
     loadBranches();
-  }, [isOpen, loadBranches]);
+  }, [isOpen, isPinned, loadBranches]);
 
   if (!isOpen) return null;
 
@@ -53,7 +56,7 @@ export default function ParentModal({
       return;
     }
 
-    if (!branchId) {
+    if (!isPinned && !branchId) {
       setError("Please select a branch.");
       return;
     }
@@ -64,7 +67,7 @@ export default function ParentModal({
       await createParent({
         fullName: fullName.trim(),
         phone: `+91-${cleanedPhone}`,
-        branchId,
+        branchId: isPinned ? me.branch_id : branchId,
       });
 
       if (onSaved) {
@@ -80,8 +83,8 @@ export default function ParentModal({
 
   const isSaveDisabled =
     isSubmitting ||
-    branchesLoading ||
-    Boolean(branchesError);
+    (!isPinned && branchesLoading) ||
+    (!isPinned && Boolean(branchesError));
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -141,49 +144,51 @@ export default function ParentModal({
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  <label htmlFor="parent-branch">Branch *</label>
-                  <select
-                    id="parent-branch"
-                    value={branchId}
-                    onChange={(e) => setBranchId(e.target.value)}
-                    required
-                    disabled={
-                      isSubmitting ||
-                      branchesLoading ||
-                      Boolean(branchesError)
-                    }
-                  >
-                    {branchesLoading ? (
-                      <option value="" disabled>
-                        Loading branches...
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">Select a branch...</option>
-                        {branches.map((b) => (
-                          <option key={b.id} value={b.id}>
-                            {b.branchName}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
-                  {branchesError && (
-                    <span
-                      className="roles-error"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#d9534f",
-                      }}
+              {!isPinned && (
+                <div className="form-row">
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="parent-branch">Branch *</label>
+                    <select
+                      id="parent-branch"
+                      value={branchId}
+                      onChange={(e) => setBranchId(e.target.value)}
+                      required
+                      disabled={
+                        isSubmitting ||
+                        branchesLoading ||
+                        Boolean(branchesError)
+                      }
                     >
-                      {branchesError}
-                    </span>
-                  )}
+                      {branchesLoading ? (
+                        <option value="" disabled>
+                          Loading branches...
+                        </option>
+                      ) : (
+                        <>
+                          <option value="">Select a branch...</option>
+                          {branches.map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                    {branchesError && (
+                      <span
+                        className="roles-error"
+                        style={{
+                          marginTop: "0.25rem",
+                          display: "block",
+                          color: "#d9534f",
+                        }}
+                      >
+                        {branchesError}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

@@ -210,6 +210,7 @@ export default function Drivers() {
           isOpen={isModalOpen}
           driver={driverToEdit}
           schoolId={me?.school_id}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadDrivers}
         />

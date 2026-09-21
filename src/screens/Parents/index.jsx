@@ -269,6 +269,7 @@ export default function Parents() {
         <ParentModal
           isOpen={isModalOpen}
           schoolId={me?.school_id}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadParents}
         />

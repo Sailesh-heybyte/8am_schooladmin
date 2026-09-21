@@ -36,9 +36,11 @@ const INITIAL_FORM_DATA = {
 export default function BranchUserModal({
   isOpen,
   schoolId,
+  me,
   onClose,
   onSaved,
 }) {
+  const isPinned = Boolean(me.branch_id);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -53,11 +55,16 @@ export default function BranchUserModal({
   useEffect(() => {
     if (!isOpen) return;
 
-    setFormData(INITIAL_FORM_DATA);
+    setFormData({
+      ...INITIAL_FORM_DATA,
+      branchId: isPinned ? me.branch_id : "",
+    });
     setError("");
     setIsSubmitting(false);
 
-    loadBranches();
+    if (!isPinned) {
+      loadBranches();
+    }
 
     let isMounted = true;
     setLoading(true);
@@ -81,7 +88,7 @@ export default function BranchUserModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen, loadBranches]);
+  }, [isOpen, isPinned, me.branch_id, loadBranches]);
 
   if (!isOpen) return null;
 
@@ -115,7 +122,13 @@ export default function BranchUserModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loading || branchesLoading || Boolean(loadError) || Boolean(branchesError)) return;
+    if (
+      loading ||
+      (!isPinned && branchesLoading) ||
+      Boolean(loadError) ||
+      (!isPinned && Boolean(branchesError))
+    )
+      return;
     setError("");
 
     if (!formData.fullName.trim()) {
@@ -130,7 +143,7 @@ export default function BranchUserModal({
       setError("Phone number must be exactly 10 digits.");
       return;
     }
-    if (!formData.branchId) {
+    if (!isPinned && !formData.branchId) {
       setError("Please select a branch.");
       return;
     }
@@ -154,7 +167,7 @@ export default function BranchUserModal({
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
         phoneNumber: `+91${formData.phoneNumber.trim()}`,
-        branchId: formData.branchId,
+        branchId: isPinned ? me.branch_id : formData.branchId,
         roleIds: formData.roleIds,
 
         dateOfBirth: formData.dateOfBirth,
@@ -202,9 +215,9 @@ export default function BranchUserModal({
   const isSaveDisabled =
     isSubmitting ||
     loading ||
-    branchesLoading ||
+    (!isPinned && branchesLoading) ||
     Boolean(loadError) ||
-    Boolean(branchesError);
+    (!isPinned && Boolean(branchesError));
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -273,35 +286,53 @@ export default function BranchUserModal({
             {/* Section 2: Branch and Roles */}
             <div className="form-section">
               <h3 className="form-section-title">Branch and Roles</h3>
-              <div className="form-row">
-                <div className="form-field">
-                  <label htmlFor="user-branch">Branch *</label>
-                  <select
-                    id="user-branch"
-                    value={formData.branchId}
-                    onChange={(e) => handleChange("branchId", e.target.value)}
-                    required
-                    disabled={isSubmitting || branchesLoading || Boolean(branchesError)}
-                  >
-                    {branchesLoading ? (
-                      <option value="" disabled>
-                        Loading branches...
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">Select a branch...</option>
-                        {branches.map((b) => (
-                          <option key={b.id} value={b.id}>
-                            {b.branchName}
-                          </option>
-                        ))}
-                      </>
+              {!isPinned && (
+                <div className="form-row">
+                  <div className="form-field">
+                    <label htmlFor="user-branch">Branch *</label>
+                    <select
+                      id="user-branch"
+                      value={formData.branchId}
+                      onChange={(e) => handleChange("branchId", e.target.value)}
+                      required
+                      disabled={
+                        isSubmitting ||
+                        branchesLoading ||
+                        Boolean(branchesError)
+                      }
+                    >
+                      {branchesLoading ? (
+                        <option value="" disabled>
+                          Loading branches...
+                        </option>
+                      ) : (
+                        <>
+                          <option value="">Select a branch...</option>
+                          {branches.map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                    {branchesError && (
+                      <span
+                        className="roles-error"
+                        style={{
+                          marginTop: "0.25rem",
+                          display: "block",
+                          color: "#d9534f",
+                        }}
+                      >
+                        {branchesError}
+                      </span>
                     )}
-                  </select>
+                  </div>
+                  <div className="form-field" />
+                  <div className="form-field" />
                 </div>
-                <div className="form-field" />
-                <div className="form-field" />
-              </div>
+              )}
 
               <div className="roles-selection-block">
                 <label className="roles-label">Assign Roles *</label>
@@ -637,7 +668,7 @@ export default function BranchUserModal({
             </div>
           </div>
 
-          {(loadError || branchesError) && (
+          {(loadError || (!isPinned && branchesError)) && (
             <div
               className="roles-error"
               style={{ margin: "0 1.5rem 1rem", color: "#d9534f" }}

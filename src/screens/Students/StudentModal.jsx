@@ -8,10 +8,12 @@ import "../Roles/RoleModal.scss";
 export default function StudentModal({
   isOpen,
   student = null,
+  me,
   onClose,
   onSaved,
 }) {
   const isEditMode = Boolean(student?.id);
+  const isPinned = Boolean(me.branch_id);
 
   const [fullName, setFullName] = useState("");
   const [admissionNumber, setAdmissionNumber] = useState("");
@@ -53,7 +55,7 @@ export default function StudentModal({
     } else {
       setFullName("");
       setAdmissionNumber("");
-      setBranchId("");
+      setBranchId(isPinned ? me.branch_id : "");
       setHomeLatitude("");
       setHomeLongitude("");
       setIsActive(true);
@@ -62,12 +64,14 @@ export default function StudentModal({
     }
     setError("");
     setIsSubmitting(false);
-  }, [isOpen, student]);
+  }, [isOpen, student, isPinned, me.branch_id]);
 
   useEffect(() => {
     if (!isOpen || isEditMode) return;
 
-    loadBranches();
+    if (!isPinned) {
+      loadBranches();
+    }
     setParentsLoading(true);
     setParentsError("");
 
@@ -81,7 +85,7 @@ export default function StudentModal({
       .finally(() => {
         setParentsLoading(false);
       });
-  }, [isOpen, isEditMode, loadBranches]);
+  }, [isOpen, isEditMode, isPinned, loadBranches]);
 
   if (!isOpen) return null;
 
@@ -104,7 +108,7 @@ export default function StudentModal({
       return;
     }
 
-    if (!isEditMode && !branchId) {
+    if (!isEditMode && !isPinned && !branchId) {
       setError("Please select a branch.");
       return;
     }
@@ -134,7 +138,7 @@ export default function StudentModal({
         await createStudent({
           fullName: fullName.trim(),
           admissionNumber: admissionNumber.trim(),
-          branchId,
+          branchId: isPinned ? me.branch_id : branchId,
           homeLatitude:
             homeLatitude.trim() !== "" ? Number(homeLatitude) : undefined,
           homeLongitude:
@@ -157,8 +161,8 @@ export default function StudentModal({
 
   const isSaveDisabled =
     isSubmitting ||
-    (!isEditMode && branchesLoading) ||
-    (!isEditMode && Boolean(branchesError)) ||
+    (!isEditMode && !isPinned && branchesLoading) ||
+    (!isEditMode && !isPinned && Boolean(branchesError)) ||
     (!isEditMode && parentsLoading);
 
   return (
@@ -217,68 +221,66 @@ export default function StudentModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  {isEditMode ? (
-                    <>
-                      <label htmlFor="student-branch">Branch</label>
-                      <input
-                        id="student-branch"
-                        type="text"
-                        value={student.branchName || "Not assigned"}
-                        readOnly
-                        disabled
-                      />
-                      <span
-                        className="roles-message"
-                        style={{ marginTop: "0.25rem", display: "block" }}
-                      >
-                        A student cannot be moved between branches.
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <label htmlFor="student-branch">Branch *</label>
-                      <select
-                        id="student-branch"
-                        value={branchId}
-                        onChange={(e) => setBranchId(e.target.value)}
-                        required
-                        disabled={
-                          isSubmitting ||
-                          branchesLoading ||
-                          Boolean(branchesError)
-                        }
-                      >
-                        {branchesLoading ? (
-                          <option value="" disabled>
-                            Loading branches...
-                          </option>
-                        ) : (
-                          <>
-                            <option value="">Select a branch...</option>
-                            {branches.map((b) => (
-                              <option key={b.id} value={b.id}>
-                                {b.branchName}
-                              </option>
-                            ))}
-                          </>
-                        )}
-                      </select>
-                      {branchesError && (
-                        <span
-                          className="roles-error"
-                          style={{
-                            marginTop: "0.25rem",
-                            display: "block",
-                            color: "#d9534f",
-                          }}
-                        >
-                          {branchesError}
-                        </span>
+                {isEditMode ? (
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="student-branch">Branch</label>
+                    <input
+                      id="student-branch"
+                      type="text"
+                      value={student.branchName || "Not assigned"}
+                      readOnly
+                      disabled
+                    />
+                    <span
+                      className="roles-message"
+                      style={{ marginTop: "0.25rem", display: "block" }}
+                    >
+                      A student cannot be moved between branches.
+                    </span>
+                  </div>
+                ) : !isPinned ? (
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="student-branch">Branch *</label>
+                    <select
+                      id="student-branch"
+                      value={branchId}
+                      onChange={(e) => setBranchId(e.target.value)}
+                      required
+                      disabled={
+                        isSubmitting ||
+                        branchesLoading ||
+                        Boolean(branchesError)
+                      }
+                    >
+                      {branchesLoading ? (
+                        <option value="" disabled>
+                          Loading branches...
+                        </option>
+                      ) : (
+                        <>
+                          <option value="">Select a branch...</option>
+                          {branches.map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </>
                       )}
-                    </>
-                  )}
-                </div>
+                    </select>
+                    {branchesError && (
+                      <span
+                        className="roles-error"
+                        style={{
+                          marginTop: "0.25rem",
+                          display: "block",
+                          color: "#d9534f",
+                        }}
+                      >
+                        {branchesError}
+                      </span>
+                    )}
+                  </div>
+                ) : null}
               </div>
 
               <div className="form-row">

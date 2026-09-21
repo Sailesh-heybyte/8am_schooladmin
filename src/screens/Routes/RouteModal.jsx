@@ -7,10 +7,12 @@ export default function RouteModal({
   isOpen,
   route = null,
   schoolId,
+  me,
   onClose,
   onSaved,
 }) {
   const isEditMode = Boolean(route?.id);
+  const isPinned = Boolean(me.branch_id);
 
   const [routeName, setRouteName] = useState("");
   const [branchId, setBranchId] = useState("");
@@ -29,20 +31,21 @@ export default function RouteModal({
       setIsActive(Boolean(route.isActive));
     } else {
       setRouteName("");
-      setBranchId("");
+      setBranchId(isPinned ? me.branch_id : "");
       setIsActive(true);
     }
     setError("");
     setIsSubmitting(false);
-  }, [isOpen, route]);
+  }, [isOpen, route, isPinned, me.branch_id]);
 
   // Load branches only in create mode
   useEffect(() => {
     if (!isOpen) return;
     if (route) return; // Skip fetch entirely in edit mode
+    if (isPinned) return;
 
     loadBranches();
-  }, [isOpen, route, loadBranches]);
+  }, [isOpen, route, isPinned, loadBranches]);
 
   if (!isOpen) return null;
 
@@ -55,7 +58,7 @@ export default function RouteModal({
       return;
     }
 
-    if (!isEditMode && !branchId) {
+    if (!isEditMode && !isPinned && !branchId) {
       setError("Please select a branch.");
       return;
     }
@@ -71,7 +74,7 @@ export default function RouteModal({
       } else {
         await createRoute({
           routeName: routeName.trim(),
-          branchId,
+          branchId: isPinned ? me.branch_id : branchId,
         });
       }
 
@@ -88,8 +91,8 @@ export default function RouteModal({
 
   const isSaveDisabled =
     isSubmitting ||
-    (!isEditMode && branchesLoading) ||
-    (!isEditMode && Boolean(branchesError));
+    (!isEditMode && !isPinned && branchesLoading) ||
+    (!isEditMode && !isPinned && Boolean(branchesError));
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -134,68 +137,66 @@ export default function RouteModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  {isEditMode ? (
-                    <>
-                      <label htmlFor="route-branch">Branch</label>
-                      <input
-                        id="route-branch"
-                        type="text"
-                        value={route.branchName || "Not assigned"}
-                        readOnly
-                        disabled
-                      />
-                      <span
-                        className="roles-message"
-                        style={{ marginTop: "0.25rem", display: "block" }}
-                      >
-                        A route's branch cannot be modified after creation.
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <label htmlFor="route-branch">Branch *</label>
-                      <select
-                        id="route-branch"
-                        value={branchId}
-                        onChange={(e) => setBranchId(e.target.value)}
-                        required
-                        disabled={
-                          isSubmitting ||
-                          branchesLoading ||
-                          Boolean(branchesError)
-                        }
-                      >
-                        {branchesLoading ? (
-                          <option value="" disabled>
-                            Loading branches...
-                          </option>
-                        ) : (
-                          <>
-                            <option value="">Select a branch...</option>
-                            {branches.map((b) => (
-                              <option key={b.id} value={b.id}>
-                                {b.branchName}
-                              </option>
-                            ))}
-                          </>
-                        )}
-                      </select>
-                      {branchesError && (
-                        <span
-                          className="roles-error"
-                          style={{
-                            marginTop: "0.25rem",
-                            display: "block",
-                            color: "#d9534f",
-                          }}
-                        >
-                          {branchesError}
-                        </span>
+                {isEditMode ? (
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="route-branch">Branch</label>
+                    <input
+                      id="route-branch"
+                      type="text"
+                      value={route.branchName || "Not assigned"}
+                      readOnly
+                      disabled
+                    />
+                    <span
+                      className="roles-message"
+                      style={{ marginTop: "0.25rem", display: "block" }}
+                    >
+                      A route's branch cannot be modified after creation.
+                    </span>
+                  </div>
+                ) : !isPinned ? (
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="route-branch">Branch *</label>
+                    <select
+                      id="route-branch"
+                      value={branchId}
+                      onChange={(e) => setBranchId(e.target.value)}
+                      required
+                      disabled={
+                        isSubmitting ||
+                        branchesLoading ||
+                        Boolean(branchesError)
+                      }
+                    >
+                      {branchesLoading ? (
+                        <option value="" disabled>
+                          Loading branches...
+                        </option>
+                      ) : (
+                        <>
+                          <option value="">Select a branch...</option>
+                          {branches.map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </>
                       )}
-                    </>
-                  )}
-                </div>
+                    </select>
+                    {branchesError && (
+                      <span
+                        className="roles-error"
+                        style={{
+                          marginTop: "0.25rem",
+                          display: "block",
+                          color: "#d9534f",
+                        }}
+                      >
+                        {branchesError}
+                      </span>
+                    )}
+                  </div>
+                ) : null}
               </div>
 
               {isEditMode && (

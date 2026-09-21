@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
@@ -29,6 +30,7 @@ function renderParentsCell(parents = []) {
 }
 
 export default function Students() {
+  const { me } = useOutletContext() || {};
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -350,6 +352,7 @@ export default function Students() {
         <StudentModal
           isOpen={isModalOpen}
           student={studentToEdit}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadStudents}
         />
