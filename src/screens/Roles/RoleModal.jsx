@@ -1,55 +1,79 @@
 import { useState, useEffect } from "react";
 import {
   getPermissions,
+  getSchoolRole,
   createRole,
-  assignPermissions,
+  updateSchoolRolePermissions,
 } from "../../api/roles.js";
 import "./RoleModal.scss";
 
 export default function RoleModal({ isOpen, role, onClose, onSaved }) {
-  const isEditMode = Boolean(role?.id);
+  const isEditMode = Boolean(role && role.id);
 
-  const [name, setName] = useState(role?.name || "");
+  const [name, setName] = useState(role ? role.name : "");
   const [permissionsList, setPermissionsList] = useState([]);
   const [checkedCodenames, setCheckedCodenames] = useState([]);
-  const [isLoadingPermissions, setIsLoadingPermissions] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRoleLoaded, setIsRoleLoaded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [confirmZeroWarning, setConfirmZeroWarning] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
-    setIsLoadingPermissions(true);
+    if (!isOpen) return;
 
-    getPermissions()
-      .then((data) => {
-        if (!isMounted) return;
-        setPermissionsList(data);
-      })
-      .catch((err) => {
-        if (!isMounted) return;
-        setError(err.message || "Failed to load permissions list.");
-      })
-      .finally(() => {
-        if (isMounted) setIsLoadingPermissions(false);
-      });
+    let isMounted = true;
+    setIsLoading(true);
+    setError("");
+    setConfirmZeroWarning(false);
+
+    if (isEditMode) {
+      setName(role.name);
+      setCheckedCodenames([]);
+      setIsRoleLoaded(false);
+
+      Promise.all([getPermissions(), getSchoolRole(role.id)])
+        .then(([perms, roleDetail]) => {
+          if (!isMounted) return;
+          setPermissionsList(perms);
+          setName(roleDetail.name);
+          setCheckedCodenames(roleDetail.permissionCodenames);
+          setIsRoleLoaded(true);
+        })
+        .catch((err) => {
+          if (!isMounted) return;
+          setError(err.message || "Failed to load role details.");
+        })
+        .finally(() => {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        });
+    } else {
+      setName("");
+      setCheckedCodenames([]);
+      setIsRoleLoaded(true);
+
+      getPermissions()
+        .then((perms) => {
+          if (!isMounted) return;
+          setPermissionsList(perms);
+        })
+        .catch((err) => {
+          if (!isMounted) return;
+          setError(err.message || "Failed to load permissions list.");
+        })
+        .finally(() => {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+        });
+    }
 
     return () => {
       isMounted = false;
     };
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    if (role) {
-      setName(role.name || "");
-      setCheckedCodenames((role.permissions || []).map((p) => p.codename));
-    } else {
-      setName("");
-      setCheckedCodenames([]);
-    }
-  }, [isOpen, role]);
+  }, [isOpen, isEditMode, role]);
 
   if (!isOpen) return null;
 
@@ -91,11 +115,11 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
 
     try {
       if (isEditMode) {
-        await assignPermissions(role.id, checkedCodenames);
+        await updateSchoolRolePermissions(role.id, checkedCodenames);
       } else {
         await createRole({
           name: name.trim(),
-          permissions: checkedCodenames,
+          permissionCodenames: checkedCodenames,
         });
       }
 
@@ -108,6 +132,12 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
       setIsSubmitting(false);
     }
   };
+
+  const isSaveDisabled =
+    isSubmitting ||
+    isLoading ||
+    (isEditMode && !isRoleLoaded) ||
+    Boolean(error);
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -167,7 +197,7 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
                     type="button"
                     className="select-all-btn"
                     onClick={handleToggleSelectAll}
-                    disabled={isLoadingPermissions || isSubmitting}
+                    disabled={isSaveDisabled}
                   >
                     {allSelected ? "Deselect All" : "Select All"}
                   </button>
@@ -175,11 +205,11 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
                 </div>
               </div>
 
-              {isLoadingPermissions ? (
+              {isLoading ? (
                 <p className="roles-message" style={{ margin: "1rem 0" }}>
                   Loading permissions...
                 </p>
-              ) : (
+              ) : (!isEditMode || isRoleLoaded) && !error ? (
                 <div className="permission-list">
                   {permissionsList.map((permission) => (
                     <label
@@ -196,7 +226,7 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
                     </label>
                   ))}
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -222,7 +252,7 @@ export default function RoleModal({ isOpen, role, onClose, onSaved }) {
             <button
               type="submit"
               className="modal-save"
-              disabled={isSubmitting || isLoadingPermissions}
+              disabled={isSaveDisabled}
             >
               {isSubmitting
                 ? "Saving..."
