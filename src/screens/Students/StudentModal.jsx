@@ -398,6 +398,7 @@ export default function StudentModal({
                       onChange={(e) => setRelationship(e.target.value)}
                       disabled={isSubmitting}
                     >
+                      <option value="">Not specified</option>
                       <option value="father">Father</option>
                       <option value="mother">Mother</option>
                       <option value="guardian">Guardian</option>
