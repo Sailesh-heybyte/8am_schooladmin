@@ -5,6 +5,7 @@ const toUiStop = (stop) => ({
   id: stop.id,
   schoolId: stop.school_id,
   branchId: stop.branch_id,
+  branchName: stop.branch_name,
   stopName: stop.name,
   latitude:
     stop.latitude !== null && stop.latitude !== undefined
@@ -15,6 +16,7 @@ const toUiStop = (stop) => ({
       ? Number(stop.longitude)
       : null,
   routeId: stop.route_id,
+  routeName: stop.route_name,
   sequence: stop.sequence,
   isActive: Boolean(stop.is_active),
   createdAt: formatDate(stop.created_at),

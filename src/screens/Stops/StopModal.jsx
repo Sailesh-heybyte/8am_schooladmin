@@ -252,7 +252,7 @@ export default function StopModal({
                       <input
                         id="stop-branch"
                         type="text"
-                        value={stop.branchId || "Not assigned"}
+                        value={stop.branchName || "Not assigned"}
                         readOnly
                         disabled
                       />
@@ -320,7 +320,7 @@ export default function StopModal({
                     <input
                       id="stop-route"
                       type="text"
-                      value={`${stop.routeId}${
+                      value={`${stop.routeName}${
                         stop.sequence !== null && stop.sequence !== undefined
                           ? ` · stop ${stop.sequence}`
                           : ""

@@ -69,8 +69,8 @@ function StopDetailsModal({ isOpen, stop, onClose }) {
               <div className="profile-field">
                 <span className="field-label">Route</span>
                 <span className="field-value">
-                  {stop.routeId ? (
-                    <code>{stop.routeId}</code>
+                  {stop.routeName ? (
+                    stop.routeName
                   ) : (
                     <span className="muted-cell">Not on a route</span>
                   )}
@@ -91,8 +91,8 @@ function StopDetailsModal({ isOpen, stop, onClose }) {
               <div className="profile-field">
                 <span className="field-label">Branch</span>
                 <span className="field-value">
-                  {stop.branchId ? (
-                    <code>{stop.branchId}</code>
+                  {stop.branchName ? (
+                    stop.branchName
                   ) : (
                     <span className="muted-cell">Not assigned</span>
                   )}
@@ -332,15 +332,15 @@ export default function Stops() {
                 -
               </span>
             ),
-            stop.routeId ? (
-              <code key={`route-${stop.id}`}>{stop.routeId}</code>
+            stop.routeName ? (
+              stop.routeName
             ) : (
               <span key={`route-${stop.id}`} className="muted-cell">
                 Not on a route
               </span>
             ),
-            stop.branchId ? (
-              <code key={`branch-${stop.id}`}>{stop.branchId}</code>
+            stop.branchName ? (
+              stop.branchName
             ) : (
               <span key={`branch-${stop.id}`} className="muted-cell">
                 Not assigned
