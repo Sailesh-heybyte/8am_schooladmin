@@ -17,6 +17,7 @@ const toUiStudent = (student) => ({
   id: student.id,
   schoolId: student.school_id,
   branchId: student.branch_id ?? null,
+  branchName: student.branch_name,
   fullName: student.full_name,
   admissionNumber: student.admission_number,
   homeLatitude: student.home_latitude ?? null,

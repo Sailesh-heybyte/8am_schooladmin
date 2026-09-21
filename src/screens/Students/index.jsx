@@ -225,9 +225,8 @@ export default function Students() {
                 -
               </span>
             ),
-            // Raw branch_id shown until backend returns branch_name directly
-            student.branchId ? (
-              <code key={`branch-${student.id}`}>{student.branchId}</code>
+            student.branchName ? (
+              student.branchName
             ) : (
               <span key={`branch-${student.id}`} className="muted-cell">
                 Not assigned

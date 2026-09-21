@@ -224,7 +224,7 @@ export default function StudentModal({
                       <input
                         id="student-branch"
                         type="text"
-                        value={student.branchId || "Not assigned"}
+                        value={student.branchName || "Not assigned"}
                         readOnly
                         disabled
                       />

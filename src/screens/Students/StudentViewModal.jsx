@@ -77,8 +77,8 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
               <div className="profile-field">
                 <span className="field-label">Branch</span>
                 <span className="field-value">
-                  {student.branchId ? (
-                    <code>{student.branchId}</code>
+                  {student.branchName ? (
+                    student.branchName
                   ) : (
                     <span className="muted-cell">—</span>
                   )}
