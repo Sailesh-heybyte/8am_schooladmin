@@ -181,25 +181,18 @@ export default function BranchUsers() {
                 -
               </span>
             ),
-            user.branchId ? (
-              <code key={`branch-${user.id}`}>{user.branchId}</code>
+            user.branchName ? (
+              user.branchName
             ) : (
               <span key={`branch-${user.id}`} className="muted-cell">
-                Not assigned
+                School-Admin
               </span>
             ),
-            user.roleIds && user.roleIds.length > 0 ? (
-              <span key={`roles-${user.id}`}>
-                {user.roleIds.map((roleId, idx) => (
-                  <span key={roleId || idx}>
-                    {idx > 0 ? ", " : null}
-                    <code>{roleId}</code>
-                  </span>
-                ))}
-              </span>
+            user.roleNames.length > 0 ? (
+              user.roleNames.join(", ")
             ) : (
               <span key={`roles-${user.id}`} className="muted-cell">
-                -
+                —
               </span>
             ),
           ])}
