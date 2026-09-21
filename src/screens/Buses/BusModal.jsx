@@ -190,7 +190,7 @@ export default function BusModal({
                       <input
                         id="bus-branch"
                         type="text"
-                        value={bus.branchId || "Not assigned"}
+                        value={bus.branchName || "Not assigned"}
                         readOnly
                         disabled
                       />

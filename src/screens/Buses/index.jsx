@@ -198,9 +198,8 @@ export default function Buses() {
                 No driver
               </span>
             ),
-            // Raw branch_id shown until backend returns branch_name directly
-            bus.branchId ? (
-              <code key={`branch-${bus.id}`}>{bus.branchId}</code>
+            bus.branchName ? (
+              bus.branchName
             ) : (
               <span key={`branch-${bus.id}`} className="muted-cell">
                 Not assigned

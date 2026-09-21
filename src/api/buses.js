@@ -5,6 +5,7 @@ const toUiBus = (bus) => ({
   id: bus.id,
   schoolId: bus.school_id,
   branchId: bus.branch_id ?? null,
+  branchName: bus.branch_name,
   busName: bus.name,
   registrationNumber: bus.registration_number,
   capacity: Number(bus.capacity),
