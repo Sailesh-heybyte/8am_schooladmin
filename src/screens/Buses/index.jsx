@@ -252,6 +252,7 @@ export default function Buses() {
           isOpen={isModalOpen}
           bus={busToEdit}
           schoolId={me?.school_id}
+          me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadBuses}
         />

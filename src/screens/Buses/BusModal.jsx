@@ -7,10 +7,12 @@ export default function BusModal({
   isOpen,
   bus = null,
   schoolId,
+  me,
   onClose,
   onSaved,
 }) {
   const isEditMode = Boolean(bus?.id);
+  const isPinned = Boolean(me.branch_id);
 
   const [busName, setBusName] = useState("");
   const [registrationNumber, setRegistrationNumber] = useState("");
@@ -38,19 +40,20 @@ export default function BusModal({
       setBusName("");
       setRegistrationNumber("");
       setCapacity("");
-      setBranchId("");
+      setBranchId(isPinned ? me.branch_id : "");
     }
     setError("");
     setIsSubmitting(false);
-  }, [isOpen, bus]);
+  }, [isOpen, bus, isPinned, me.branch_id]);
 
   // Load branches inside the modal for create mode
   useEffect(() => {
     if (!isOpen) return;
     if (bus) return; // Edit mode does not need branches
+    if (isPinned) return;
 
     loadBranches();
-  }, [isOpen, bus, loadBranches]);
+  }, [isOpen, bus, isPinned, loadBranches]);
 
   if (!isOpen) return null;
 
@@ -71,7 +74,7 @@ export default function BusModal({
       setError("Capacity must be at least 1.");
       return;
     }
-    if (!isEditMode && !branchId) {
+    if (!isEditMode && !isPinned && !branchId) {
       setError("Please select a branch.");
       return;
     }
@@ -90,7 +93,7 @@ export default function BusModal({
           busName: busName.trim(),
           registrationNumber: registrationNumber.trim(),
           capacity: numCap,
-          branchId,
+          branchId: isPinned ? me.branch_id : branchId,
         });
       }
 
@@ -107,8 +110,8 @@ export default function BusModal({
 
   const isSaveDisabled =
     isSubmitting ||
-    (!isEditMode && branchesLoading) ||
-    (!isEditMode && Boolean(branchesError));
+    (!isEditMode && !isPinned && branchesLoading) ||
+    (!isEditMode && !isPinned && Boolean(branchesError));
 
   return (
     <div className="add-user-overlay" onMouseDown={onClose}>
@@ -183,68 +186,66 @@ export default function BusModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
-                  {isEditMode ? (
-                    <>
-                      <label htmlFor="bus-branch">Branch</label>
-                      <input
-                        id="bus-branch"
-                        type="text"
-                        value={bus.branchName || "Not assigned"}
-                        readOnly
-                        disabled
-                      />
-                      <span
-                        className="roles-message"
-                        style={{ marginTop: "0.25rem", display: "block" }}
-                      >
-                        A bus cannot be moved between branches.
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <label htmlFor="bus-branch">Branch *</label>
-                      <select
-                        id="bus-branch"
-                        value={branchId}
-                        onChange={(e) => setBranchId(e.target.value)}
-                        required
-                        disabled={
-                          isSubmitting ||
-                          branchesLoading ||
-                          Boolean(branchesError)
-                        }
-                      >
-                        {branchesLoading ? (
-                          <option value="" disabled>
-                            Loading branches...
-                          </option>
-                        ) : (
-                          <>
-                            <option value="">Select a branch...</option>
-                            {branches.map((b) => (
-                              <option key={b.id} value={b.id}>
-                                {b.branchName}
-                              </option>
-                            ))}
-                          </>
-                        )}
-                      </select>
-                      {branchesError && (
-                        <span
-                          className="roles-error"
-                          style={{
-                            marginTop: "0.25rem",
-                            display: "block",
-                            color: "#d9534f",
-                          }}
-                        >
-                          {branchesError}
-                        </span>
+                {isEditMode ? (
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="bus-branch">Branch</label>
+                    <input
+                      id="bus-branch"
+                      type="text"
+                      value={bus.branchName || "Not assigned"}
+                      readOnly
+                      disabled
+                    />
+                    <span
+                      className="roles-message"
+                      style={{ marginTop: "0.25rem", display: "block" }}
+                    >
+                      A bus cannot be moved between branches.
+                    </span>
+                  </div>
+                ) : !isPinned ? (
+                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                    <label htmlFor="bus-branch">Branch *</label>
+                    <select
+                      id="bus-branch"
+                      value={branchId}
+                      onChange={(e) => setBranchId(e.target.value)}
+                      required
+                      disabled={
+                        isSubmitting ||
+                        branchesLoading ||
+                        Boolean(branchesError)
+                      }
+                    >
+                      {branchesLoading ? (
+                        <option value="" disabled>
+                          Loading branches...
+                        </option>
+                      ) : (
+                        <>
+                          <option value="">Select a branch...</option>
+                          {branches.map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </>
                       )}
-                    </>
-                  )}
-                </div>
+                    </select>
+                    {branchesError && (
+                      <span
+                        className="roles-error"
+                        style={{
+                          marginTop: "0.25rem",
+                          display: "block",
+                          color: "#d9534f",
+                        }}
+                      >
+                        {branchesError}
+                      </span>
+                    )}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
