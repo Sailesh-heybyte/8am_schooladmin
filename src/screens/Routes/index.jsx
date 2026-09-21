@@ -210,7 +210,7 @@ export default function Routes() {
         </div>
       ) : (
         <DataTable
-          headers={["Route Name", "Registration", "Branch", "Status", "Actions"]}
+          headers={["Route Name", "Bus Number", "Branch", "Status", "Actions"]}
           className="users-table-card"
           rows={filteredRoutes.map((route) => [
             <strong key={`name-${route.id}`}>{route.routeName}</strong>,
