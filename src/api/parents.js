@@ -6,6 +6,7 @@ const toUiParent = (parent) => ({
   userId: parent.user_id,
   schoolId: parent.school_id,
   branchId: parent.branch_id,
+  branchName: parent.branch_name,
   fullName: parent.full_name,
   phone: parent.phone,
   isActive: Boolean(parent.is_active),

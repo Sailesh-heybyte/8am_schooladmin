@@ -187,9 +187,8 @@ export default function Parents() {
                 -
               </span>
             ),
-            // Raw branch_id shown until backend returns branch_name directly
-            parent.branchId ? (
-              <code key={`branch-${parent.id}`}>{parent.branchId}</code>
+            parent.branchName ? (
+              parent.branchName
             ) : (
               <span key={`branch-${parent.id}`} className="muted-cell">
                 Not assigned
