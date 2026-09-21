@@ -223,7 +223,7 @@ export default function DriverModal({
                       <input
                         id="driver-branch"
                         type="text"
-                        value={driver.branchId || "Not assigned"}
+                        value={driver.branchName || "Not assigned"}
                         readOnly
                         disabled
                       />

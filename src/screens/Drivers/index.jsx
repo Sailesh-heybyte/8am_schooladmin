@@ -178,9 +178,8 @@ export default function Drivers() {
                 -
               </span>
             ),
-            // Raw branch_id shown until backend returns branch_name directly
-            driver.branchId ? (
-              <code key={`branch-${driver.id}`}>{driver.branchId}</code>
+            driver.branchName ? (
+              driver.branchName
             ) : (
               <span key={`branch-${driver.id}`} className="muted-cell">
                 Not assigned

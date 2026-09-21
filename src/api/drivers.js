@@ -6,6 +6,7 @@ const toUiDriver = (driver) => ({
   userId: driver.user_id,
   schoolId: driver.school_id,
   branchId: driver.branch_id ?? null,
+  branchName: driver.branch_name,
   fullName: driver.full_name,
   phone: driver.phone,
   licenseNumber: driver.license_number,
