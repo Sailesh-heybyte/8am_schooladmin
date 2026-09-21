@@ -68,7 +68,17 @@ export default function Trips() {
       if (query) {
         const busMatch = (trip.busId || "").toLowerCase().includes(query);
         const routeMatch = (trip.routeId || "").toLowerCase().includes(query);
-        if (!busMatch && !routeMatch) return false;
+        const routeNameMatch = (trip.routeName || "").toLowerCase().includes(query);
+        const regMatch = (trip.registrationNumber || "").toLowerCase().includes(query);
+        const driverMatch = (trip.driverName || "").toLowerCase().includes(query);
+        if (
+          !busMatch &&
+          !routeMatch &&
+          !routeNameMatch &&
+          !regMatch &&
+          !driverMatch
+        )
+          return false;
       }
 
       if (direction && trip.direction !== direction) {
@@ -228,7 +238,7 @@ export default function Trips() {
           headers={[
             "Date",
             "Direction",
-            "Bus",
+            "Bus Number",
             "Route",
             "Started",
             "Status",
@@ -241,8 +251,8 @@ export default function Trips() {
               key={`direction-${trip.id}`}
               direction={trip.direction}
             />,
-            <code key={`bus-${trip.id}`}>{trip.busId}</code>,
-            <code key={`route-${trip.id}`}>{trip.routeId}</code>,
+            <span key={`bus-${trip.id}`}>{trip.registrationNumber}</span>,
+            <span key={`route-${trip.id}`}>{trip.routeName}</span>,
             <span key={`started-${trip.id}`}>
               {formatTime(trip.startedAt)}
             </span>,
