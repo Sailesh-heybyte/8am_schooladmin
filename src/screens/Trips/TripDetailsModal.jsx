@@ -110,23 +110,30 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
           <h3 className="profile-section-title">Assignment</h3>
           <div className="profile-account-grid">
             <div className="profile-field">
-              <span className="field-label">Bus ID</span>
+              <span className="field-label">Bus Number</span>
               <span className="field-value">
-                <code>{trip.busId}</code>
+                {trip.registrationNumber}
               </span>
             </div>
 
             <div className="profile-field">
-              <span className="field-label">Route ID</span>
+              <span className="field-label">Route</span>
               <span className="field-value">
-                <code>{trip.routeId}</code>
+                {trip.routeName}
               </span>
             </div>
 
             <div className="profile-field">
-              <span className="field-label">Branch ID</span>
+              <span className="field-label">Driver</span>
               <span className="field-value">
-                <code>{trip.branchId}</code>
+                {trip.driverName}
+              </span>
+            </div>
+
+            <div className="profile-field">
+              <span className="field-label">Branch</span>
+              <span className="field-value">
+                {trip.branchName}
               </span>
             </div>
           </div>
