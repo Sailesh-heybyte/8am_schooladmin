@@ -141,7 +141,7 @@ export default function RouteModal({
                       <input
                         id="route-branch"
                         type="text"
-                        value={route.branchId || "Not assigned"}
+                        value={route.branchName || "Not assigned"}
                         readOnly
                         disabled
                       />

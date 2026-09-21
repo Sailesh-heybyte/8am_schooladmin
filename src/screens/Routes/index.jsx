@@ -210,19 +210,19 @@ export default function Routes() {
         </div>
       ) : (
         <DataTable
-          headers={["Route Name", "Bus", "Branch", "Status", "Actions"]}
+          headers={["Route Name", "Registration", "Branch", "Status", "Actions"]}
           className="users-table-card"
           rows={filteredRoutes.map((route) => [
             <strong key={`name-${route.id}`}>{route.routeName}</strong>,
-            route.busId ? (
-              <code key={`bus-${route.id}`}>{route.busId}</code>
+            route.registrationNumber ? (
+              route.registrationNumber
             ) : (
               <span key={`bus-${route.id}`} className="muted-cell">
                 No bus
               </span>
             ),
-            route.branchId ? (
-              <code key={`branch-${route.id}`}>{route.branchId}</code>
+            route.branchName ? (
+              route.branchName
             ) : (
               <span key={`branch-${route.id}`} className="muted-cell">
                 Not assigned
