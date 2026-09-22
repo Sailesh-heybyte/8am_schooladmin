@@ -6,7 +6,6 @@ import "../Roles/RoleModal.scss";
 export default function BusModal({
   isOpen,
   bus = null,
-  schoolId,
   me,
   onClose,
   onSaved,

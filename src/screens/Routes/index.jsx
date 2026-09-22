@@ -13,7 +13,7 @@ import AccessRestricted, {
 import { getRoutes, unassignBus } from "../../api/routes.js";
 
 export default function Routes() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
 
   const [routes, setRoutes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -312,7 +312,6 @@ export default function Routes() {
         <RouteModal
           isOpen={isModalOpen}
           route={routeToEdit}
-          schoolId={me?.school_id}
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadRoutes}

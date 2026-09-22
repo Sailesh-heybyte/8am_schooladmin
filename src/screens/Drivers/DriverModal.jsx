@@ -6,7 +6,6 @@ import "../Roles/RoleModal.scss";
 export default function DriverModal({
   isOpen,
   driver = null,
-  schoolId,
   me,
   onClose,
   onSaved,

@@ -132,7 +132,7 @@ function StopDetailsModal({ isOpen, stop, onClose }) {
 }
 
 export default function Stops() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
 
   const [stops, setStops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -402,7 +402,6 @@ export default function Stops() {
         <StopModal
           isOpen={isModalOpen}
           stop={stopToEdit}
-          schoolId={me?.school_id}
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadStops}

@@ -35,7 +35,6 @@ const INITIAL_FORM_DATA = {
 
 export default function BranchUserModal({
   isOpen,
-  schoolId,
   me,
   onClose,
   onSaved,

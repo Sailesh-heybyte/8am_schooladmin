@@ -12,7 +12,7 @@ import AccessRestricted, {
 import { getParents, setParentActive } from "../../api/parents.js";
 
 export default function Parents() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
 
   const [parents, setParents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -268,7 +268,6 @@ export default function Parents() {
       {isModalOpen && (
         <ParentModal
           isOpen={isModalOpen}
-          schoolId={me?.school_id}
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadParents}

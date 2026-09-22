@@ -5,7 +5,6 @@ import "../Roles/RoleModal.scss";
 
 export default function ParentModal({
   isOpen,
-  schoolId,
   me,
   onClose,
   onSaved,

@@ -12,7 +12,7 @@ import AccessRestricted, {
 import { getBuses, unassignDriver } from "../../api/buses.js";
 
 export default function Buses() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
 
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -251,7 +251,6 @@ export default function Buses() {
         <BusModal
           isOpen={isModalOpen}
           bus={busToEdit}
-          schoolId={me?.school_id}
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadBuses}

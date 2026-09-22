@@ -10,7 +10,7 @@ import AccessRestricted, {
 import { getUsers } from "../../api/users.js";
 
 export default function BranchUsers() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -204,7 +204,6 @@ export default function BranchUsers() {
       {isModalOpen && (
         <BranchUserModal
           isOpen={isModalOpen}
-          schoolId={me?.school_id}
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadUsers}

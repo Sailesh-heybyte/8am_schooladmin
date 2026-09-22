@@ -30,7 +30,7 @@ function renderParentsCell(parents = []) {
 }
 
 export default function Students() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

@@ -11,7 +11,7 @@ import AccessRestricted, {
 import { getDrivers } from "../../api/drivers.js";
 
 export default function Drivers() {
-  const { me } = useOutletContext() || {};
+  const { me } = useOutletContext();
 
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -209,7 +209,6 @@ export default function Drivers() {
         <DriverModal
           isOpen={isModalOpen}
           driver={driverToEdit}
-          schoolId={me?.school_id}
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadDrivers}

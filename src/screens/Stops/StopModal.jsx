@@ -7,7 +7,6 @@ import "../Roles/RoleModal.scss";
 export default function StopModal({
   isOpen,
   stop = null,
-  schoolId,
   me,
   onClose,
   onSaved,
@@ -15,7 +14,6 @@ export default function StopModal({
   const isEditMode = Boolean(stop?.id);
   const isPinned = Boolean(me.branch_id);
   const [stopName, setStopName] = useState("");
-  const [mapsPaste, setMapsPaste] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [branchId, setBranchId] = useState("");
@@ -44,14 +42,12 @@ export default function StopModal({
       );
       setBranchId(stop.branchId || "");
       setIsActive(Boolean(stop.isActive));
-      setMapsPaste("");
     } else {
       setStopName("");
       setLatitude("");
       setLongitude("");
       setBranchId(isPinned ? me.branch_id : "");
       setIsActive(true);
-      setMapsPaste("");
     }
     setError("");
     setIsSubmitting(false);
@@ -67,24 +63,6 @@ export default function StopModal({
   }, [isOpen, stop, isPinned, loadBranches]);
 
   if (!isOpen) return null;
-
-  const handlePasteChange = (e) => {
-    const val = e.target.value;
-    setMapsPaste(val);
-
-    // If matches two numbers separated by a comma, split and fill latitude and longitude
-    const parts = val.split(",");
-    if (parts.length === 2) {
-      const latStr = parts[0].trim();
-      const lngStr = parts[1].trim();
-
-      const numRegex = /^-?\d+(\.\d+)?$/;
-      if (numRegex.test(latStr) && numRegex.test(lngStr)) {
-        setLatitude(latStr);
-        setLongitude(lngStr);
-      }
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

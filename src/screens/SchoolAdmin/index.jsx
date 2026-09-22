@@ -100,6 +100,7 @@ function SchoolAdmin({ onLogout }) {
         navigate("/login", { replace: true });
       })
       .finally(() => setCheckingAccess(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Close the profile menu when clicking anywhere else.

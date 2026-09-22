@@ -6,7 +6,6 @@ import "../Roles/RoleModal.scss";
 export default function RouteModal({
   isOpen,
   route = null,
-  schoolId,
   me,
   onClose,
   onSaved,
