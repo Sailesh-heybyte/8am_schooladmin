@@ -228,6 +228,7 @@ function SchoolAdmin({ onLogout }) {
 
       <ProfileModal
         isOpen={isProfileModalOpen}
+        me={me}
         onClose={() => setIsProfileModalOpen(false)}
       />
     </div>
