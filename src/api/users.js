@@ -37,7 +37,7 @@ function toUiUser(apiUser = {}) {
     phoneNumber: apiUser.phone_number || "",
     branchId: apiUser.branch_id,
     branchName: apiUser.branch_name,
-    roleIds: apiUser.role_ids || [],
+    roleIds: apiUser.role_ids,
     roleNames: apiUser.roles.map((r) => r.name),
     isActive: Boolean(apiUser.is_active),
     createdAt: formatDate(apiUser.created_at),
@@ -120,7 +120,7 @@ function toApiUser(uiUser = {}) {
 // GET /api/v1/iam/users
 export const getUsers = async () => {
   const data = await apiCall("/iam/users");
-  return Array.isArray(data) ? data.map(toUiUser) : [];
+  return data.map(toUiUser);
 };
 
 // POST /api/v1/iam/users

@@ -25,7 +25,7 @@ const toUiStudent = (student) => ({
   stopId: student.stop_id ?? null,
   isActive: Boolean(student.is_active),
   createdAt: formatDate(student.created_at),
-  parents: (student.parents || []).map(toUiParent),
+  parents: student.parents.map(toUiParent),
 });
 
 const toApiStudent = (student) => {
