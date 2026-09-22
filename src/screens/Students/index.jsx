@@ -8,10 +8,9 @@ import StudentViewModal from "./StudentViewModal.jsx";
 import StudentParentsModal from "./StudentParentsModal.jsx";
 import AddParentModal from "./AddParentModal.jsx";
 import AssignStopModal from "./AssignStopModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getStudents, unassignStop } from "../../api/students.js";
 
 function renderParentsCell(parents = []) {
@@ -33,7 +32,7 @@ export default function Students() {
   const { me } = useOutletContext();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +52,7 @@ export default function Students() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getStudents()
       .then((data) => {
@@ -62,7 +61,7 @@ export default function Students() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load students.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -89,12 +88,12 @@ export default function Students() {
 
   const reloadStudents = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getStudents();
       setStudents(data);
     } catch (err) {
-      setError(err.message || "Failed to reload students.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -184,7 +183,7 @@ export default function Students() {
           className="roles-error"
           style={{ margin: "1rem 0", color: "#d9534f" }}
         >
-          {error}
+          {error.message}
         </div>
       )}
 

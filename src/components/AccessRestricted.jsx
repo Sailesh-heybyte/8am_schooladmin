@@ -1,18 +1,3 @@
-export { useDebouncedLoading } from "../hooks/useDebouncedLoading.js";
-
-export function isPermissionDenied(error) {
-  if (!error) return false;
-  const msg = (
-    typeof error === "string" ? error : error.message || ""
-  ).toLowerCase();
-  return (
-    msg.includes("permission") ||
-    msg.includes("forbidden") ||
-    msg.includes("access denied") ||
-    msg.includes("403")
-  );
-}
-
 export default function AccessRestricted({
   resource = "this section",
   title = "Access Restricted",

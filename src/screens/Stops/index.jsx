@@ -4,10 +4,9 @@ import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import StopModal from "./StopModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getStops } from "../../api/stops.js";
 import "../SchoolAdmin/popups/ProfileModal.scss";
 
@@ -136,7 +135,7 @@ export default function Stops() {
 
   const [stops, setStops] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -148,7 +147,7 @@ export default function Stops() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getStops()
       .then((data) => {
@@ -157,7 +156,7 @@ export default function Stops() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load stops.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -184,12 +183,12 @@ export default function Stops() {
 
   const reloadStops = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getStops();
       setStops(data);
     } catch (err) {
-      setError(err.message || "Failed to reload stops.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -273,7 +272,7 @@ export default function Stops() {
             <i className="bi bi-exclamation-triangle"></i>
           </div>
           <h3>Unable to load stops</h3>
-          <p>{error}</p>
+          <p>{error.message}</p>
           <button
             type="button"
             className="state-action-btn secondary"

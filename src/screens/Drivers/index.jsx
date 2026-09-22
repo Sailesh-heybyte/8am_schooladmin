@@ -4,10 +4,9 @@ import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import DriverModal from "./DriverModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getDrivers } from "../../api/drivers.js";
 
 export default function Drivers() {
@@ -15,7 +14,7 @@ export default function Drivers() {
 
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [driverToEdit, setDriverToEdit] = useState(null);
@@ -23,7 +22,7 @@ export default function Drivers() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getDrivers()
       .then((data) => {
@@ -32,7 +31,7 @@ export default function Drivers() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load drivers.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -45,12 +44,12 @@ export default function Drivers() {
 
   const reloadDrivers = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getDrivers();
       setDrivers(data);
     } catch (err) {
-      setError(err.message || "Failed to reload drivers.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -125,7 +124,7 @@ export default function Drivers() {
           className="roles-error"
           style={{ margin: "1rem 0", color: "#d9534f" }}
         >
-          {error}
+          {error.message}
         </div>
       )}
 

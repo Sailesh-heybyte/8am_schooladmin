@@ -3,10 +3,9 @@ import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import BranchUserModal from "./BranchUserModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getUsers } from "../../api/users.js";
 
 export default function BranchUsers() {
@@ -14,7 +13,7 @@ export default function BranchUsers() {
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,7 +21,7 @@ export default function BranchUsers() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getUsers()
       .then((usersData) => {
@@ -31,7 +30,7 @@ export default function BranchUsers() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load branch users.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -44,12 +43,12 @@ export default function BranchUsers() {
 
   const reloadUsers = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const usersData = await getUsers();
       setUsers(usersData);
     } catch (err) {
-      setError(err.message || "Failed to reload users.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -130,7 +129,7 @@ export default function BranchUsers() {
             <i className="bi bi-exclamation-triangle"></i>
           </div>
           <h3>Unable to load branch users</h3>
-          <p>{error}</p>
+          <p>{error.message}</p>
           <button
             type="button"
             className="state-action-btn secondary"

@@ -5,10 +5,9 @@ import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import ParentModal from "./ParentModal.jsx";
 import ParentDetailsModal from "./ParentDetailsModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getParents, setParentActive } from "../../api/parents.js";
 
 export default function Parents() {
@@ -16,7 +15,7 @@ export default function Parents() {
 
   const [parents, setParents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [parentToToggle, setParentToToggle] = useState(null);
@@ -29,7 +28,7 @@ export default function Parents() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getParents()
       .then((data) => {
@@ -38,7 +37,7 @@ export default function Parents() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load parents.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -65,12 +64,12 @@ export default function Parents() {
 
   const reloadParents = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getParents();
       setParents(data);
     } catch (err) {
-      setError(err.message || "Failed to reload parents.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -152,7 +151,7 @@ export default function Parents() {
           className="roles-error"
           style={{ margin: "1rem 0", color: "#d9534f" }}
         >
-          {error}
+          {error.message}
         </div>
       )}
 

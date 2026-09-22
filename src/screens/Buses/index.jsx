@@ -5,10 +5,9 @@ import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import BusModal from "./BusModal.jsx";
 import AssignDriverModal from "./AssignDriverModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getBuses, unassignDriver } from "../../api/buses.js";
 
 export default function Buses() {
@@ -16,7 +15,7 @@ export default function Buses() {
 
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [busToEdit, setBusToEdit] = useState(null);
@@ -29,7 +28,7 @@ export default function Buses() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getBuses()
       .then((data) => {
@@ -38,7 +37,7 @@ export default function Buses() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load buses.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -51,12 +50,12 @@ export default function Buses() {
 
   const reloadBuses = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getBuses();
       setBuses(data);
     } catch (err) {
-      setError(err.message || "Failed to reload buses.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -146,7 +145,7 @@ export default function Buses() {
           className="roles-error"
           style={{ margin: "1rem 0", color: "#d9534f" }}
         >
-          {error}
+          {error.message}
         </div>
       )}
 

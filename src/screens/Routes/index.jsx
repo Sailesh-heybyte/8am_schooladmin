@@ -6,10 +6,9 @@ import StatusBadge from "../../components/StatusBadge.jsx";
 import RouteModal from "./RouteModal.jsx";
 import RouteStopsModal from "./RouteStopsModal.jsx";
 import AssignBusModal from "./AssignBusModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getRoutes, unassignBus } from "../../api/routes.js";
 
 export default function Routes() {
@@ -17,7 +16,7 @@ export default function Routes() {
 
   const [routes, setRoutes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,7 +33,7 @@ export default function Routes() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    setError("");
+    setError(null);
 
     getRoutes()
       .then((data) => {
@@ -43,7 +42,7 @@ export default function Routes() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load routes.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -70,12 +69,12 @@ export default function Routes() {
 
   const reloadRoutes = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getRoutes();
       setRoutes(data || []);
     } catch (err) {
-      setError(err.message || "Failed to reload routes.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -175,7 +174,7 @@ export default function Routes() {
             <i className="bi bi-exclamation-triangle"></i>
           </div>
           <h3>Unable to load routes</h3>
-          <p>{error}</p>
+          <p>{error.message}</p>
           <button
             type="button"
             className="state-action-btn secondary"

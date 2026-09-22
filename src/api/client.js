@@ -112,7 +112,9 @@ export async function apiCall(path, options = {}) {
   if (!response.ok) {
     const errorMessage = await parseErrorMessage(response);
     console.error("API error", response.status, errorMessage);
-    throw new Error(errorMessage);
+    const error = new Error(errorMessage);
+    error.status = response.status;
+    throw error;
   }
 
   return response.json();

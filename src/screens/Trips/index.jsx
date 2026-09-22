@@ -4,10 +4,9 @@ import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import DirectionBadge from "../../components/DirectionBadge.jsx";
 import TripDetailsModal from "./TripDetailsModal.jsx";
-import AccessRestricted, {
-  isPermissionDenied,
-  useDebouncedLoading,
-} from "../../components/AccessRestricted.jsx";
+import AccessRestricted from "../../components/AccessRestricted.jsx";
+import { isPermissionDenied } from "../../utils/errors.js";
+import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getTrips } from "../../api/trips.js";
 
 const formatTime = (dateStr) => {
@@ -19,7 +18,7 @@ const formatTime = (dateStr) => {
 export default function Trips() {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [direction, setDirection] = useState("");
   const [status, setStatus] = useState("");
@@ -37,7 +36,7 @@ export default function Trips() {
       })
       .catch((err) => {
         if (!isMounted) return;
-        setError(err.message || "Failed to load trips.");
+        setError(err);
       })
       .finally(() => {
         if (isMounted) setLoading(false);
@@ -50,12 +49,12 @@ export default function Trips() {
 
   const reloadTrips = async () => {
     setLoading(true);
-    setError("");
+    setError(null);
     try {
       const data = await getTrips();
       setTrips(data);
     } catch (err) {
-      setError(err.message || "Failed to reload trips.");
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -200,7 +199,7 @@ export default function Trips() {
           className="roles-error"
           style={{ margin: "1rem 0", color: "#d9534f" }}
         >
-          {error}
+          {error.message}
         </div>
       )}
 
