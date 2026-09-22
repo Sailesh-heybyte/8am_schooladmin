@@ -77,6 +77,7 @@ function SchoolAdmin({ onLogout }) {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [me, setMe] = useState(null);
 
   const activeMenu = menuItems.find((item) => item.path === location.pathname);
@@ -94,6 +95,7 @@ function SchoolAdmin({ onLogout }) {
         setMe(data);
         if (data.must_change_password) {
           navigate("/change-password", { replace: true });
+          return;
         }
 
         const tokenPerms = new Set(getTokenPermissions());
@@ -105,9 +107,13 @@ function SchoolAdmin({ onLogout }) {
           await refreshSession();
         }
       })
-      .catch(async () => {
-        await handleLogout();
-        navigate("/login", { replace: true });
+      .catch(async (err) => {
+        if (err.status === 401) {
+          await handleLogout();
+          navigate("/login", { replace: true });
+        } else {
+          setLoadError(true);
+        }
       })
       .finally(() => setCheckingAccess(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,6 +135,26 @@ function SchoolAdmin({ onLogout }) {
 
   if (checkingAccess) {
     return null;
+  }
+
+  if (loadError) {
+    return (
+      <div className="table-state-card standalone">
+        <div className="state-icon-badge danger">
+          <i className="bi bi-exclamation-triangle"></i>
+        </div>
+        <h3>Can't reach the server</h3>
+        <p>Please check your connection and try again.</p>
+        <button
+          type="button"
+          className="state-action-btn secondary"
+          onClick={() => window.location.reload()}
+        >
+          <i className="bi bi-arrow-clockwise"></i>
+          <span>Retry</span>
+        </button>
+      </div>
+    );
   }
 
   return (
