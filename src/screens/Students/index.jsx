@@ -142,6 +142,9 @@ export default function Students() {
       student.fullName.toLowerCase().includes(search) ||
       (student.admissionNumber
         ? student.admissionNumber.toLowerCase().includes(search)
+        : false) ||
+      (student.stopName
+        ? student.stopName.toLowerCase().includes(search)
         : false);
 
     const matchesBranch =
@@ -292,7 +295,7 @@ export default function Students() {
             { label: "Admission No.", sortKey: "admissionNumber" },
             { label: "Branch", sortKey: "branchName" },
             "Parents",
-            "Stop",
+            { label: "Stop", sortKey: "stopName" },
             { label: "Status", sortKey: "isActive" },
             "Actions",
           ]}
@@ -314,9 +317,8 @@ export default function Students() {
             <span key={`parents-${student.id}`}>
               {renderParentsCell(student.parents)}
             </span>,
-            // Raw stop_id shown until backend returns stop_name directly
-            student.stopId ? (
-              <code key={`stop-${student.id}`}>{student.stopId}</code>
+            student.stopName ? (
+              student.stopName
             ) : (
               <span key={`stop-${student.id}`} className="muted-cell">
                 No stop
@@ -425,7 +427,7 @@ export default function Students() {
             student.admissionNumber,
             student.branchName,
             null,
-            null,
+            student.stopName,
             student.isActive,
             null,
           ])}

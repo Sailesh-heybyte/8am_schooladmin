@@ -23,6 +23,7 @@ const toUiStudent = (student) => ({
   homeLatitude: student.home_latitude ?? null,
   homeLongitude: student.home_longitude ?? null,
   stopId: student.stop_id ?? null,
+  stopName: student.stop_name,
   isActive: Boolean(student.is_active),
   createdAt: formatDate(student.created_at),
   createdAtIso: student.created_at,

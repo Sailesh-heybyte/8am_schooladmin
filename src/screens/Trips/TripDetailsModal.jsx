@@ -144,7 +144,7 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
           <h3 className="profile-section-title">Record</h3>
           <div className="profile-account-grid">
             <div className="profile-field">
-              <span className="field-label">Driver Name</span>
+              <span className="field-label">Started By</span>
               <span className="field-value">
                 <code>{trip.startedByUserId}</code>
               </span>
