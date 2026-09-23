@@ -44,24 +44,42 @@ export default function ChangePassword() {
         if (data?.refresh_token) {
           localStorage.setItem("school_refresh_token", data.refresh_token);
         }
+        navigate("/dashboard");
       } else {
-        let identifier =
+        const storedIdentifier =
           location.state?.identifier ||
           sessionStorage.getItem("school_login_identifier");
-        if (!identifier) {
+
+        let email = null;
+        if (!storedIdentifier) {
           try {
             const me = await getMe();
-            identifier = me?.email;
+            email = me?.email;
           } catch {
             // fallback ignored
           }
         }
-        if (identifier) {
-          await login(identifier, newPassword);
+
+        if (storedIdentifier) {
+          await login(storedIdentifier, newPassword);
           sessionStorage.removeItem("school_login_identifier");
+          navigate("/dashboard");
+        } else if (email) {
+          await login(email, newPassword);
+          sessionStorage.removeItem("school_login_identifier");
+          navigate("/dashboard");
+        } else {
+          localStorage.removeItem("school_access_token");
+          localStorage.removeItem("school_refresh_token");
+          navigate("/login", {
+            replace: true,
+            state: {
+              notice:
+                "Password changed. Please sign in with your new password.",
+            },
+          });
         }
       }
-      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Could not change password. Please try again.");
     } finally {

@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Login.scss";
 import { login } from "../../api/auth.js";
 
 export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const [notice, setNotice] = useState(() => location.state?.notice || "");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,6 +17,7 @@ export default function Login({ onLoginSuccess }) {
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
+    setNotice("");
 
     if (!identifier || !password) {
       setError("Please enter both fields.");
@@ -77,6 +80,8 @@ export default function Login({ onLoginSuccess }) {
           </div>
 
           <form className="login-form" onSubmit={handleLogin} noValidate>
+            {notice && <div className="status-box">{notice}</div>}
+
             <div className="field-group">
               <label htmlFor="identifier">Email or Username</label>
               <div className="input-shell">
