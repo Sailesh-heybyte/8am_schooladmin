@@ -92,14 +92,7 @@ export default function ParentDetailsModal({ isOpen, parentId, onClose }) {
                 />
               </div>
             </div>
-
-            <div className="profile-field">
-              <span className="field-label">Parent ID</span>
-              <span className="field-value">
-                <code>{parent.id}</code>
-              </span>
-            </div>
-
+            
             <div className="profile-field">
               <span className="field-label">Created</span>
               <span className="field-value">{parent.createdAt || "-"}</span>

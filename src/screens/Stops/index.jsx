@@ -105,12 +105,6 @@ function StopDetailsModal({ isOpen, stop, onClose }) {
                 </div>
               </div>
 
-              <div className="profile-field">
-                <span className="field-label">Stop ID</span>
-                <span className="field-value">
-                  <code>{stop.id}</code>
-                </span>
-              </div>
 
               <div className="profile-field">
                 <span className="field-label">Created</span>
