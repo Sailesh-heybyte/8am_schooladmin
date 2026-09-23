@@ -17,7 +17,6 @@ export default function BranchUsers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [branchFilter, setBranchFilter] = useState("All branches");
   const [roleFilter, setRoleFilter] = useState("All roles");
-  const [statusFilter, setStatusFilter] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load users on mount
@@ -68,14 +67,12 @@ export default function BranchUsers() {
   const isFilterActive =
     searchQuery.trim() !== "" ||
     branchFilter !== "All branches" ||
-    roleFilter !== "All roles" ||
-    statusFilter !== "All";
+    roleFilter !== "All roles";
 
   const handleClear = () => {
     setSearchQuery("");
     setBranchFilter("All branches");
     setRoleFilter("All roles");
-    setStatusFilter("All");
   };
 
   const filteredUsers = users.filter((user) => {
@@ -91,11 +88,7 @@ export default function BranchUsers() {
     const matchesRole =
       roleFilter === "All roles" || user.roleNames.includes(roleFilter);
 
-    const matchesStatus =
-      statusFilter === "All" ||
-      (statusFilter === "Active" ? user.isActive : !user.isActive);
-
-    return matchesSearch && matchesBranch && matchesRole && matchesStatus;
+    return matchesSearch && matchesBranch && matchesRole;
   });
 
   const openCreate = () => {
@@ -160,17 +153,6 @@ export default function BranchUsers() {
             </select>
           </div>
 
-          <div className="filter-group">
-            <label>Status:</label>
-            <select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
 
           {isFilterActive && (
             <button
