@@ -17,6 +17,10 @@ export default function Buses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [driverFilter, setDriverFilter] = useState("All");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [busToEdit, setBusToEdit] = useState(null);
   const [busToAssign, setBusToAssign] = useState(null);
@@ -77,14 +81,46 @@ export default function Buses() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(buses.map((bus) => bus.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    statusFilter !== "All" ||
+    driverFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setStatusFilter("All");
+    setDriverFilter("All");
+  };
+
   const filteredBuses = buses.filter((bus) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const nameMatch = (bus.busName || "").toLowerCase().includes(query);
-    const regMatch = (bus.registrationNumber || "")
-      .toLowerCase()
-      .includes(query);
-    return nameMatch || regMatch;
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" ||
+      bus.busName.toLowerCase().includes(search) ||
+      (bus.registrationNumber
+        ? bus.registrationNumber.toLowerCase().includes(search)
+        : false);
+
+    const matchesBranch =
+      branchFilter === "All branches" || bus.branchName === branchFilter;
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? bus.isActive : !bus.isActive);
+
+    const matchesDriver =
+      driverFilter === "All" ||
+      (driverFilter === "Driver assigned"
+        ? Boolean(bus.driverId)
+        : !bus.driverId);
+
+    return matchesSearch && matchesBranch && matchesStatus && matchesDriver;
   });
 
   const openCreate = () => {
@@ -131,7 +167,61 @@ export default function Buses() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Driver:</label>
+            <select
+              value={driverFilter}
+              onChange={(event) => setDriverFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Driver assigned">Driver assigned</option>
+              <option value="No driver">No driver</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="text"
           value={searchQuery}
@@ -156,7 +246,7 @@ export default function Buses() {
         >
           Loading buses...
         </p>
-      ) : buses.length === 0 && !searchQuery ? (
+      ) : buses.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-bus-front"></i>
           <h3>No buses found</h3>
@@ -172,12 +262,12 @@ export default function Buses() {
       ) : (
         <DataTable
           headers={[
-            "Bus Name",
-            "Registration",
-            "Capacity",
+            { label: "Bus Name", sortKey: "busName" },
+            { label: "Registration", sortKey: "registrationNumber" },
+            { label: "Capacity", sortKey: "capacity" },
             "Driver",
-            "Branch",
-            "Status",
+            { label: "Branch", sortKey: "branchName" },
+            { label: "Status", sortKey: "isActive" },
             "Actions",
           ]}
           className="users-table-card"
@@ -241,8 +331,18 @@ export default function Buses() {
               )}
             </div>,
           ])}
+          sortValues={filteredBuses.map((bus) => [
+            bus.busName,
+            bus.registrationNumber,
+            bus.capacity,
+            null,
+            bus.branchName,
+            bus.isActive,
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredBuses.length} of ${buses.length} buses`}
+          itemLabel="buses"
+          totalCount={buses.length}
         />
       )}
 

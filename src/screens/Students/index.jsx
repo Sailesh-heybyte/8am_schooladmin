@@ -34,6 +34,9 @@ export default function Students() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [stopFilter, setStopFilter] = useState("All");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
@@ -115,14 +118,46 @@ export default function Students() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(students.map((student) => student.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    statusFilter !== "All" ||
+    stopFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setStatusFilter("All");
+    setStopFilter("All");
+  };
+
   const filteredStudents = students.filter((student) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const nameMatch = (student.fullName || "").toLowerCase().includes(query);
-    const admMatch = (student.admissionNumber || "")
-      .toLowerCase()
-      .includes(query);
-    return nameMatch || admMatch;
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" ||
+      student.fullName.toLowerCase().includes(search) ||
+      (student.admissionNumber
+        ? student.admissionNumber.toLowerCase().includes(search)
+        : false);
+
+    const matchesBranch =
+      branchFilter === "All branches" || student.branchName === branchFilter;
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? student.isActive : !student.isActive);
+
+    const matchesStop =
+      stopFilter === "All" ||
+      (stopFilter === "Stop assigned"
+        ? Boolean(student.stopId)
+        : !student.stopId);
+
+    return matchesSearch && matchesBranch && matchesStatus && matchesStop;
   });
 
   const openCreate = () => {
@@ -169,7 +204,61 @@ export default function Students() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Stop:</label>
+            <select
+              value={stopFilter}
+              onChange={(event) => setStopFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Stop assigned">Stop assigned</option>
+              <option value="No stop">No stop</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="text"
           value={searchQuery}
@@ -194,7 +283,7 @@ export default function Students() {
         >
           Loading students...
         </p>
-      ) : students.length === 0 && !searchQuery ? (
+      ) : students.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-mortarboard"></i>
           <h3>No students found</h3>
@@ -210,12 +299,12 @@ export default function Students() {
       ) : (
         <DataTable
           headers={[
-            "Name",
-            "Admission No.",
-            "Branch",
+            { label: "Name", sortKey: "fullName" },
+            { label: "Admission No.", sortKey: "admissionNumber" },
+            { label: "Branch", sortKey: "branchName" },
             "Parents",
             "Stop",
-            "Status",
+            { label: "Status", sortKey: "isActive" },
             "Actions",
           ]}
           className="users-table-card"
@@ -342,8 +431,18 @@ export default function Students() {
               </div>
             </div>,
           ])}
+          sortValues={filteredStudents.map((student) => [
+            student.fullName,
+            student.admissionNumber,
+            student.branchName,
+            null,
+            null,
+            student.isActive,
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredStudents.length} of ${students.length} students`}
+          itemLabel="students"
+          totalCount={students.length}
         />
       )}
 

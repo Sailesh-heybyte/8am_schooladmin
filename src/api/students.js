@@ -25,6 +25,7 @@ const toUiStudent = (student) => ({
   stopId: student.stop_id ?? null,
   isActive: Boolean(student.is_active),
   createdAt: formatDate(student.created_at),
+  createdAtIso: student.created_at,
   parents: student.parents.map(toUiParent),
 });
 
