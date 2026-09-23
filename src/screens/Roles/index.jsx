@@ -145,7 +145,7 @@ export default function Roles() {
       ) : loading ? (
         <div className="table-card">
           <div className="table-empty">
-            <span>Loading…</span>
+            <span>{showLoading ? "Loading…" : ""}</span>
           </div>
         </div>
       ) : roles.length === 0 && !isFilterActive ? (

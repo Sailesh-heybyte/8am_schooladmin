@@ -353,7 +353,7 @@ export default function Stops() {
       ) : loading ? (
         <div className="table-card">
           <div className="table-empty">
-            <span>Loading…</span>
+            <span>{showLoading ? "Loading…" : ""}</span>
           </div>
         </div>
       ) : stops.length === 0 && !isFilterActive ? (

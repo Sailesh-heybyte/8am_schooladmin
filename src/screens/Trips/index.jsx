@@ -196,7 +196,7 @@ export default function Trips() {
       {loading ? (
         <div className="table-card">
           <div className="table-empty">
-            <span>Loading…</span>
+            <span>{showLoading ? "Loading…" : ""}</span>
           </div>
         </div>
       ) : trips.length === 0 ? (

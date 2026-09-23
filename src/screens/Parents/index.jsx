@@ -217,7 +217,7 @@ export default function Parents() {
       {loading ? (
         <div className="table-card">
           <div className="table-empty">
-            <span>Loading…</span>
+            <span>{showLoading ? "Loading…" : ""}</span>
           </div>
         </div>
       ) : parents.length === 0 && !isFilterActive ? (

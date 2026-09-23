@@ -190,7 +190,7 @@ export default function Drivers() {
       {loading ? (
         <div className="table-card">
           <div className="table-empty">
-            <span>Loading…</span>
+            <span>{showLoading ? "Loading…" : ""}</span>
           </div>
         </div>
       ) : drivers.length === 0 && !isFilterActive ? (

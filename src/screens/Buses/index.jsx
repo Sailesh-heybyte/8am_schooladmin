@@ -232,7 +232,7 @@ export default function Buses() {
       {loading ? (
         <div className="table-card">
           <div className="table-empty">
-            <span>Loading…</span>
+            <span>{showLoading ? "Loading…" : ""}</span>
           </div>
         </div>
       ) : buses.length === 0 && !isFilterActive ? (
