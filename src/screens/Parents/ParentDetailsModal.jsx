@@ -76,8 +76,8 @@ export default function ParentDetailsModal({ isOpen, parentId, onClose }) {
             <div className="profile-field">
               <span className="field-label">Branch</span>
               <span className="field-value">
-                {parent.branchId ? (
-                  <code>{parent.branchId}</code>
+                {parent.branchName ? (
+                  parent.branchName
                 ) : (
                   <span className="muted-cell">Not assigned</span>
                 )}
