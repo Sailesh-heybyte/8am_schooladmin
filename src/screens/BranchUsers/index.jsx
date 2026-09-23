@@ -15,6 +15,9 @@ export default function BranchUsers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [roleFilter, setRoleFilter] = useState("All roles");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Load users on mount
@@ -54,12 +57,45 @@ export default function BranchUsers() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(users.map((user) => user.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const roleOptions = [
+    ...new Set(users.flatMap((user) => user.roleNames)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    roleFilter !== "All roles" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setRoleFilter("All roles");
+    setStatusFilter("All");
+  };
+
   const filteredUsers = users.filter((user) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const nameMatch = (user.fullName || "").toLowerCase().includes(query);
-    const emailMatch = (user.email || "").toLowerCase().includes(query);
-    return nameMatch || emailMatch;
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" ||
+      user.fullName.toLowerCase().includes(search) ||
+      (user.email ? user.email.toLowerCase().includes(search) : false);
+
+    const matchesBranch =
+      branchFilter === "All branches" || user.branchName === branchFilter;
+
+    const matchesRole =
+      roleFilter === "All roles" || user.roleNames.includes(roleFilter);
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? user.isActive : !user.isActive);
+
+    return matchesSearch && matchesBranch && matchesRole && matchesStatus;
   });
 
   const openCreate = () => {
@@ -100,27 +136,71 @@ export default function BranchUsers() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
-        <div className="table-search-box">
-          <i className="bi bi-search"></i>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search branch users..."
-            disabled={Boolean(error)}
-          />
-          {searchQuery && (
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Role:</label>
+            <select
+              value={roleFilter}
+              onChange={(event) => setRoleFilter(event.target.value)}
+            >
+              <option value="All roles">All roles</option>
+              {roleOptions.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
             <button
               type="button"
-              className="search-clear-btn"
-              title="Clear search"
-              onClick={() => setSearchQuery("")}
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
             >
-              <i className="bi bi-x"></i>
+              Clear
             </button>
           )}
         </div>
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search branch users..."
+          disabled={Boolean(error)}
+        />
       </div>
 
       {error ? (
@@ -144,7 +224,7 @@ export default function BranchUsers() {
           <div className="state-spinner"></div>
           <p>Loading branch users...</p>
         </div>
-      ) : users.length === 0 && !searchQuery ? (
+      ) : users.length === 0 && !isFilterActive ? (
         <div className="table-state-card">
           <div className="state-icon-badge neutral">
             <i className="bi bi-people"></i>
@@ -162,7 +242,13 @@ export default function BranchUsers() {
         </div>
       ) : (
         <DataTable
-          headers={["Name", "Phone", "Email", "Branch", "Roles"]}
+          headers={[
+            { label: "Name", sortKey: "fullName" },
+            "Phone",
+            "Email",
+            { label: "Branch", sortKey: "branchName" },
+            { label: "Roles", sortKey: "roleNames" },
+          ]}
           className="users-table-card"
           rows={filteredUsers.map((user) => [
             <strong key={`name-${user.id}`}>{user.fullName}</strong>,
@@ -195,8 +281,16 @@ export default function BranchUsers() {
               </span>
             ),
           ])}
+          sortValues={filteredUsers.map((user) => [
+            user.fullName,
+            null,
+            null,
+            user.branchName,
+            user.roleNames.join(", "),
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredUsers.length} of ${users.length} users`}
+          itemLabel="users"
+          totalCount={users.length}
         />
       )}
 

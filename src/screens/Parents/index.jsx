@@ -17,6 +17,9 @@ export default function Parents() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [statusFilter, setStatusFilter] = useState("All");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [parentToToggle, setParentToToggle] = useState(null);
   const [isToggling, setIsToggling] = useState(false);
@@ -91,12 +94,36 @@ export default function Parents() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(parents.map((parent) => parent.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setStatusFilter("All");
+  };
+
   const filteredParents = parents.filter((parent) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const nameMatch = (parent.fullName || "").toLowerCase().includes(query);
-    const phoneMatch = (parent.phone || "").toLowerCase().includes(query);
-    return nameMatch || phoneMatch;
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" ||
+      parent.fullName.toLowerCase().includes(search) ||
+      (parent.phone ? parent.phone.toLowerCase().includes(search) : false);
+
+    const matchesBranch =
+      branchFilter === "All branches" || parent.branchName === branchFilter;
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? parent.isActive : !parent.isActive);
+
+    return matchesSearch && matchesBranch && matchesStatus;
   });
 
   const openCreate = () => {
@@ -137,7 +164,49 @@ export default function Parents() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="text"
           value={searchQuery}
@@ -162,7 +231,7 @@ export default function Parents() {
         >
           Loading parents...
         </p>
-      ) : parents.length === 0 && !searchQuery ? (
+      ) : parents.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-people"></i>
           <h3>No parents found</h3>
@@ -177,7 +246,13 @@ export default function Parents() {
         </div>
       ) : (
         <DataTable
-          headers={["Name", "Phone", "Branch", "Status", "Actions"]}
+          headers={[
+            { label: "Name", sortKey: "fullName" },
+            "Phone",
+            { label: "Branch", sortKey: "branchName" },
+            { label: "Status", sortKey: "isActive" },
+            "Actions",
+          ]}
           className="users-table-card"
           rows={filteredParents.map((parent) => [
             <strong key={`name-${parent.id}`}>{parent.fullName}</strong>,
@@ -259,8 +334,16 @@ export default function Parents() {
               )}
             </div>,
           ])}
+          sortValues={filteredParents.map((parent) => [
+            parent.fullName,
+            null,
+            parent.branchName,
+            parent.isActive,
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredParents.length} of ${parents.length} parents`}
+          itemLabel="parents"
+          totalCount={parents.length}
         />
       )}
 

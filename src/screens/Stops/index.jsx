@@ -131,6 +131,9 @@ export default function Stops() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [routeFilter, setRouteFilter] = useState("All routes");
+  const [statusFilter, setStatusFilter] = useState("All");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [stopToEdit, setStopToEdit] = useState(null);
@@ -188,10 +191,46 @@ export default function Stops() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(stops.map((stop) => stop.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const routeOptions = [
+    ...new Set(stops.map((stop) => stop.routeName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    routeFilter !== "All routes" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setRouteFilter("All routes");
+    setStatusFilter("All");
+  };
+
   const filteredStops = stops.filter((stop) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    return (stop.stopName || "").toLowerCase().includes(query);
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" || stop.stopName.toLowerCase().includes(search);
+
+    const matchesBranch =
+      branchFilter === "All branches" || stop.branchName === branchFilter;
+
+    const matchesRoute =
+      routeFilter === "All routes" ||
+      (routeFilter === "Not on a route"
+        ? stop.routeId === null
+        : stop.routeName === routeFilter);
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? stop.isActive : !stop.isActive);
+
+    return matchesSearch && matchesBranch && matchesRoute && matchesStatus;
   });
 
   const openCreate = () => {
@@ -238,26 +277,71 @@ export default function Stops() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
-        <div className="table-search-box">
-          <i className="bi bi-search"></i>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by stop name..."
-          />
-          {searchQuery && (
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Route:</label>
+            <select
+              value={routeFilter}
+              onChange={(event) => setRouteFilter(event.target.value)}
+            >
+              <option value="All routes">All routes</option>
+              <option value="Not on a route">Not on a route</option>
+              {routeOptions.map((route) => (
+                <option key={route} value={route}>
+                  {route}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
             <button
               type="button"
-              className="search-clear-btn"
-              title="Clear search"
-              onClick={() => setSearchQuery("")}
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
             >
-              <i className="bi bi-x"></i>
+              Clear
             </button>
           )}
         </div>
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by stop name..."
+        />
       </div>
 
       {error ? (
@@ -281,7 +365,7 @@ export default function Stops() {
           <div className="state-spinner"></div>
           <p>Loading stops...</p>
         </div>
-      ) : stops.length === 0 && !searchQuery ? (
+      ) : stops.length === 0 && !isFilterActive ? (
         <div className="table-state-card">
           <div className="state-icon-badge neutral">
             <i className="bi bi-geo-alt"></i>
@@ -300,12 +384,12 @@ export default function Stops() {
       ) : (
         <DataTable
           headers={[
-            "Stop Name",
+            { label: "Stop Name", sortKey: "stopName" },
             "Latitude",
             "Longitude",
-            "Route",
-            "Branch",
-            "Status",
+            { label: "Route", sortKey: "routeName" },
+            { label: "Branch", sortKey: "branchName" },
+            { label: "Status", sortKey: "isActive" },
             "Actions",
           ]}
           className="users-table-card"
@@ -386,8 +470,18 @@ export default function Stops() {
               )}
             </div>,
           ])}
+          sortValues={filteredStops.map((stop) => [
+            stop.stopName,
+            null,
+            null,
+            stop.routeName,
+            stop.branchName,
+            stop.isActive,
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredStops.length} of ${stops.length} stops`}
+          itemLabel="stops"
+          totalCount={stops.length}
         />
       )}
 

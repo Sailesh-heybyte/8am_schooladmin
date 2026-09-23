@@ -14,6 +14,7 @@ export default function Roles() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [scopeFilter, setScopeFilter] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [roleToEdit, setRoleToEdit] = useState(null);
 
@@ -34,9 +35,27 @@ export default function Roles() {
     fetchRoles();
   }, []);
 
-  const filteredRoles = roles.filter((role) =>
-    role.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const isFilterActive =
+    searchQuery.trim() !== "" || scopeFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setScopeFilter("All");
+  };
+
+  const filteredRoles = roles.filter((role) => {
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" || role.name.toLowerCase().includes(search);
+
+    const matchesScope =
+      scopeFilter === "All" ||
+      (scopeFilter === "School-wide"
+        ? role.branchId === null
+        : role.branchId !== null);
+
+    return matchesSearch && matchesScope;
+  });
 
   const openCreate = () => {
     setRoleToEdit(null);
@@ -82,27 +101,39 @@ export default function Roles() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
-        <div className="table-search-box">
-          <i className="bi bi-search"></i>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search roles..."
-            disabled={Boolean(error)}
-          />
-          {searchQuery && (
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          <div className="filter-group">
+            <label>Scope:</label>
+            <select
+              value={scopeFilter}
+              onChange={(event) => setScopeFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="School-wide">School-wide</option>
+              <option value="Branch">Branch</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
             <button
               type="button"
-              className="search-clear-btn"
-              title="Clear search"
-              onClick={() => setSearchQuery("")}
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
             >
-              <i className="bi bi-x"></i>
+              Clear
             </button>
           )}
         </div>
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search roles..."
+          disabled={Boolean(error)}
+        />
       </div>
 
       {error ? (
@@ -126,7 +157,7 @@ export default function Roles() {
           <div className="state-spinner"></div>
           <p>Loading roles...</p>
         </div>
-      ) : roles.length === 0 && !searchQuery ? (
+      ) : roles.length === 0 && !isFilterActive ? (
         <div className="table-state-card">
           <div className="state-icon-badge neutral">
             <i className="bi bi-shield-lock"></i>
@@ -144,7 +175,11 @@ export default function Roles() {
         </div>
       ) : (
         <DataTable
-          headers={["Role", "Type", "Actions"]}
+          headers={[
+            { label: "Role", sortKey: "name" },
+            { label: "Type", sortKey: "scope" },
+            "Actions",
+          ]}
           className="roles-table-card"
           rows={filteredRoles.map((role) => [
             <button
@@ -155,7 +190,7 @@ export default function Roles() {
             >
               {role.name}
             </button>,
-            "School",
+            role.branchId === null ? "School-wide" : "Branch",
             <div key={`role-actions-${role.id}`} className="action-buttons">
               <button
                 type="button"
@@ -167,8 +202,14 @@ export default function Roles() {
               </button>
             </div>,
           ])}
+          sortValues={filteredRoles.map((role) => [
+            role.name,
+            role.branchId === null ? "School-wide" : "Branch",
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredRoles.length} of ${roles.length} roles`}
+          itemLabel="roles"
+          totalCount={roles.length}
         />
       )}
 

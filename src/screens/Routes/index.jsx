@@ -18,6 +18,9 @@ export default function Routes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [busFilter, setBusFilter] = useState("All");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [routeToEdit, setRouteToEdit] = useState(null);
@@ -96,10 +99,40 @@ export default function Routes() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(routes.map((route) => route.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    statusFilter !== "All" ||
+    busFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setStatusFilter("All");
+    setBusFilter("All");
+  };
+
   const filteredRoutes = routes.filter((route) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    return (route.routeName || "").toLowerCase().includes(query);
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" || route.routeName.toLowerCase().includes(search);
+
+    const matchesBranch =
+      branchFilter === "All branches" || route.branchName === branchFilter;
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? route.isActive : !route.isActive);
+
+    const matchesBus =
+      busFilter === "All" ||
+      (busFilter === "Bus assigned" ? Boolean(route.busId) : !route.busId);
+
+    return matchesSearch && matchesBranch && matchesStatus && matchesBus;
   });
 
   const openCreate = () => {
@@ -146,26 +179,67 @@ export default function Routes() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
-        <div className="table-search-box">
-          <i className="bi bi-search"></i>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by route name..."
-          />
-          {searchQuery && (
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Bus:</label>
+            <select
+              value={busFilter}
+              onChange={(event) => setBusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Bus assigned">Bus assigned</option>
+              <option value="No bus">No bus</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
             <button
               type="button"
-              className="search-clear-btn"
-              title="Clear search"
-              onClick={() => setSearchQuery("")}
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
             >
-              <i className="bi bi-x"></i>
+              Clear
             </button>
           )}
         </div>
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by route name..."
+        />
       </div>
 
       {error ? (
@@ -189,7 +263,7 @@ export default function Routes() {
           <div className="state-spinner"></div>
           <p>Loading routes...</p>
         </div>
-      ) : routes.length === 0 && !searchQuery ? (
+      ) : routes.length === 0 && !isFilterActive ? (
         <div className="table-state-card">
           <div className="state-icon-badge neutral">
             <i className="bi bi-signpost-split"></i>
@@ -209,7 +283,13 @@ export default function Routes() {
         </div>
       ) : (
         <DataTable
-          headers={["Route Name", "Bus Number", "Branch", "Status", "Actions"]}
+          headers={[
+            { label: "Route Name", sortKey: "routeName" },
+            { label: "Bus Number", sortKey: "registrationNumber" },
+            { label: "Branch", sortKey: "branchName" },
+            { label: "Status", sortKey: "isActive" },
+            "Actions",
+          ]}
           className="users-table-card"
           rows={filteredRoutes.map((route) => [
             <strong key={`name-${route.id}`}>{route.routeName}</strong>,
@@ -302,8 +382,16 @@ export default function Routes() {
               )}
             </div>,
           ])}
+          sortValues={filteredRoutes.map((route) => [
+            route.routeName,
+            route.registrationNumber,
+            route.branchName,
+            route.isActive,
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredRoutes.length} of ${routes.length} routes`}
+          itemLabel="routes"
+          totalCount={routes.length}
         />
       )}
 

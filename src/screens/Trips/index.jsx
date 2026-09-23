@@ -235,12 +235,12 @@ export default function Trips() {
       ) : (
         <DataTable
           headers={[
-            "Date",
+            { label: "Date", sortKey: "tripDate" },
             "Direction",
-            "Bus Number",
-            "Route",
-            "Started",
-            "Status",
+            { label: "Bus Number", sortKey: "registrationNumber" },
+            { label: "Route", sortKey: "routeName" },
+            { label: "Started", sortKey: "startedAt" },
+            { label: "Status", sortKey: "status" },
             "Actions",
           ]}
           className="users-table-card"
@@ -267,12 +267,18 @@ export default function Trips() {
               </button>
             </div>,
           ])}
+          sortValues={filteredTrips.map((trip) => [
+            trip.tripDate,
+            null,
+            trip.registrationNumber,
+            trip.routeName,
+            trip.startedAt,
+            trip.status,
+            null,
+          ])}
           withoutFilter={false}
-          footer={
-            hasActiveFilters
-              ? `Showing ${filteredTrips.length} of ${trips.length} trips`
-              : `Showing ${trips.length} trips`
-          }
+          itemLabel="trips"
+          totalCount={trips.length}
         />
       )}
 
