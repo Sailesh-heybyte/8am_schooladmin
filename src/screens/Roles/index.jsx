@@ -81,16 +81,6 @@ export default function Roles() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Roles & Permissions"
-          description="Create roles and control exactly what each team member can access."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -153,9 +143,10 @@ export default function Roles() {
           </button>
         </div>
       ) : loading ? (
-        <div className="table-state-card">
-          <div className="state-spinner"></div>
-          <p>Loading roles...</p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
         </div>
       ) : roles.length === 0 && !isFilterActive ? (
         <div className="table-state-card">

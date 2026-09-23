@@ -159,16 +159,6 @@ export default function Routes() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Routes"
-          description="Manage school bus routes and stop sequences."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -259,9 +249,10 @@ export default function Routes() {
           </button>
         </div>
       ) : loading ? (
-        <div className="table-state-card">
-          <div className="state-spinner"></div>
-          <p>Loading routes...</p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
         </div>
       ) : routes.length === 0 && !isFilterActive ? (
         <div className="table-state-card">

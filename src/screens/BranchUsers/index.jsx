@@ -116,16 +116,6 @@ export default function BranchUsers() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Branch Users"
-          description="Manage branch users and their access permissions."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -220,9 +210,10 @@ export default function BranchUsers() {
           </button>
         </div>
       ) : loading ? (
-        <div className="table-state-card">
-          <div className="state-spinner"></div>
-          <p>Loading branch users...</p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
         </div>
       ) : users.length === 0 && !isFilterActive ? (
         <div className="table-state-card">

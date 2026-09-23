@@ -257,16 +257,6 @@ export default function Stops() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Stops"
-          description="Manage bus stops and locations."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -361,9 +351,10 @@ export default function Stops() {
           </button>
         </div>
       ) : loading ? (
-        <div className="table-state-card">
-          <div className="state-spinner"></div>
-          <p>Loading stops...</p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
         </div>
       ) : stops.length === 0 && !isFilterActive ? (
         <div className="table-state-card">

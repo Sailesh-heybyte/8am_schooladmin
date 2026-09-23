@@ -134,7 +134,13 @@ function SchoolAdmin({ onLogout }) {
   }, [isProfileMenuOpen]);
 
   if (checkingAccess) {
-    return null;
+    return (
+      <div className="table-card">
+        <div className="table-empty">
+          <span>Loading…</span>
+        </div>
+      </div>
+    );
   }
 
   if (loadError) {

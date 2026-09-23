@@ -121,16 +121,6 @@ export default function Trips() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Trips"
-          description="View driver trips and transport runs."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -204,12 +194,11 @@ export default function Trips() {
       )}
 
       {loading ? (
-        <p
-          className="roles-message"
-          style={{ margin: "1.5rem 0", color: "#667085" }}
-        >
-          Loading trips...
-        </p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
+        </div>
       ) : trips.length === 0 ? (
         <div className="branch-empty-card">
           <i className="bi bi-clock-history"></i>

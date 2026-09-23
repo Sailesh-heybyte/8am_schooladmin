@@ -147,16 +147,6 @@ export default function Buses() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Buses"
-          description="Manage school buses and fleet assignments."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -240,12 +230,11 @@ export default function Buses() {
       )}
 
       {loading ? (
-        <p
-          className="roles-message"
-          style={{ margin: "1.5rem 0", color: "#667085" }}
-        >
-          Loading buses...
-        </p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
+        </div>
       ) : buses.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-bus-front"></i>

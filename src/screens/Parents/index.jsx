@@ -144,16 +144,6 @@ export default function Parents() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Parents"
-          description="Manage parents and guardians."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -225,12 +215,11 @@ export default function Parents() {
       )}
 
       {loading ? (
-        <p
-          className="roles-message"
-          style={{ margin: "1.5rem 0", color: "#667085" }}
-        >
-          Loading parents...
-        </p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
+        </div>
       ) : parents.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-people"></i>

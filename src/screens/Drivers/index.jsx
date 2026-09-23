@@ -117,16 +117,6 @@ export default function Drivers() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Drivers"
-          description="Manage school drivers and licenses."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -198,12 +188,11 @@ export default function Drivers() {
       )}
 
       {loading ? (
-        <p
-          className="roles-message"
-          style={{ margin: "1.5rem 0", color: "#667085" }}
-        >
-          Loading drivers...
-        </p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
+        </div>
       ) : drivers.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-person-badge"></i>

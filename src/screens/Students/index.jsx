@@ -184,16 +184,6 @@ export default function Students() {
     );
   }
 
-  if (loading && !showLoading) {
-    return (
-      <>
-        <PageTitle
-          title="Students"
-          description="Manage student records, parent contacts, and enrollments."
-        />
-      </>
-    );
-  }
 
   return (
     <>
@@ -277,12 +267,11 @@ export default function Students() {
       )}
 
       {loading ? (
-        <p
-          className="roles-message"
-          style={{ margin: "1.5rem 0", color: "#667085" }}
-        >
-          Loading students...
-        </p>
+        <div className="table-card">
+          <div className="table-empty">
+            <span>Loading…</span>
+          </div>
+        </div>
       ) : students.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-mortarboard"></i>
