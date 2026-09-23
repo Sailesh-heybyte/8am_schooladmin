@@ -16,6 +16,9 @@ export default function Drivers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [branchFilter, setBranchFilter] = useState("All branches");
+  const [statusFilter, setStatusFilter] = useState("All");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [driverToEdit, setDriverToEdit] = useState(null);
 
@@ -55,15 +58,39 @@ export default function Drivers() {
     }
   };
 
+  const branchOptions = [
+    ...new Set(drivers.map((driver) => driver.branchName).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    branchFilter !== "All branches" ||
+    statusFilter !== "All";
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setBranchFilter("All branches");
+    setStatusFilter("All");
+  };
+
   const filteredDrivers = drivers.filter((driver) => {
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const nameMatch = (driver.fullName || "").toLowerCase().includes(query);
-    const phoneMatch = (driver.phone || "").toLowerCase().includes(query);
-    const licenseMatch = (driver.licenseNumber || "")
-      .toLowerCase()
-      .includes(query);
-    return nameMatch || phoneMatch || licenseMatch;
+    const search = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      search === "" ||
+      driver.fullName.toLowerCase().includes(search) ||
+      (driver.phone ? driver.phone.toLowerCase().includes(search) : false) ||
+      (driver.licenseNumber
+        ? driver.licenseNumber.toLowerCase().includes(search)
+        : false);
+
+    const matchesBranch =
+      branchFilter === "All branches" || driver.branchName === branchFilter;
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Active" ? driver.isActive : !driver.isActive);
+
+    return matchesSearch && matchesBranch && matchesStatus;
   });
 
   const openCreate = () => {
@@ -110,7 +137,49 @@ export default function Drivers() {
         onButtonClick={openCreate}
       />
 
-      <div className="filter-card search-only">
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          {me.branch_id === null && (
+            <div className="filter-group">
+              <label>Branch:</label>
+              <select
+                value={branchFilter}
+                onChange={(event) => setBranchFilter(event.target.value)}
+              >
+                <option value="All branches">All branches</option>
+                {branchOptions.map((branch) => (
+                  <option key={branch} value={branch}>
+                    {branch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {isFilterActive && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <input
           type="text"
           value={searchQuery}
@@ -135,7 +204,7 @@ export default function Drivers() {
         >
           Loading drivers...
         </p>
-      ) : drivers.length === 0 && !searchQuery ? (
+      ) : drivers.length === 0 && !isFilterActive ? (
         <div className="branch-empty-card">
           <i className="bi bi-person-badge"></i>
           <h3>No drivers found</h3>
@@ -151,12 +220,12 @@ export default function Drivers() {
       ) : (
         <DataTable
           headers={[
-            "Name",
+            { label: "Name", sortKey: "fullName" },
             "Phone",
-            "License Number",
-            "License Expiry",
-            "Branch",
-            "Status",
+            { label: "License Number", sortKey: "licenseNumber" },
+            { label: "License Expiry", sortKey: "licenseExpiry" },
+            { label: "Branch", sortKey: "branchName" },
+            { label: "Status", sortKey: "isActive" },
             "Actions",
           ]}
           className="users-table-card"
@@ -199,8 +268,18 @@ export default function Drivers() {
               </button>
             </div>,
           ])}
+          sortValues={filteredDrivers.map((driver) => [
+            driver.fullName,
+            null,
+            driver.licenseNumber,
+            driver.licenseExpiry,
+            driver.branchName,
+            driver.isActive,
+            null,
+          ])}
           withoutFilter={false}
-          footer={`Showing ${filteredDrivers.length} of ${drivers.length} drivers`}
+          itemLabel="drivers"
+          totalCount={drivers.length}
         />
       )}
 
