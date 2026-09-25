@@ -554,15 +554,14 @@
 
 .filter-card {
   display: flex;
-  height: 69%;
-  padding: 1.5% 0.8rem;
+  padding: 1.25rem 0.8rem;
   background: $white;
   border-top-left-radius: $radius;
   border-top-right-radius: $radius;
   border-top: 0.05rem solid $border;
   border-left: 0.05rem solid $border;
   border-right: 0.05rem solid $border;
-  height: 17%;
+  height: auto;
   align-items: flex-end;
   justify-content: space-between;
 
@@ -573,7 +572,7 @@
     label {
       color: #000000;
       font-size: 0.58rem;
-      margin-bottom: 5%;
+      margin-bottom: 0.4rem;
     }
   }
   input,
