@@ -256,7 +256,7 @@ export default function Buses() {
             { label: "Bus Name", sortKey: "busName" },
             { label: "Registration", sortKey: "registrationNumber" },
             { label: "Capacity", sortKey: "capacity" },
-            "Driver",
+            { label: "Driver", sortKey: "driverName" },
             { label: "Branch", sortKey: "branchName" },
             { label: "Status", sortKey: "isActive" },
             "Actions",
@@ -270,9 +270,8 @@ export default function Buses() {
               </span>
             ),
             bus.capacity,
-            // Raw driver_id shown until backend returns driver_name directly
             bus.driverId ? (
-              <code key={`driver-${bus.id}`}>{bus.driverId}</code>
+              bus.driverName
             ) : (
               <span key={`driver-${bus.id}`} className="muted-cell">
                 No driver
@@ -326,7 +325,7 @@ export default function Buses() {
             bus.busName,
             bus.registrationNumber,
             bus.capacity,
-            null,
+            bus.driverName,
             bus.branchName,
             bus.isActive,
             null,

@@ -10,6 +10,7 @@ const toUiBus = (bus) => ({
   registrationNumber: bus.registration_number,
   capacity: Number(bus.capacity),
   driverId: bus.driver_id ?? null,
+  driverName: bus.driver_name,
   isActive: Boolean(bus.is_active),
   createdAt: formatDate(bus.created_at),
 });

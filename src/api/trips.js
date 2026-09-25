@@ -19,6 +19,7 @@ const toUiTrip = (trip) => ({
   startedAt: trip.started_at,
   endedAt: trip.ended_at,
   startedByUserId: trip.started_by_user_id,
+  startedByName: trip.started_by_name,
   createdAt: trip.created_at,
 });
 

@@ -146,7 +146,7 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
             <div className="profile-field">
               <span className="field-label">Started By</span>
               <span className="field-value">
-                <code>{trip.startedByUserId}</code>
+                {trip.startedByName}
               </span>
             </div>
 
