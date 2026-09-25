@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import StudentModal from "./StudentModal.jsx";
 import StudentViewModal from "./StudentViewModal.jsx";
 import StudentParentsModal from "./StudentParentsModal.jsx";
@@ -34,9 +35,9 @@ export default function Students() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [branchFilter, setBranchFilter] = useState("All branches");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [stopFilter, setStopFilter] = useState("All");
+  const [branchFilter, setBranchFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [stopFilter, setStopFilter] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
@@ -124,15 +125,15 @@ export default function Students() {
 
   const isFilterActive =
     searchQuery.trim() !== "" ||
-    branchFilter !== "All branches" ||
-    statusFilter !== "All" ||
-    stopFilter !== "All";
+    branchFilter !== "" ||
+    statusFilter !== "" ||
+    stopFilter !== "";
 
   const handleClear = () => {
     setSearchQuery("");
-    setBranchFilter("All branches");
-    setStatusFilter("All");
-    setStopFilter("All");
+    setBranchFilter("");
+    setStatusFilter("");
+    setStopFilter("");
   };
 
   const filteredStudents = students.filter((student) => {
@@ -148,14 +149,14 @@ export default function Students() {
         : false);
 
     const matchesBranch =
-      branchFilter === "All branches" || student.branchName === branchFilter;
+      branchFilter === "" || student.branchName === branchFilter;
 
     const matchesStatus =
-      statusFilter === "All" ||
+      statusFilter === "" ||
       (statusFilter === "Active" ? student.isActive : !student.isActive);
 
     const matchesStop =
-      stopFilter === "All" ||
+      stopFilter === "" ||
       (stopFilter === "Stop assigned"
         ? Boolean(student.stopId)
         : !student.stopId);
@@ -202,42 +203,43 @@ export default function Students() {
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
-              <select
+              <TypeAhead
+                options={branchOptions.map((branch) => ({ value: branch, label: branch }))}
                 value={branchFilter}
-                onChange={(event) => setBranchFilter(event.target.value)}
-              >
-                <option value="All branches">All branches</option>
-                {branchOptions.map((branch) => (
-                  <option key={branch} value={branch}>
-                    {branch}
-                  </option>
-                ))}
-              </select>
+                onChange={setBranchFilter}
+                placeholder="All branches"
+                emptyMessage="No branches available"
+                noMatchMessage="No branches found"
+              />
             </div>
           )}
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           <div className="filter-group">
             <label>Stop:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Stop assigned", label: "Stop assigned" },
+                { value: "No stop", label: "No stop" },
+              ]}
               value={stopFilter}
-              onChange={(event) => setStopFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Stop assigned">Stop assigned</option>
-              <option value="No stop">No stop</option>
-            </select>
+              onChange={setStopFilter}
+              placeholder="All"
+              noMatchMessage="No options found"
+            />
           </div>
 
           {isFilterActive && (
@@ -253,7 +255,7 @@ export default function Students() {
         </div>
 
         <input
-          type="text"
+          type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by student name or admission number..."

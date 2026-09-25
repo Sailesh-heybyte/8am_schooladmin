@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import ParentModal from "./ParentModal.jsx";
 import ParentDetailsModal from "./ParentDetailsModal.jsx";
 import AccessRestricted from "../../components/AccessRestricted.jsx";
@@ -17,8 +18,8 @@ export default function Parents() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [branchFilter, setBranchFilter] = useState("All branches");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [branchFilter, setBranchFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [parentToToggle, setParentToToggle] = useState(null);
@@ -100,13 +101,13 @@ export default function Parents() {
 
   const isFilterActive =
     searchQuery.trim() !== "" ||
-    branchFilter !== "All branches" ||
-    statusFilter !== "All";
+    branchFilter !== "" ||
+    statusFilter !== "";
 
   const handleClear = () => {
     setSearchQuery("");
-    setBranchFilter("All branches");
-    setStatusFilter("All");
+    setBranchFilter("");
+    setStatusFilter("");
   };
 
   const filteredParents = parents.filter((parent) => {
@@ -117,10 +118,10 @@ export default function Parents() {
       (parent.phone ? parent.phone.toLowerCase().includes(search) : false);
 
     const matchesBranch =
-      branchFilter === "All branches" || parent.branchName === branchFilter;
+      branchFilter === "" || parent.branchName === branchFilter;
 
     const matchesStatus =
-      statusFilter === "All" ||
+      statusFilter === "" ||
       (statusFilter === "Active" ? parent.isActive : !parent.isActive);
 
     return matchesSearch && matchesBranch && matchesStatus;
@@ -159,30 +160,29 @@ export default function Parents() {
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
-              <select
+              <TypeAhead
+                options={branchOptions.map((branch) => ({ value: branch, label: branch }))}
                 value={branchFilter}
-                onChange={(event) => setBranchFilter(event.target.value)}
-              >
-                <option value="All branches">All branches</option>
-                {branchOptions.map((branch) => (
-                  <option key={branch} value={branch}>
-                    {branch}
-                  </option>
-                ))}
-              </select>
+                onChange={setBranchFilter}
+                placeholder="All branches"
+                emptyMessage="No branches available"
+                noMatchMessage="No branches found"
+              />
             </div>
           )}
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           {isFilterActive && (
@@ -198,7 +198,7 @@ export default function Parents() {
         </div>
 
         <input
-          type="text"
+          type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by parent name or phone..."

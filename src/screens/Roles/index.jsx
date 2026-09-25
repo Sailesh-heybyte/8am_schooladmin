@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import RoleModal from "./RoleModal.jsx";
 import AccessRestricted from "../../components/AccessRestricted.jsx";
 import { isPermissionDenied } from "../../utils/errors.js";
@@ -14,7 +15,7 @@ export default function Roles() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [scopeFilter, setScopeFilter] = useState("All");
+  const [scopeFilter, setScopeFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [roleToEdit, setRoleToEdit] = useState(null);
 
@@ -36,11 +37,11 @@ export default function Roles() {
   }, []);
 
   const isFilterActive =
-    searchQuery.trim() !== "" || scopeFilter !== "All";
+    searchQuery.trim() !== "" || scopeFilter !== "";
 
   const handleClear = () => {
     setSearchQuery("");
-    setScopeFilter("All");
+    setScopeFilter("");
   };
 
   const filteredRoles = roles.filter((role) => {
@@ -49,7 +50,7 @@ export default function Roles() {
       search === "" || role.name.toLowerCase().includes(search);
 
     const matchesScope =
-      scopeFilter === "All" ||
+      scopeFilter === "" ||
       (scopeFilter === "School-wide"
         ? role.branchId === null
         : role.branchId !== null);
@@ -95,14 +96,16 @@ export default function Roles() {
         <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
           <div className="filter-group">
             <label>Scope:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "School-wide", label: "School-wide" },
+                { value: "Branch", label: "Branch" },
+              ]}
               value={scopeFilter}
-              onChange={(event) => setScopeFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="School-wide">School-wide</option>
-              <option value="Branch">Branch</option>
-            </select>
+              onChange={setScopeFilter}
+              placeholder="All"
+              noMatchMessage="No scopes found"
+            />
           </div>
 
           {isFilterActive && (
@@ -118,7 +121,7 @@ export default function Roles() {
         </div>
 
         <input
-          type="text"
+          type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search roles..."

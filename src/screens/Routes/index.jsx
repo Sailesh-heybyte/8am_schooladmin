@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import RouteModal from "./RouteModal.jsx";
 import RouteStopsModal from "./RouteStopsModal.jsx";
 import AssignBusModal from "./AssignBusModal.jsx";
@@ -18,9 +19,9 @@ export default function Routes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [branchFilter, setBranchFilter] = useState("All branches");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [busFilter, setBusFilter] = useState("All");
+  const [branchFilter, setBranchFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [busFilter, setBusFilter] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [routeToEdit, setRouteToEdit] = useState(null);
@@ -105,15 +106,15 @@ export default function Routes() {
 
   const isFilterActive =
     searchQuery.trim() !== "" ||
-    branchFilter !== "All branches" ||
-    statusFilter !== "All" ||
-    busFilter !== "All";
+    branchFilter !== "" ||
+    statusFilter !== "" ||
+    busFilter !== "";
 
   const handleClear = () => {
     setSearchQuery("");
-    setBranchFilter("All branches");
-    setStatusFilter("All");
-    setBusFilter("All");
+    setBranchFilter("");
+    setStatusFilter("");
+    setBusFilter("");
   };
 
   const filteredRoutes = routes.filter((route) => {
@@ -122,14 +123,14 @@ export default function Routes() {
       search === "" || route.routeName.toLowerCase().includes(search);
 
     const matchesBranch =
-      branchFilter === "All branches" || route.branchName === branchFilter;
+      branchFilter === "" || route.branchName === branchFilter;
 
     const matchesStatus =
-      statusFilter === "All" ||
+      statusFilter === "" ||
       (statusFilter === "Active" ? route.isActive : !route.isActive);
 
     const matchesBus =
-      busFilter === "All" ||
+      busFilter === "" ||
       (busFilter === "Bus assigned" ? Boolean(route.busId) : !route.busId);
 
     return matchesSearch && matchesBranch && matchesStatus && matchesBus;
@@ -174,42 +175,43 @@ export default function Routes() {
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
-              <select
+              <TypeAhead
+                options={branchOptions.map((branch) => ({ value: branch, label: branch }))}
                 value={branchFilter}
-                onChange={(event) => setBranchFilter(event.target.value)}
-              >
-                <option value="All branches">All branches</option>
-                {branchOptions.map((branch) => (
-                  <option key={branch} value={branch}>
-                    {branch}
-                  </option>
-                ))}
-              </select>
+                onChange={setBranchFilter}
+                placeholder="All branches"
+                emptyMessage="No branches available"
+                noMatchMessage="No branches found"
+              />
             </div>
           )}
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           <div className="filter-group">
             <label>Bus:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Bus assigned", label: "Bus assigned" },
+                { value: "No bus", label: "No bus" },
+              ]}
               value={busFilter}
-              onChange={(event) => setBusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Bus assigned">Bus assigned</option>
-              <option value="No bus">No bus</option>
-            </select>
+              onChange={setBusFilter}
+              placeholder="All"
+              noMatchMessage="No options found"
+            />
           </div>
 
           {isFilterActive && (
@@ -225,7 +227,7 @@ export default function Routes() {
         </div>
 
         <input
-          type="text"
+          type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by route name..."

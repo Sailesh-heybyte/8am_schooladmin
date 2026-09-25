@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import DirectionBadge from "../../components/DirectionBadge.jsx";
 import TripDetailsModal from "./TripDetailsModal.jsx";
 import AccessRestricted from "../../components/AccessRestricted.jsx";
@@ -129,59 +130,65 @@ export default function Trips() {
         description="View driver trips and transport runs."
       />
 
-      <div className="filter-card">
-        <div className="filter-group">
-          <input
-            id="trip-search"
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by bus or route ID..."
-          />
+      <div className="filter-card admin-filter">
+        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+          <div className="filter-group">
+            <label>Direction:</label>
+            <TypeAhead
+              options={[
+                { value: "AM_PICKUP", label: "Morning pickup" },
+                { value: "PM_DROP", label: "Evening drop" },
+              ]}
+              value={direction}
+              onChange={setDirection}
+              placeholder="All"
+              noMatchMessage="No directions found"
+            />
+          </div>
+
+          <div className="filter-group">
+            <label>Status:</label>
+            <TypeAhead
+              options={[
+                { value: "active", label: "Active" },
+                { value: "ended", label: "Ended" },
+              ]}
+              value={status}
+              onChange={setStatus}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
+          </div>
+
+          <div className="filter-group">
+            <label>Date:</label>
+            <input
+              id="trip-date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
+          </div>
+
+          {hasActiveFilters && (
+            <button
+              type="button"
+              className="secondary-button"
+              style={{ height: "2.3rem" }}
+              onClick={handleClearFilters}
+            >
+              Clear
+            </button>
+          )}
         </div>
 
-        <div className="filter-group">
-          <select
-            id="trip-direction"
-            value={direction}
-            onChange={(e) => setDirection(e.target.value)}
-          >
-            <option value="">All directions</option>
-            <option value="AM_PICKUP">Morning pickup</option>
-            <option value="PM_DROP">Evening drop</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <select
-            id="trip-status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="">All statuses</option>
-            <option value="active">Active</option>
-            <option value="ended">Ended</option>
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <input
-            id="trip-date"
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-          />
-        </div>
-
-        {hasActiveFilters && (
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={handleClearFilters}
-          >
-            Clear filters
-          </button>
-        )}
+        <input
+          id="trip-search"
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by bus or route ID..."
+        />
       </div>
 
       {error && (

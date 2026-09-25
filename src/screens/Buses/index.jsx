@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
+import TypeAhead from "../../components/TypeAhead.jsx";
 import BusModal from "./BusModal.jsx";
 import AssignDriverModal from "./AssignDriverModal.jsx";
 import AccessRestricted from "../../components/AccessRestricted.jsx";
@@ -17,9 +18,9 @@ export default function Buses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [branchFilter, setBranchFilter] = useState("All branches");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [driverFilter, setDriverFilter] = useState("All");
+  const [branchFilter, setBranchFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [driverFilter, setDriverFilter] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [busToEdit, setBusToEdit] = useState(null);
@@ -87,15 +88,15 @@ export default function Buses() {
 
   const isFilterActive =
     searchQuery.trim() !== "" ||
-    branchFilter !== "All branches" ||
-    statusFilter !== "All" ||
-    driverFilter !== "All";
+    branchFilter !== "" ||
+    statusFilter !== "" ||
+    driverFilter !== "";
 
   const handleClear = () => {
     setSearchQuery("");
-    setBranchFilter("All branches");
-    setStatusFilter("All");
-    setDriverFilter("All");
+    setBranchFilter("");
+    setStatusFilter("");
+    setDriverFilter("");
   };
 
   const filteredBuses = buses.filter((bus) => {
@@ -108,14 +109,14 @@ export default function Buses() {
         : false);
 
     const matchesBranch =
-      branchFilter === "All branches" || bus.branchName === branchFilter;
+      branchFilter === "" || bus.branchName === branchFilter;
 
     const matchesStatus =
-      statusFilter === "All" ||
+      statusFilter === "" ||
       (statusFilter === "Active" ? bus.isActive : !bus.isActive);
 
     const matchesDriver =
-      driverFilter === "All" ||
+      driverFilter === "" ||
       (driverFilter === "Driver assigned"
         ? Boolean(bus.driverId)
         : !bus.driverId);
@@ -162,42 +163,43 @@ export default function Buses() {
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
-              <select
+              <TypeAhead
+                options={branchOptions.map((branch) => ({ value: branch, label: branch }))}
                 value={branchFilter}
-                onChange={(event) => setBranchFilter(event.target.value)}
-              >
-                <option value="All branches">All branches</option>
-                {branchOptions.map((branch) => (
-                  <option key={branch} value={branch}>
-                    {branch}
-                  </option>
-                ))}
-              </select>
+                onChange={setBranchFilter}
+                placeholder="All branches"
+                emptyMessage="No branches available"
+                noMatchMessage="No branches found"
+              />
             </div>
           )}
 
           <div className="filter-group">
             <label>Status:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Inactive", label: "Inactive" },
+              ]}
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All"
+              noMatchMessage="No statuses found"
+            />
           </div>
 
           <div className="filter-group">
             <label>Driver:</label>
-            <select
+            <TypeAhead
+              options={[
+                { value: "Driver assigned", label: "Driver assigned" },
+                { value: "No driver", label: "No driver" },
+              ]}
               value={driverFilter}
-              onChange={(event) => setDriverFilter(event.target.value)}
-            >
-              <option value="All">All</option>
-              <option value="Driver assigned">Driver assigned</option>
-              <option value="No driver">No driver</option>
-            </select>
+              onChange={setDriverFilter}
+              placeholder="All"
+              noMatchMessage="No options found"
+            />
           </div>
 
           {isFilterActive && (
@@ -213,7 +215,7 @@ export default function Buses() {
         </div>
 
         <input
-          type="text"
+          type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by bus name or registration..."
