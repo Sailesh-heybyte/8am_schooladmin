@@ -85,17 +85,25 @@ async function parseErrorMessage(response) {
   return fallback;
 }
 
+// Ends the session: clears both tokens and reloads, which lands on /login.
+function endSession() {
+  localStorage.removeItem("school_access_token");
+  localStorage.removeItem("school_refresh_token");
+  window.location.reload();
+}
+
 export async function apiCall(path, options = {}) {
   let response = await fetch(`${BASE_URL}${path}`, buildRequest(options));
 
   if (response.status === 401 && !options.skipAuth && !options.isRetry) {
     try {
       await doRefresh();
-    } catch {
-      localStorage.removeItem("school_access_token");
-      localStorage.removeItem("school_refresh_token");
-      window.location.reload();
-      throw new Error("Session expired");
+    } catch (err) {
+      if (err.status >= 400 && err.status < 500) {
+        endSession();
+        throw new Error("Session expired");
+      }
+      throw err;
     }
 
     response = await fetch(
@@ -104,8 +112,8 @@ export async function apiCall(path, options = {}) {
     );
 
     if (response.status === 401) {
-      localStorage.removeItem("school_access_token");
-      localStorage.removeItem("school_refresh_token");
+      endSession();
+      throw new Error("Session expired");
     }
   }
 
