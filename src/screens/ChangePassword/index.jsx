@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "../Login/Login.scss";
 import { changePassword, login, getMe } from "../../api/auth.js";
 
-export default function ChangePassword() {
+export default function ChangePassword({ onSignedOut }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -71,6 +71,7 @@ export default function ChangePassword() {
         } else {
           localStorage.removeItem("school_access_token");
           localStorage.removeItem("school_refresh_token");
+          onSignedOut();
           navigate("/login", {
             replace: true,
             state: {

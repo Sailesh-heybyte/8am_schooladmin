@@ -43,7 +43,11 @@ export default function App() {
         <Route
           path="/change-password"
           element={
-            hasSession ? <ChangePassword /> : <Navigate to="/login" replace />
+            hasSession ? (
+              <ChangePassword onSignedOut={() => setIsAuthenticated(false)} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
         <Route
