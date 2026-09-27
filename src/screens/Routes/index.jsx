@@ -42,7 +42,7 @@ export default function Routes() {
     getRoutes()
       .then((data) => {
         if (!isMounted) return;
-        setRoutes(data || []);
+        setRoutes(data);
       })
       .catch((err) => {
         if (!isMounted) return;
@@ -76,7 +76,7 @@ export default function Routes() {
     setError(null);
     try {
       const data = await getRoutes();
-      setRoutes(data || []);
+      setRoutes(data);
     } catch (err) {
       setError(err);
     } finally {
