@@ -92,8 +92,22 @@ function endSession() {
   window.location.reload();
 }
 
+// fetch() only throws when the request never reached the server
+// (no internet, server down, request blocked). Show a clear message
+// instead of the browser's "Failed to fetch".
+async function send(url, init) {
+  try {
+    return await fetch(url, init);
+  } catch (err) {
+    throw new Error(
+      "Can't reach the server. Check your connection and try again.",
+      { cause: err },
+    );
+  }
+}
+
 export async function apiCall(path, options = {}) {
-  let response = await fetch(`${BASE_URL}${path}`, buildRequest(options));
+  let response = await send(`${BASE_URL}${path}`, buildRequest(options));
 
   if (response.status === 401 && !options.skipAuth && !options.isRetry) {
     try {
@@ -106,7 +120,7 @@ export async function apiCall(path, options = {}) {
       throw err;
     }
 
-    response = await fetch(
+    response = await send(
       `${BASE_URL}${path}`,
       buildRequest({ ...options, isRetry: true }),
     );
