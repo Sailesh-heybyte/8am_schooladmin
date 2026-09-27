@@ -190,6 +190,17 @@ export default function RouteStopsModal({
   const isBusy = loading || isAdding || isSavingOrder || isRemoving;
 
   const handleClose = () => {
+    // Ignore close requests while something is saving.
+    if (isBusy) return;
+
+    // A reordered list is only kept after "Save order", so ask first.
+    if (
+      hasUnsavedOrder &&
+      !window.confirm("Discard the new stop order? It hasn't been saved.")
+    ) {
+      return;
+    }
+
     if (hasChangedAnything && onSaved) {
       onSaved();
     }
