@@ -271,7 +271,7 @@ export default function Students() {
         </div>
       )}
 
-      {loading ? (
+      {loading && students.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

@@ -145,7 +145,7 @@ export default function Roles() {
             <span>Retry</span>
           </button>
         </div>
-      ) : loading ? (
+      ) : loading && roles.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

@@ -186,7 +186,7 @@ export default function BranchUsers() {
             <span>Retry</span>
           </button>
         </div>
-      ) : loading ? (
+      ) : loading && users.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

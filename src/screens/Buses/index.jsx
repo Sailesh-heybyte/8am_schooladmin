@@ -231,7 +231,7 @@ export default function Buses() {
         </div>
       )}
 
-      {loading ? (
+      {loading && buses.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

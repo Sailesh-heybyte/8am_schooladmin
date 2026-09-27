@@ -187,7 +187,7 @@ export default function Drivers() {
         </div>
       )}
 
-      {loading ? (
+      {loading && drivers.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

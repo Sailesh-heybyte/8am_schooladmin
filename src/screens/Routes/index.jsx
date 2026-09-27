@@ -250,7 +250,7 @@ export default function Routes() {
             <span>Retry</span>
           </button>
         </div>
-      ) : loading ? (
+      ) : loading && routes.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

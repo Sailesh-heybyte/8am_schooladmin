@@ -348,7 +348,7 @@ export default function Stops() {
             <span>Retry</span>
           </button>
         </div>
-      ) : loading ? (
+      ) : loading && stops.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>
