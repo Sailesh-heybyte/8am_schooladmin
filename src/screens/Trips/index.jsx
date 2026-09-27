@@ -187,7 +187,7 @@ export default function Trips() {
           type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by bus or route ID..."
+          placeholder="Search by bus, route or driver..."
         />
       </div>
 
