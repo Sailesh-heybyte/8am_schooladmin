@@ -52,15 +52,6 @@
   font-size: 0.75rem;
   cursor: pointer;
 
-  .filter-card.admin-filter {
-    .filter-group + .filter-group {
-      margin-left: 0.2rem;
-    }
-
-    input {
-      min-width: 15rem;
-    }
-  }
   &:hover {
     background: $surface-hover;
   }
