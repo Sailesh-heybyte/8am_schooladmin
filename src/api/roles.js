@@ -25,7 +25,18 @@ export const getPermissions = async (scope = "school") => {
   return permissions.filter((p) => p.scope === scope);
 };
 
-export const getRoles = () => apiCall("/iam/school-roles");
+// List items from GET /iam/school-roles carry no permissions,
+// so they get their own translator.
+const toUiSchoolRoleListItem = (data) => ({
+  id: data.id,
+  name: data.name,
+  branchId: data.branch_id,
+});
+
+export const getRoles = async () => {
+  const data = await apiCall("/iam/school-roles");
+  return data.map(toUiSchoolRoleListItem);
+};
 
 export const getSchoolRole = async (roleId) => {
   const data = await apiCall(`/iam/school-roles/${roleId}`);
