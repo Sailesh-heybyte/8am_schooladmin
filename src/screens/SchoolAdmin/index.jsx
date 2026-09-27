@@ -5,6 +5,7 @@ import { logout, getMe } from "../../api/auth.js";
 import { getTokenPermissions, refreshSession } from "../../api/client.js";
 import ProfileModal from "./popups/ProfileModal.jsx";
 import { BranchesProvider } from "../../context/BranchesContext.jsx";
+import ErrorBoundary from "../../components/ErrorBoundary.jsx";
 
 const menuItems = [
   {
@@ -273,7 +274,9 @@ function SchoolAdmin({ onLogout }) {
 
         <section className="page-content">
           <BranchesProvider schoolId={me?.school_id}>
-            <Outlet context={{ me }} />
+            <ErrorBoundary key={location.pathname}>
+              <Outlet context={{ me }} />
+            </ErrorBoundary>
           </BranchesProvider>
         </section>
       </main>
