@@ -80,8 +80,14 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
   const isSaveDisabled =
     isSubmitting || !parentId || !parentId.trim() || parentsLoading;
 
+  // Ignore close requests while a save is in progress.
+  const requestClose = () => {
+    if (isSubmitting) return;
+    onClose();
+  };
+
   return (
-    <div className="add-user-overlay" onMouseDown={onClose}>
+    <div className="add-user-overlay">
       <div
         className="add-user-modal"
         style={{ width: "36rem" }}
@@ -95,7 +101,7 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
           <button
             type="button"
             className="add-user-close"
-            onClick={onClose}
+            onClick={requestClose}
             disabled={isSubmitting}
           >
             <i className="bi bi-x"></i>
@@ -168,7 +174,7 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
             <button
               type="button"
               className="modal-cancel"
-              onClick={onClose}
+              onClick={requestClose}
               disabled={isSubmitting}
             >
               Cancel

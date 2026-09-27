@@ -218,8 +218,14 @@ export default function BranchUserModal({
     Boolean(loadError) ||
     (!isPinned && Boolean(branchesError));
 
+  // Ignore close requests while a save is in progress.
+  const requestClose = () => {
+    if (isSubmitting) return;
+    onClose();
+  };
+
   return (
-    <div className="add-user-overlay" onMouseDown={onClose}>
+    <div className="add-user-overlay">
       <div className="add-user-modal" onMouseDown={(e) => e.stopPropagation()}>
         <div className="add-user-header">
           <div>
@@ -229,7 +235,7 @@ export default function BranchUserModal({
           <button
             type="button"
             className="add-user-close"
-            onClick={onClose}
+            onClick={requestClose}
             disabled={isSubmitting}
           >
             <i className="bi bi-x"></i>
@@ -682,7 +688,7 @@ export default function BranchUserModal({
             <button
               type="button"
               className="modal-cancel"
-              onClick={onClose}
+              onClick={requestClose}
               disabled={isSubmitting}
             >
               Cancel

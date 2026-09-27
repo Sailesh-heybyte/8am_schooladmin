@@ -85,8 +85,14 @@ export default function ParentModal({
     (!isPinned && branchesLoading) ||
     (!isPinned && Boolean(branchesError));
 
+  // Ignore close requests while a save is in progress.
+  const requestClose = () => {
+    if (isSubmitting) return;
+    onClose();
+  };
+
   return (
-    <div className="add-user-overlay" onMouseDown={onClose}>
+    <div className="add-user-overlay">
       <div
         className="add-user-modal"
         onMouseDown={(e) => e.stopPropagation()}
@@ -99,7 +105,7 @@ export default function ParentModal({
           <button
             type="button"
             className="add-user-close"
-            onClick={onClose}
+            onClick={requestClose}
             disabled={isSubmitting}
           >
             <i className="bi bi-x"></i>
@@ -197,7 +203,7 @@ export default function ParentModal({
             <button
               type="button"
               className="modal-cancel"
-              onClick={onClose}
+              onClick={requestClose}
               disabled={isSubmitting}
             >
               Cancel
