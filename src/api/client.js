@@ -101,7 +101,7 @@ export async function apiCall(path, options = {}) {
     } catch (err) {
       if (err.status >= 400 && err.status < 500) {
         endSession();
-        throw new Error("Session expired");
+        throw new Error("Session expired", { cause: err });
       }
       throw err;
     }
