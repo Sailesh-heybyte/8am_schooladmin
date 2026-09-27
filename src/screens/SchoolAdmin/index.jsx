@@ -194,55 +194,65 @@ function SchoolAdmin({ onLogout }) {
           ))}
         </nav>
 
-        {sidebarOpen && (
-          <div className="admin-profile-container">
-            {isProfileMenuOpen && (
-              <div className="profile-menu">
-                <button
-                  type="button"
-                  className="profile-menu-item"
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    setIsProfileModalOpen(true);
-                  }}
-                >
-                  <i className="bi bi-person"></i>
-                  <span>View profile</span>
-                </button>
-                <button
-                  type="button"
-                  className="profile-menu-item danger"
-                  onClick={() => {
-                    setIsProfileMenuOpen(false);
-                    handleLogout();
-                  }}
-                >
-                  <i className="bi bi-box-arrow-right"></i>
-                  <span>Sign out</span>
-                </button>
-              </div>
-            )}
-
-            <div
-              className="admin-profile"
-              onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="avatar">
+        <div className="admin-profile-container">
+          {isProfileMenuOpen && (
+            <div className="profile-menu">
+              <button
+                type="button"
+                className="profile-menu-item"
+                onClick={() => {
+                  setIsProfileMenuOpen(false);
+                  setIsProfileModalOpen(true);
+                }}
+              >
                 <i className="bi bi-person"></i>
-              </div>
-              <div className="admin-info">
-                <strong>My Profile</strong>
-              </div>
-              <i
-                className={`bi bi-chevron-${
-                  isProfileMenuOpen ? "down" : "up"
-                } profile-chevron`}
-              ></i>
+                <span>View profile</span>
+              </button>
+              <button
+                type="button"
+                className="profile-menu-item danger"
+                onClick={() => {
+                  setIsProfileMenuOpen(false);
+                  handleLogout();
+                }}
+              >
+                <i className="bi bi-box-arrow-right"></i>
+                <span>Sign out</span>
+              </button>
             </div>
+          )}
+
+          <div
+            className="admin-profile"
+            onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+            role="button"
+            tabIndex={0}
+            aria-label="Open profile menu"
+            aria-expanded={isProfileMenuOpen}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setIsProfileMenuOpen((prev) => !prev);
+              }
+            }}
+          >
+            <div className="avatar">
+              <i className="bi bi-person"></i>
+            </div>
+            {sidebarOpen && (
+              <>
+                <div className="admin-info">
+                  <strong>My Profile</strong>
+                </div>
+                <i
+                  className={`bi bi-chevron-${
+                    isProfileMenuOpen ? "down" : "up"
+                  } profile-chevron`}
+                ></i>
+              </>
+            )}
           </div>
-        )}
+        </div>
       </aside>
 
       <main className="main-content">
