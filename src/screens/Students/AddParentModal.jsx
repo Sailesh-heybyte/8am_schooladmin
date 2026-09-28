@@ -152,17 +152,18 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
                   style={{ flex: 1, width: "100%" }}
                 >
                   <label htmlFor="add-parent-relationship">Relationship</label>
-                  <select
-                    id="add-parent-relationship"
+                  <TypeAhead
+                    options={[
+                      { value: "father", label: "Father" },
+                      { value: "mother", label: "Mother" },
+                      { value: "guardian", label: "Guardian" },
+                    ]}
                     value={relationship}
-                    onChange={(e) => setRelationship(e.target.value)}
+                    onChange={setRelationship}
+                    placeholder="Not specified"
                     disabled={isSubmitting}
-                  >
-                    <option value="">Not specified</option>
-                    <option value="father">Father</option>
-                    <option value="mother">Mother</option>
-                    <option value="guardian">Guardian</option>
-                  </select>
+                    noMatchMessage="No options found"
+                  />
                 </div>
               </div>
             </div>

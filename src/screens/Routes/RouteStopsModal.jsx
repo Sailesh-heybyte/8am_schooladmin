@@ -24,6 +24,7 @@ import {
 } from "../../api/routes.js";
 import { getStops } from "../../api/stops.js";
 import "../Roles/RoleModal.scss";
+import TypeAhead from "../../components/TypeAhead.jsx";
 
 function SortableStopRow({
   stop,
@@ -312,36 +313,24 @@ export default function RouteStopsModal({
         <div className="add-user-body" style={{ padding: "1.25rem 1.5rem" }}>
           {/* Add Stop Section */}
           <form onSubmit={handleAddStop} className="route-stops-add-bar">
-            <div style={{ flex: 1 }}>
-              <select
+            <div className="route-stops-add-field">
+              <TypeAhead
+                options={availableStopsToAdd.map((s) => ({ value: s.id, label: s.stopName }))}
                 value={selectedStopIdToAdd}
-                onChange={(e) => setSelectedStopIdToAdd(e.target.value)}
-                disabled={isBusy || availableStopsToAdd.length === 0}
-                style={{ width: "100%", height: "2.35rem" }}
-              >
-                {availableStopsToAdd.length === 0 ? (
-                  <option value="" disabled>
-                    All stops are on this route
-                  </option>
-                ) : (
-                  <>
-                    <option value="">Select a stop to add...</option>
-                    {availableStopsToAdd.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.stopName}
-                      </option>
-                    ))}
-                  </>
-                )}
-              </select>
+                onChange={setSelectedStopIdToAdd}
+                placeholder="Select a stop to add..."
+                disabled={isBusy}
+                emptyMessage="All stops are on this route"
+                noMatchMessage="No stops found"
+              />
             </div>
             <button
               type="submit"
-              className="modal-save"
-              style={{ height: "2.35rem", padding: "0 1.25rem", whiteSpace: "nowrap" }}
+              className="primary-button route-stops-add-button"
               disabled={isBusy || !selectedStopIdToAdd}
             >
-              {isAdding ? "Adding..." : "+ Add Stop"}
+              <i className="bi bi-plus-lg"></i>
+              <span>{isAdding ? "Adding..." : "Add stop"}</span>
             </button>
           </form>
 

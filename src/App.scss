@@ -2113,8 +2113,11 @@ tbody tr:hover {
    ROUTE STOPS MODAL
 ========================= */
 
+// The modal turns every <form> into a centred column; this bar is a row.
+.add-user-overlay .add-user-modal form.route-stops-add-bar,
 .route-stops-add-bar {
   display: flex;
+  flex-direction: row;
   gap: 0.75rem;
   align-items: center;
   margin-bottom: 1.25rem;
@@ -2122,6 +2125,26 @@ tbody tr:hover {
   background: #F8F9FC;
   border: 1px solid $border;
   border-radius: $radius-small;
+}
+
+.route-stops-add-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.route-stops-add-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.2rem;
+  padding: 0 1rem;
+  font-size: 0.68rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  i {
+    font-size: 0.8rem;
+  }
 }
 
 .route-stops-list-wrapper {

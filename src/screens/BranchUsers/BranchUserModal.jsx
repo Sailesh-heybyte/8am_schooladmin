@@ -4,6 +4,7 @@ import { useBranches } from "../../context/BranchesContext.jsx";
 import { getRoles } from "../../api/roles.js";
 import "../Roles/RoleModal.scss";
 import "./BranchUserModal.scss";
+import TypeAhead from "../../components/TypeAhead.jsx";
 
 const INITIAL_FORM_DATA = {
   fullName: "",
@@ -295,32 +296,16 @@ export default function BranchUserModal({
                 <div className="form-row">
                   <div className="form-field">
                     <label htmlFor="user-branch">Branch *</label>
-                    <select
-                      id="user-branch"
+                    <TypeAhead
+                      options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
                       value={formData.branchId}
-                      onChange={(e) => handleChange("branchId", e.target.value)}
-                      required
-                      disabled={
-                        isSubmitting ||
-                        branchesLoading ||
-                        Boolean(branchesError)
-                      }
-                    >
-                      {branchesLoading ? (
-                        <option value="" disabled>
-                          Loading branches...
-                        </option>
-                      ) : (
-                        <>
-                          <option value="">Select a branch...</option>
-                          {branches.map((b) => (
-                            <option key={b.id} value={b.id}>
-                              {b.branchName}
-                            </option>
-                          ))}
-                        </>
-                      )}
-                    </select>
+                      onChange={(value) => handleChange("branchId", value)}
+                      placeholder="Select a branch..."
+                      disabled={isSubmitting || branchesLoading || Boolean(branchesError)}
+                      loading={branchesLoading}
+                      emptyMessage="No branches available"
+                      noMatchMessage="No branches found"
+                    />
                     {branchesError && (
                       <span
                         className="roles-error"
@@ -387,34 +372,34 @@ export default function BranchUserModal({
                 </div>
                 <div className="form-field">
                   <label htmlFor="user-gender">Gender</label>
-                  <select
-                    id="user-gender"
+                  <TypeAhead
+                    options={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                      { value: "other", label: "Other" },
+                    ]}
                     value={formData.gender}
-                    onChange={(e) => handleChange("gender", e.target.value)}
+                    onChange={(value) => handleChange("gender", value)}
+                    placeholder="Select gender..."
                     disabled={isSubmitting}
-                  >
-                    <option value="">Select gender...</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
+                    noMatchMessage="No options found"
+                  />
                 </div>
                 <div className="form-field">
                   <label htmlFor="user-marital-status">Marital Status</label>
-                  <select
-                    id="user-marital-status"
+                  <TypeAhead
+                    options={[
+                      { value: "single", label: "Single" },
+                      { value: "married", label: "Married" },
+                      { value: "divorced", label: "Divorced" },
+                      { value: "widowed", label: "Widowed" },
+                    ]}
                     value={formData.maritalStatus}
-                    onChange={(e) =>
-                      handleChange("maritalStatus", e.target.value)
-                    }
+                    onChange={(value) => handleChange("maritalStatus", value)}
+                    placeholder="Select marital status..."
                     disabled={isSubmitting}
-                  >
-                    <option value="">Select marital status...</option>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                    <option value="widowed">Widowed</option>
-                  </select>
+                    noMatchMessage="No options found"
+                  />
                 </div>
               </div>
 

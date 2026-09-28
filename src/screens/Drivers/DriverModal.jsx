@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createDriver, updateDriver } from "../../api/drivers.js";
 import { useBranches } from "../../context/BranchesContext.jsx";
 import "../Roles/RoleModal.scss";
+import TypeAhead from "../../components/TypeAhead.jsx";
 
 export default function DriverModal({
   isOpen,
@@ -244,32 +245,16 @@ export default function DriverModal({
                 ) : !isPinned ? (
                   <div className="form-field" style={{ flex: 1, width: "100%" }}>
                     <label htmlFor="driver-branch">Branch *</label>
-                    <select
-                      id="driver-branch"
+                    <TypeAhead
+                      options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
                       value={branchId}
-                      onChange={(e) => setBranchId(e.target.value)}
-                      required
-                      disabled={
-                        isSubmitting ||
-                        branchesLoading ||
-                        Boolean(branchesError)
-                      }
-                    >
-                      {branchesLoading ? (
-                        <option value="" disabled>
-                          Loading branches...
-                        </option>
-                      ) : (
-                        <>
-                          <option value="">Select a branch...</option>
-                          {branches.map((b) => (
-                            <option key={b.id} value={b.id}>
-                              {b.branchName}
-                            </option>
-                          ))}
-                        </>
-                      )}
-                    </select>
+                      onChange={setBranchId}
+                      placeholder="Select a branch..."
+                      disabled={isSubmitting || branchesLoading || Boolean(branchesError)}
+                      loading={branchesLoading}
+                      emptyMessage="No branches available"
+                      noMatchMessage="No branches found"
+                    />
                     {branchesError && (
                       <span
                         className="roles-error"

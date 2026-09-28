@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { assignStop } from "../../api/students.js";
 import { getStops } from "../../api/stops.js";
 import "../Roles/RoleModal.scss";
+import TypeAhead from "../../components/TypeAhead.jsx";
 
 export default function AssignStopModal({
   isOpen,
@@ -145,41 +146,16 @@ export default function AssignStopModal({
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
                   <label htmlFor="assign-stop-select">Stop *</label>
-                  <select
-                    id="assign-stop-select"
+                  <TypeAhead
+                    options={stops.map((s) => ({ value: s.id, label: s.stopName }))}
                     value={selectedStopId}
-                    onChange={(e) => setSelectedStopId(e.target.value)}
-                    required
-                    disabled={
-                      isSubmitting ||
-                      loading ||
-                      Boolean(loadError) ||
-                      stops.length === 0
-                    }
-                  >
-                    {loading ? (
-                      <option value="" disabled>
-                        Loading stops...
-                      </option>
-                    ) : loadError ? (
-                      <option value="" disabled>
-                        Failed to load stops
-                      </option>
-                    ) : stops.length === 0 ? (
-                      <option value="" disabled>
-                        No stops found. Add a stop first.
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">Select a stop...</option>
-                        {stops.map((s) => (
-                          <option key={s.id} value={s.id}>
-                            {s.stopName}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
+                    onChange={setSelectedStopId}
+                    placeholder="Select a stop..."
+                    disabled={isSubmitting || loading || Boolean(loadError)}
+                    loading={loading}
+                    emptyMessage="No stops found. Add a stop first."
+                    noMatchMessage="No stops found"
+                  />
 
                   {loadError && (
                     <span

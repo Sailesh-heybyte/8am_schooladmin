@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import "./TypeAhead.scss";
 
 export default function TypeAhead({
@@ -18,6 +19,23 @@ export default function TypeAhead({
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef(null);
   const inputRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const [dropdownPosition, setDropdownPosition] = useState(null);
+
+  // The list is drawn on document.body (see createPortal below) so a
+  // scrolling modal cannot clip it. This places it under the input, or
+  // above it when there is not enough room below.
+  const placeDropdown = () => {
+    const rect = containerRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUp = spaceBelow < 220 && rect.top > spaceBelow;
+    setDropdownPosition({
+      left: rect.left,
+      width: rect.width,
+      top: openUp ? "auto" : rect.bottom + 4,
+      bottom: openUp ? window.innerHeight - rect.top + 4 : "auto",
+    });
+  };
 
   const normalizedOptions = useMemo(() => {
     return options.map((opt) => {
@@ -59,6 +77,9 @@ export default function TypeAhead({
     const closeIfOutside = (event) => {
       if (!containerRef.current) return;
       if (containerRef.current.contains(event.target)) return;
+      if (dropdownRef.current && dropdownRef.current.contains(event.target)) {
+        return;
+      }
       setIsOpen(false);
       setSearchText(
         selectedOptionRef.current ? selectedOptionRef.current.label : ""
@@ -74,6 +95,17 @@ export default function TypeAhead({
     };
   }, []);
 
+  // Keep the list under its input while anything scrolls or resizes.
+  useEffect(() => {
+    if (!isOpen) return;
+    window.addEventListener("scroll", placeDropdown, true);
+    window.addEventListener("resize", placeDropdown);
+    return () => {
+      window.removeEventListener("scroll", placeDropdown, true);
+      window.removeEventListener("resize", placeDropdown);
+    };
+  }, [isOpen]);
+
   const filteredOptions = useMemo(() => {
     if (!searchText.trim()) return normalizedOptions;
     const query = searchText.toLowerCase().trim();
@@ -87,6 +119,7 @@ export default function TypeAhead({
 
   const handleOpen = () => {
     if (disabled || isOpen) return;
+    placeDropdown();
     setIsOpen(true);
     setSearchText("");
     setHighlightedIndex(-1);
@@ -167,7 +200,10 @@ export default function TypeAhead({
           onFocus={handleOpen}
           onChange={(e) => {
             setSearchText(e.target.value);
-            if (!isOpen) setIsOpen(true);
+            if (!isOpen) {
+              placeDropdown();
+              setIsOpen(true);
+            }
             setHighlightedIndex(-1);
           }}
           onKeyDown={handleKeyDown}
@@ -193,8 +229,15 @@ export default function TypeAhead({
         </div>
       </div>
 
-      {isOpen && !disabled && (
-        <div className="typeahead-dropdown">
+      {isOpen &&
+        !disabled &&
+        dropdownPosition &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            className="typeahead-dropdown"
+            style={dropdownPosition}
+          >
           <div className="typeahead-options">
             {loading ? (
               <div className="typeahead-status">Loading options...</div>
@@ -232,8 +275,9 @@ export default function TypeAhead({
               </>
             )}
           </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

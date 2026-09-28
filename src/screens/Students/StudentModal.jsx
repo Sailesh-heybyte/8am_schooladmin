@@ -247,32 +247,16 @@ export default function StudentModal({
                 ) : !isPinned ? (
                   <div className="form-field" style={{ flex: 1, width: "100%" }}>
                     <label htmlFor="student-branch">Branch *</label>
-                    <select
-                      id="student-branch"
+                    <TypeAhead
+                      options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
                       value={branchId}
-                      onChange={(e) => setBranchId(e.target.value)}
-                      required
-                      disabled={
-                        isSubmitting ||
-                        branchesLoading ||
-                        Boolean(branchesError)
-                      }
-                    >
-                      {branchesLoading ? (
-                        <option value="" disabled>
-                          Loading branches...
-                        </option>
-                      ) : (
-                        <>
-                          <option value="">Select a branch...</option>
-                          {branches.map((b) => (
-                            <option key={b.id} value={b.id}>
-                              {b.branchName}
-                            </option>
-                          ))}
-                        </>
-                      )}
-                    </select>
+                      onChange={setBranchId}
+                      placeholder="Select a branch..."
+                      disabled={isSubmitting || branchesLoading || Boolean(branchesError)}
+                      loading={branchesLoading}
+                      emptyMessage="No branches available"
+                      noMatchMessage="No branches found"
+                    />
                     {branchesError && (
                       <span
                         className="roles-error"
@@ -400,17 +384,18 @@ export default function StudentModal({
                     style={{ flex: 1, width: "100%" }}
                   >
                     <label htmlFor="student-relationship">Relationship</label>
-                    <select
-                      id="student-relationship"
+                    <TypeAhead
+                      options={[
+                        { value: "father", label: "Father" },
+                        { value: "mother", label: "Mother" },
+                        { value: "guardian", label: "Guardian" },
+                      ]}
                       value={relationship}
-                      onChange={(e) => setRelationship(e.target.value)}
+                      onChange={setRelationship}
+                      placeholder="Not specified"
                       disabled={isSubmitting}
-                    >
-                      <option value="">Not specified</option>
-                      <option value="father">Father</option>
-                      <option value="mother">Mother</option>
-                      <option value="guardian">Guardian</option>
-                    </select>
+                      noMatchMessage="No options found"
+                    />
                   </div>
                 </div>
               </div>

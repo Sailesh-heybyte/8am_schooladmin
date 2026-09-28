@@ -85,16 +85,13 @@
 }
 
 .typeahead-dropdown {
-  position: absolute;
-  top: calc(100% + 0.25rem);
-  left: 0;
-  right: 0;
-  width: 100%;
+  // Drawn on document.body; top/left/width are set by the component.
+  position: fixed;
   background: $white;
   border: 0.05rem solid $border;
   border-radius: $radius-small;
   box-shadow: $shadow-hover;
-  z-index: 1000;
+  z-index: 10000;
   overflow: hidden;
 }
 

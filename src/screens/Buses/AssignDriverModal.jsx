@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { assignDriver } from "../../api/buses.js";
 import { getDrivers } from "../../api/drivers.js";
 import "../Roles/RoleModal.scss";
+import TypeAhead from "../../components/TypeAhead.jsx";
 
 export default function AssignDriverModal({
   isOpen,
@@ -128,41 +129,16 @@ export default function AssignDriverModal({
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
                   <label htmlFor="assign-driver-select">Driver *</label>
-                  <select
-                    id="assign-driver-select"
+                  <TypeAhead
+                    options={drivers.map((d) => ({ value: d.id, label: d.fullName }))}
                     value={selectedDriverId}
-                    onChange={(e) => setSelectedDriverId(e.target.value)}
-                    required
-                    disabled={
-                      isSubmitting ||
-                      loading ||
-                      Boolean(loadError) ||
-                      drivers.length === 0
-                    }
-                  >
-                    {loading ? (
-                      <option value="" disabled>
-                        Loading drivers...
-                      </option>
-                    ) : loadError ? (
-                      <option value="" disabled>
-                        Failed to load drivers
-                      </option>
-                    ) : drivers.length === 0 ? (
-                      <option value="" disabled>
-                        No drivers found. Add a driver first.
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">Select a driver...</option>
-                        {drivers.map((d) => (
-                          <option key={d.id} value={d.id}>
-                            {d.fullName}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
+                    onChange={setSelectedDriverId}
+                    placeholder="Select a driver..."
+                    disabled={isSubmitting || loading || Boolean(loadError)}
+                    loading={loading}
+                    emptyMessage="No drivers found. Add a driver first."
+                    noMatchMessage="No drivers found"
+                  />
 
                   {loadError && (
                     <span

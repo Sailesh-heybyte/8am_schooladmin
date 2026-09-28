@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { assignBus } from "../../api/routes.js";
 import { getBuses } from "../../api/buses.js";
 import "../Roles/RoleModal.scss";
+import TypeAhead from "../../components/TypeAhead.jsx";
 
 export default function AssignBusModal({
   isOpen,
@@ -127,41 +128,21 @@ export default function AssignBusModal({
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
                   <label htmlFor="assign-bus-select">Bus *</label>
-                  <select
-                    id="assign-bus-select"
+                  <TypeAhead
+                    options={buses.map((b) => ({
+                      value: b.id,
+                      label: b.registrationNumber
+                        ? `${b.busName} (${b.registrationNumber})`
+                        : b.busName,
+                    }))}
                     value={selectedBusId}
-                    onChange={(e) => setSelectedBusId(e.target.value)}
-                    required
-                    disabled={
-                      isSubmitting ||
-                      loading ||
-                      Boolean(loadError) ||
-                      buses.length === 0
-                    }
-                  >
-                    {loading ? (
-                      <option value="" disabled>
-                        Loading buses...
-                      </option>
-                    ) : loadError ? (
-                      <option value="" disabled>
-                        Failed to load buses
-                      </option>
-                    ) : buses.length === 0 ? (
-                      <option value="" disabled>
-                        No buses available. Add a bus first.
-                      </option>
-                    ) : (
-                      <>
-                        <option value="">Select a bus...</option>
-                        {buses.map((b) => (
-                          <option key={b.id} value={b.id}>
-                            {b.busName}{b.registrationNumber ? ` (${b.registrationNumber})` : ""}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </select>
+                    onChange={setSelectedBusId}
+                    placeholder="Select a bus..."
+                    disabled={isSubmitting || loading || Boolean(loadError)}
+                    loading={loading}
+                    emptyMessage="No buses available. Add a bus first."
+                    noMatchMessage="No buses found"
+                  />
 
                   {loadError && (
                     <span
