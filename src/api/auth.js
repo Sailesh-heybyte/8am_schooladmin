@@ -58,6 +58,7 @@ export async function logout() {
 
   localStorage.removeItem("school_access_token");
   localStorage.removeItem("school_refresh_token");
+  sessionStorage.removeItem("school_login_identifier");
 }
 
 export async function getMe() {
