@@ -172,9 +172,8 @@ function SchoolAdmin({ onLogout }) {
           {sidebarOpen && (
             <div>
               <h2>
-                8AM<span>Admin</span>
+                8AM<span>School</span>
               </h2>
-              <p>School Admin</p>
             </div>
           )}
         </div>
