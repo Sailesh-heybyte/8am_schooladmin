@@ -234,6 +234,13 @@ export default function RouteStopsModal({
     e.preventDefault();
     if (!selectedStopIdToAdd) return;
 
+    if (
+      hasUnsavedOrder &&
+      !window.confirm("Adding a stop will discard the new stop order. Continue?")
+    ) {
+      return;
+    }
+
     setIsAdding(true);
     setActionError("");
 
