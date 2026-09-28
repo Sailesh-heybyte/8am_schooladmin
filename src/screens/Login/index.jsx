@@ -3,11 +3,19 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./Login.scss";
 import { login } from "../../api/auth.js";
 
+// A notice left by another screen (e.g. after a password change).
+// Read once, then removed so it does not show again.
+function takeLoginNotice() {
+  const notice = sessionStorage.getItem("login_notice") || "";
+  sessionStorage.removeItem("login_notice");
+  return notice;
+}
+
 export default function Login({ onLoginSuccess }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [notice, setNotice] = useState(() => location.state?.notice || "");
+  const [notice, setNotice] = useState(() => location.state?.notice || takeLoginNotice());
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

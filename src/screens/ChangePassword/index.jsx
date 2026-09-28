@@ -71,6 +71,10 @@ export default function ChangePassword({ onSignedOut }) {
         } else {
           localStorage.removeItem("school_access_token");
           localStorage.removeItem("school_refresh_token");
+          sessionStorage.setItem(
+            "login_notice",
+            "Password changed. Please sign in with your new password.",
+          );
           onSignedOut();
           navigate("/login", {
             replace: true,
