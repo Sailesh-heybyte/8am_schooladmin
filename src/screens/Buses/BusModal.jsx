@@ -156,7 +156,7 @@ export default function BusModal({
                     type="text"
                     value={busName}
                     onChange={(e) => setBusName(e.target.value)}
-                    placeholder="e.g. Bus Garuda"
+                    placeholder="Bus Garuda"
                     required
                     disabled={isSubmitting}
                   />
@@ -170,7 +170,7 @@ export default function BusModal({
                     type="text"
                     value={registrationNumber}
                     onChange={(e) => setRegistrationNumber(e.target.value)}
-                    placeholder="e.g. AP01AB9959"
+                    placeholder="AP01AB9959"
                     required
                     disabled={isSubmitting}
                   />
@@ -186,7 +186,7 @@ export default function BusModal({
                     min="1"
                     value={capacity}
                     onChange={(e) => setCapacity(e.target.value)}
-                    placeholder="e.g. 40"
+                    placeholder="40"
                     required
                     disabled={isSubmitting}
                   />

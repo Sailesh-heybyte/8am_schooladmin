@@ -135,7 +135,7 @@ export default function RouteModal({
                     type="text"
                     value={routeName}
                     onChange={(e) => setRouteName(e.target.value)}
-                    placeholder="e.g. Route 1 - North Campus"
+                    placeholder="Route 1 - North Campus"
                     required
                     disabled={isSubmitting}
                   />

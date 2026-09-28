@@ -206,7 +206,7 @@ export default function StudentModal({
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Aarav K. Nair"
+                    placeholder="Aarav K. Nair"
                     required
                     disabled={isSubmitting}
                   />
@@ -219,7 +219,7 @@ export default function StudentModal({
                     type="text"
                     value={admissionNumber}
                     onChange={(e) => setAdmissionNumber(e.target.value)}
-                    placeholder="e.g. ADM-2026-001"
+                    placeholder="ADM-2026-001"
                     required
                     disabled={isSubmitting}
                   />
@@ -282,7 +282,7 @@ export default function StudentModal({
                     step="any"
                     value={homeLatitude}
                     onChange={(e) => setHomeLatitude(e.target.value)}
-                    placeholder="e.g. 12.9716"
+                    placeholder="12.9716"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -295,7 +295,7 @@ export default function StudentModal({
                     step="any"
                     value={homeLongitude}
                     onChange={(e) => setHomeLongitude(e.target.value)}
-                    placeholder="e.g. 77.5946"
+                    placeholder="77.5946"
                     disabled={isSubmitting}
                   />
                 </div>

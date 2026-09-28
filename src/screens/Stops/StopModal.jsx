@@ -179,7 +179,7 @@ export default function StopModal({
                     type="text"
                     value={stopName}
                     onChange={(e) => setStopName(e.target.value)}
-                    placeholder="e.g. Main Gate Stop"
+                    placeholder="Main Gate Stop"
                     required
                     disabled={isSubmitting}
                   />
@@ -211,7 +211,7 @@ export default function StopModal({
                     step="any"
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
-                    placeholder="e.g. 17.385044"
+                    placeholder="17.385044"
                     required
                     disabled={isSubmitting}
                   />
@@ -225,7 +225,7 @@ export default function StopModal({
                     step="any"
                     value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
-                    placeholder="e.g. 78.486671"
+                    placeholder="78.486671"
                     required
                     disabled={isSubmitting}
                   />

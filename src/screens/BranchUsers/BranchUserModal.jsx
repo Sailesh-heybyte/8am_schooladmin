@@ -256,7 +256,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.fullName}
                     onChange={(e) => handleChange("fullName", e.target.value)}
-                    placeholder="e.g. Asha Menon"
+                    placeholder="Asha Menon"
                     required
                     disabled={isSubmitting}
                   />
@@ -268,7 +268,7 @@ export default function BranchUserModal({
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
-                    placeholder="e.g. asha@school.edu"
+                    placeholder="asha@school.edu"
                     required
                     disabled={isSubmitting}
                   />
@@ -413,7 +413,7 @@ export default function BranchUserModal({
                     onChange={(e) =>
                       handleChange("nationality", e.target.value)
                     }
-                    placeholder="e.g. Indian"
+                    placeholder="Indian"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -446,7 +446,7 @@ export default function BranchUserModal({
                     onChange={(e) =>
                       handleChange("addressLine1", e.target.value)
                     }
-                    placeholder="e.g. 123 Main St"
+                    placeholder="123 Main St"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -457,7 +457,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.city}
                     onChange={(e) => handleChange("city", e.target.value)}
-                    placeholder="e.g. Pune"
+                    placeholder="Pune"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -468,7 +468,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.state}
                     onChange={(e) => handleChange("state", e.target.value)}
-                    placeholder="e.g. Maharashtra"
+                    placeholder="Maharashtra"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -482,7 +482,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.country}
                     onChange={(e) => handleChange("country", e.target.value)}
-                    placeholder="e.g. India"
+                    placeholder="India"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -493,7 +493,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.postalCode}
                     onChange={(e) => handleChange("postalCode", e.target.value)}
-                    placeholder="e.g. 411001"
+                    placeholder="411001"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -514,7 +514,7 @@ export default function BranchUserModal({
                     onChange={(e) =>
                       handleChange("emergencyName", e.target.value)
                     }
-                    placeholder="e.g. Rahul Menon"
+                    placeholder="Rahul Menon"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -529,7 +529,7 @@ export default function BranchUserModal({
                     onChange={(e) =>
                       handleChange("emergencyRelationship", e.target.value)
                     }
-                    placeholder="e.g. Brother"
+                    placeholder="Brother"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -561,7 +561,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.bankName}
                     onChange={(e) => handleChange("bankName", e.target.value)}
-                    placeholder="e.g. State Bank of India"
+                    placeholder="State Bank of India"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -574,7 +574,7 @@ export default function BranchUserModal({
                     onChange={(e) =>
                       handleChange("bankAccountNumber", e.target.value)
                     }
-                    placeholder="e.g. 1234567890"
+                    placeholder="1234567890"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -587,7 +587,7 @@ export default function BranchUserModal({
                     onChange={(e) =>
                       handleChange("bankIfscCode", e.target.value)
                     }
-                    placeholder="e.g. SBIN0001234"
+                    placeholder="SBIN0001234"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -605,7 +605,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.panNumber}
                     onChange={(e) => handleChange("panNumber", e.target.value)}
-                    placeholder="e.g. ABCDE1234F"
+                    placeholder="ABCDE1234F"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -638,7 +638,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.skills}
                     onChange={(e) => handleChange("skills", e.target.value)}
-                    placeholder="e.g. Driving, First Aid"
+                    placeholder="Driving, First Aid"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -649,7 +649,7 @@ export default function BranchUserModal({
                     type="text"
                     value={formData.notes}
                     onChange={(e) => handleChange("notes", e.target.value)}
-                    placeholder="e.g. Additional notes..."
+                    placeholder="Additional notes..."
                     disabled={isSubmitting}
                   />
                 </div>

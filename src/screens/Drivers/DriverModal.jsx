@@ -169,7 +169,7 @@ export default function DriverModal({
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Ravi Kumar"
+                    placeholder="Ravi Kumar"
                     required
                     disabled={isSubmitting}
                   />
@@ -185,7 +185,7 @@ export default function DriverModal({
                       const val = e.target.value.replace(/\D/g, "").slice(0, 10);
                       setPhone(val);
                     }}
-                    placeholder="e.g. 9800000001"
+                    placeholder="9800000001"
                     maxLength={10}
                     required
                     disabled={isSubmitting}
@@ -203,7 +203,7 @@ export default function DriverModal({
                     type="text"
                     value={licenseNumber}
                     onChange={(e) => setLicenseNumber(e.target.value)}
-                    placeholder="e.g. DL-2020-111"
+                    placeholder="DL-2020-111"
                     required
                     disabled={isSubmitting}
                   />

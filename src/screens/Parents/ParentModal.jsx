@@ -126,7 +126,7 @@ export default function ParentModal({
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. K Vijay"
+                    placeholder="K Vijay"
                     required
                     disabled={isSubmitting}
                   />
@@ -142,7 +142,7 @@ export default function ParentModal({
                       const val = e.target.value.replace(/\D/g, "").slice(0, 10);
                       setPhone(val);
                     }}
-                    placeholder="e.g. 9700000002"
+                    placeholder="9700000002"
                     maxLength={10}
                     required
                     disabled={isSubmitting}

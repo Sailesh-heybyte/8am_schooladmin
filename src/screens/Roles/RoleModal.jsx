@@ -182,7 +182,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
                     required
                     readOnly={isEditMode}
                     disabled={isEditMode || isSubmitting}
-                    placeholder="e.g. Coordinator"
+                    placeholder="Coordinator"
                   />
                   {isEditMode && (
                     <span
