@@ -757,7 +757,7 @@ td {
   padding-left: 1rem;
 
   color: $text-light;
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   vertical-align: middle;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -831,6 +831,13 @@ tbody tr:hover {
 }
 
 .pagination {
+  // Keep the page buttons in view while scrolling a long table.
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  background: $white;
+  border-bottom-left-radius: $radius;
+  border-bottom-right-radius: $radius;
   height: 3.5rem;
   min-height: 3.5rem;
   flex-shrink: 0;

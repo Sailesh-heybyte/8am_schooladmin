@@ -2,10 +2,7 @@
 @use "./screens/settings.scss";
 @use "./screens/usersRoles.scss";
 
-// Scale the whole panel with the screen. 1rem = the smaller of
-// (viewport width / 80) and (viewport height / 41), kept between
-// 10px and 20px. The height limit keeps the ~39rem sidebar on screen.
 html {
-  font-size: clamp(10px, min(calc(100vw / 80), calc(100vh / 41)), 20px);
+  font-size: clamp(12px, min(calc(100vw / 72), calc(100vh / 41)), 20px);
 }
 
