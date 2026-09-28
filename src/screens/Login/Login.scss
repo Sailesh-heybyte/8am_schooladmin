@@ -58,7 +58,7 @@
 
       .eyebrow {
         margin: 0;
-        font-size: 0.72rem;
+        font-size: max(0.72rem, 10px);
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.14em;
@@ -86,7 +86,7 @@
         }
 
         span {
-          font-size: 0.75rem;
+          font-size: max(0.75rem, 10px);
           color: rgba(255, 255, 255, 0.75);
         }
       }
@@ -113,7 +113,7 @@
         margin-bottom: 1.8rem;
 
         .eyebrow {
-          font-size: 0.72rem;
+          font-size: max(0.72rem, 10px);
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.14em;
@@ -147,7 +147,7 @@
 
           label {
             color: #1f2937;
-            font-size: 0.82rem;
+            font-size: max(0.82rem, 10px);
             font-weight: 600;
           }
 
@@ -256,7 +256,7 @@
           border: none;
           background: transparent;
           color: #155eef;
-          font-size: 0.78rem;
+          font-size: max(0.78rem, 10px);
           font-weight: 600;
           text-align: right;
           text-decoration: underline;
@@ -322,14 +322,14 @@
           color: #2457d6;
           border-radius: 12px;
           padding: 0.8rem 0.9rem;
-          font-size: 0.8rem;
+          font-size: max(0.8rem, 10px);
           line-height: 1.5;
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
         }
 
         .field-error {
           color: #d92d20;
-          font-size: 0.75rem;
+          font-size: max(0.75rem, 10px);
           line-height: 1.4;
         }
       }

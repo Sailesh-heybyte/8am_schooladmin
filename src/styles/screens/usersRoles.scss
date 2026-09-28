@@ -49,11 +49,11 @@
     }
 
     strong {
-      font-size: 0.7rem;
+      font-size: max(0.7rem, 10px);
     }
     span {
       color: $text-muted;
-      font-size: 0.55rem;
+      font-size: max(0.55rem, 10px);
     }
     b {
       font-size: 1.1rem;
@@ -85,14 +85,14 @@
 
 .section-label {
   color: $text;
-  font-size: 0.75rem;
+  font-size: max(0.75rem, 10px);
 }
 
 .section-hint,
 .directory-header p {
   margin: 0.25rem 0 0;
   color: $text-muted;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
 }
 
 .table-link {
@@ -124,12 +124,12 @@
   h3 {
     margin: 0;
     color: $text;
-    font-size: 0.8rem;
+    font-size: max(0.8rem, 10px);
   }
 
   > span {
     color: $primary;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
     font-weight: 700;
   }
 }
@@ -163,15 +163,15 @@
 
   strong {
     color: $text;
-    font-size: 0.65rem;
+    font-size: max(0.65rem, 10px);
   }
   span {
     color: $text-muted;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, 10px);
   }
   em {
     color: $text-light;
-    font-size: 0.55rem;
+    font-size: max(0.55rem, 10px);
     font-style: normal;
   }
 }
@@ -208,7 +208,7 @@
       background: none;
       border: none;
       color: $primary;
-      font-size: 0.75rem;
+      font-size: max(0.75rem, 10px);
       font-weight: 600;
       cursor: pointer;
       padding: 0;
@@ -222,14 +222,14 @@
 
     > span {
       color: $primary;
-      font-size: 0.75rem;
+      font-size: max(0.75rem, 10px);
       font-weight: 700;
     }
   }
 
   > span {
     color: $primary;
-    font-size: 0.6rem;
+    font-size: max(0.6rem, 10px);
     font-weight: 700;
   }
 }
@@ -250,7 +250,7 @@
   legend {
     padding: 0 0.25rem;
     color: $text;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
     font-weight: 700;
   }
 }
@@ -261,7 +261,7 @@
   gap: 0.45rem;
   padding: 0.3rem 0;
   color: $text-light;
-  font-size: 0.6rem;
+  font-size: max(0.6rem, 10px);
   cursor: pointer;
 
   input {
@@ -285,11 +285,11 @@
   }
   strong {
     color: $text;
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
   }
   span {
     color: $text-muted;
-    font-size: 0.58rem;
+    font-size: max(0.58rem, 10px);
   }
 }
 
@@ -319,7 +319,7 @@
     border-radius: $radius-small;
     background: $surface;
     color: $text-light;
-    font-size: 0.6rem;
+    font-size: max(0.6rem, 10px);
   }
   i {
     margin-right: 0.35rem;
@@ -355,7 +355,7 @@
   h3 {
     margin: 0;
     color: $text;
-    font-size: 0.8rem;
+    font-size: max(0.8rem, 10px);
     font-weight: 700;
   }
 
@@ -363,7 +363,7 @@
     margin: 0;
     max-width: 22rem;
     color: $text-muted;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
     line-height: 1.6;
   }
 
@@ -375,7 +375,7 @@
     border-radius: $radius-small;
     background: $primary;
     color: $text-white;
-    font-size: 0.65rem;
+    font-size: max(0.65rem, 10px);
     font-weight: 600;
     cursor: pointer;
 
@@ -392,7 +392,7 @@
   border-radius: $radius-small;
   background: #fdf2f2;
   color: #d9534f;
-  font-size: 0.62rem;
+  font-size: max(0.62rem, 10px);
   font-weight: 600;
 }
 
@@ -403,7 +403,7 @@
   border-radius: 1rem;
   background: $blue-light;
   color: $primary;
-  font-size: 0.55rem;
+  font-size: max(0.55rem, 10px);
   font-weight: 700;
 }
 

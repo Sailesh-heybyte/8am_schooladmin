@@ -67,7 +67,7 @@
 
       p {
         margin-top: 0.15rem;
-        font-size: 0.72rem;
+        font-size: max(0.72rem, 10px);
       }
     }
 
@@ -127,7 +127,7 @@
           border-radius: 0.3rem;
           background: $primary;
           color: $text-white;
-          font-size: 0.5rem;
+          font-size: max(0.5rem, 10px);
           font-weight: 700;
           padding: 0.25rem;
         }
@@ -165,7 +165,7 @@
           border-radius: 0.35rem;
           background: transparent;
           color: $text;
-          font-size: 0.78rem;
+          font-size: max(0.78rem, 10px);
           font-weight: 500;
           cursor: pointer;
           transition: background 0.15s ease;
@@ -229,7 +229,7 @@
           gap: 0.15rem;
 
           strong {
-            font-size: 0.78rem;
+            font-size: max(0.78rem, 10px);
             color: $text;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -240,7 +240,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-size: 0.65rem;
+            font-size: max(0.65rem, 10px);
             color: $text-muted;
           }
         }
@@ -248,7 +248,7 @@
         .profile-chevron {
           margin-left: auto;
           color: $text-muted;
-          font-size: 0.75rem;
+          font-size: max(0.75rem, 10px);
         }
       }
     }
@@ -309,7 +309,7 @@
         p {
           margin-top: 0.15rem;
           color: $text-muted;
-          font-size: 0.72rem;
+          font-size: max(0.72rem, 10px);
         }
       }
     }

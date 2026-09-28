@@ -25,7 +25,7 @@
     background: $white;
     color: $text;
     font-family: inherit;
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
     outline: none;
     transition:
       border-color 0.2s ease,
@@ -72,7 +72,7 @@
     }
 
     .typeahead-chevron {
-      font-size: 0.65rem;
+      font-size: max(0.65rem, 10px);
       color: $text-light;
       pointer-events: none;
       transition: transform 0.2s ease;
@@ -122,7 +122,7 @@
 .typeahead-option {
   padding: 0.45rem 0.65rem;
   border-radius: 0.3rem;
-  font-size: 0.68rem;
+  font-size: max(0.68rem, 10px);
   color: $text;
   cursor: pointer;
   display: flex;
@@ -145,7 +145,7 @@
     font-weight: 600;
 
     .check-icon {
-      font-size: 0.8rem;
+      font-size: max(0.8rem, 10px);
       color: $primary;
     }
   }
@@ -159,14 +159,14 @@
   padding: 0.85rem;
   text-align: center;
   color: $text-muted;
-  font-size: 0.68rem;
+  font-size: max(0.68rem, 10px);
 }
 
 .typeahead-more {
   padding: 0.5rem 0.65rem;
   text-align: center;
   color: $text-light;
-  font-size: 0.62rem;
+  font-size: max(0.62rem, 10px);
   border-top: 0.05rem solid $border-light;
   background: $background;
 }

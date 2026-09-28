@@ -7,14 +7,14 @@
     display: block;
     margin-bottom: 0.5rem;
     color: $text-light;
-    font-size: 0.62rem;
+    font-size: max(0.62rem, 10px);
     font-weight: 600;
   }
 
   .roles-message {
     margin: 0.5rem 0;
     color: $text-muted;
-    font-size: 0.68rem;
+    font-size: max(0.68rem, 10px);
   }
 
   .roles-grid {
@@ -76,7 +76,7 @@
 
       .role-option-name {
         color: $text;
-        font-size: 0.72rem;
+        font-size: max(0.72rem, 10px);
         font-weight: 500;
         line-height: 1.25;
         word-break: break-word;
