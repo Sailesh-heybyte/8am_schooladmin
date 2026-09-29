@@ -13,6 +13,19 @@ import { isPermissionDenied } from "../../utils/errors.js";
 import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getRoutes, unassignBus } from "../../api/routes.js";
 
+// Latitude above longitude, or "Not set" for older routes without coordinates.
+const formatPoint = (lat, lng, key) =>
+  lat !== null && lng !== null ? (
+    <span key={key} className="coord-cell">
+      <span>{lat}</span>
+      <span>{lng}</span>
+    </span>
+  ) : (
+    <span key={key} className="muted-cell">
+      Not set
+    </span>
+  );
+
 export default function Routes() {
   const { me } = useOutletContext();
 
@@ -282,6 +295,8 @@ export default function Routes() {
             { label: "Route Name", sortKey: "routeName" },
             { label: "Bus Number", sortKey: "registrationNumber" },
             { label: "Branch", sortKey: "branchName" },
+            "Start",
+            "End",
             { label: "Status", sortKey: "isActive" },
             "Actions",
           ]}
@@ -302,6 +317,8 @@ export default function Routes() {
                 Not assigned
               </span>
             ),
+            formatPoint(route.startLat, route.startLng, `start-${route.id}`),
+            formatPoint(route.endLat, route.endLng, `end-${route.id}`),
             <StatusBadge
               key={`status-${route.id}`}
               status={route.isActive ? "Active" : "Inactive"}
@@ -393,6 +410,8 @@ export default function Routes() {
             route.routeName,
             route.registrationNumber,
             route.branchName,
+            null,
+            null,
             route.isActive,
             null,
           ])}

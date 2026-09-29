@@ -2371,3 +2371,10 @@ tbody tr:hover {
 }
 
 
+// Coordinates in a table cell: latitude above longitude.
+.coord-cell {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
