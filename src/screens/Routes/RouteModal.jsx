@@ -3,6 +3,23 @@ import { createRoute, updateRoute } from "../../api/routes.js";
 import { useBranches } from "../../context/BranchesContext.jsx";
 import "../Roles/RoleModal.scss";
 import TypeAhead from "../../components/TypeAhead.jsx";
+import MapPicker from "../../components/MapPicker.jsx";
+
+// Returns an error message for one route point, or "" when it is valid.
+const checkPoint = (label, lat, lng) => {
+  if (lat === "" || lng === "") {
+    return `${label} point is required. Click the map or type its coordinates.`;
+  }
+  const latNum = Number(lat);
+  const lngNum = Number(lng);
+  if (isNaN(latNum) || latNum < -90 || latNum > 90) {
+    return `${label} latitude must be between -90 and 90.`;
+  }
+  if (isNaN(lngNum) || lngNum < -180 || lngNum > 180) {
+    return `${label} longitude must be between -180 and 180.`;
+  }
+  return "";
+};
 
 export default function RouteModal({
   isOpen,
@@ -17,6 +34,10 @@ export default function RouteModal({
   const [routeName, setRouteName] = useState("");
   const [branchId, setBranchId] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [startLat, setStartLat] = useState("");
+  const [startLng, setStartLng] = useState("");
+  const [endLat, setEndLat] = useState("");
+  const [endLng, setEndLng] = useState("");
   const { branches, branchesLoading, branchesError, loadBranches } =
     useBranches();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,10 +50,19 @@ export default function RouteModal({
       setRouteName(route.routeName || "");
       setBranchId(route.branchId || "");
       setIsActive(Boolean(route.isActive));
+      // Older routes have no points yet: prefill as empty, never as 0.
+      setStartLat(route.startLat !== null ? String(route.startLat) : "");
+      setStartLng(route.startLng !== null ? String(route.startLng) : "");
+      setEndLat(route.endLat !== null ? String(route.endLat) : "");
+      setEndLng(route.endLng !== null ? String(route.endLng) : "");
     } else {
       setRouteName("");
       setBranchId(isPinned ? me.branch_id : "");
       setIsActive(true);
+      setStartLat("");
+      setStartLng("");
+      setEndLat("");
+      setEndLng("");
     }
     setError("");
     setIsSubmitting(false);
@@ -63,6 +93,14 @@ export default function RouteModal({
       return;
     }
 
+    const pointError =
+      checkPoint("Start", startLat, startLng) ||
+      checkPoint("End", endLat, endLng);
+    if (pointError) {
+      setError(pointError);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -70,11 +108,19 @@ export default function RouteModal({
         await updateRoute(route.id, {
           routeName: routeName.trim(),
           isActive,
+          startLat: Number(startLat),
+          startLng: Number(startLng),
+          endLat: Number(endLat),
+          endLng: Number(endLng),
         });
       } else {
         await createRoute({
           routeName: routeName.trim(),
           branchId: isPinned ? me.branch_id : branchId,
+          startLat: Number(startLat),
+          startLng: Number(startLng),
+          endLat: Number(endLat),
+          endLng: Number(endLng),
         });
       }
 
@@ -188,6 +234,51 @@ export default function RouteModal({
                   </div>
                 ) : null}
               </div>
+
+              <div className="route-points">
+                  <label>Start and End Points *</label>
+                  <MapPicker
+                    points={[
+                      { key: "start", label: "Start", latitude: startLat, longitude: startLng },
+                      { key: "end", label: "End", latitude: endLat, longitude: endLng },
+                    ]}
+                    onChange={(key, lat, lng) => {
+                      if (key === "start") {
+                        setStartLat(String(lat));
+                        setStartLng(String(lng));
+                      } else {
+                        setEndLat(String(lat));
+                        setEndLng(String(lng));
+                      }
+                    }}
+                    disabled={isSubmitting}
+                  />
+
+                  <div className="form-row">
+                    <div className="form-field">
+                      <label htmlFor="route-start-lat">Start Latitude *</label>
+                      <input id="route-start-lat" type="number" step="any" value={startLat}
+                        onChange={(e) => setStartLat(e.target.value)} placeholder="17.000100" disabled={isSubmitting} />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="route-start-lng">Start Longitude *</label>
+                      <input id="route-start-lng" type="number" step="any" value={startLng}
+                        onChange={(e) => setStartLng(e.target.value)} placeholder="81.800100" disabled={isSubmitting} />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-field">
+                      <label htmlFor="route-end-lat">End Latitude *</label>
+                      <input id="route-end-lat" type="number" step="any" value={endLat}
+                        onChange={(e) => setEndLat(e.target.value)} placeholder="17.050000" disabled={isSubmitting} />
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="route-end-lng">End Longitude *</label>
+                      <input id="route-end-lng" type="number" step="any" value={endLng}
+                        onChange={(e) => setEndLng(e.target.value)} placeholder="81.850000" disabled={isSubmitting} />
+                    </div>
+                  </div>
+                </div>
 
               {isEditMode && (
                 <div className="form-row" style={{ marginTop: "0.5rem" }}>

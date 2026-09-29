@@ -1,0 +1,115 @@
+@use "../../styles/colors" as *;
+
+.add-user-overlay .add-user-modal.route-view-modal {
+  width: 32rem;
+  max-width: calc(100vw - 2rem);
+}
+
+.route-view-message {
+  margin: 0;
+  padding: 1.5rem 0;
+  text-align: center;
+  color: $text-light;
+  font-size: max(0.75rem, 10px);
+
+  &.is-error {
+    color: $red-dark;
+  }
+}
+
+// Vertical timeline: a line runs through the markers from Start to End.
+.route-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+}
+
+.route-timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding-bottom: 1.1rem;
+
+  // The connecting line, from this marker down to the next one.
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0.85rem;
+    top: 1.7rem;
+    bottom: 0;
+    width: 0.1rem;
+    background: $border;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.route-timeline-marker {
+  flex-shrink: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $primary-light;
+  color: $primary;
+  font-size: max(0.7rem, 10px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.route-timeline-item.is-start .route-timeline-marker {
+  background: $green-dark;
+  color: $white;
+}
+
+.route-timeline-item.is-end .route-timeline-marker {
+  background: $red;
+  color: $white;
+}
+
+.route-timeline-item.is-empty .route-timeline-marker {
+  background: $white;
+  border: 0.1rem dashed $border;
+}
+
+.route-timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: 0.2rem;
+  min-width: 0;
+}
+
+.route-timeline-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $text;
+  font-size: max(0.8rem, 10px);
+  font-weight: 600;
+}
+
+.route-timeline-meta {
+  color: $text-muted;
+  font-size: max(0.7rem, 10px);
+  font-variant-numeric: tabular-nums;
+}
+
+.route-timeline-badge {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: $surface-hover;
+  border: 0.05rem solid $border;
+  color: $text-light;
+  font-size: max(0.6rem, 10px);
+  font-weight: 600;
+}

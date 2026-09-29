@@ -6,6 +6,7 @@ import StatusBadge from "../../components/StatusBadge.jsx";
 import TypeAhead from "../../components/TypeAhead.jsx";
 import RouteModal from "./RouteModal.jsx";
 import RouteStopsModal from "./RouteStopsModal.jsx";
+import RouteStopsViewModal from "./RouteStopsViewModal.jsx";
 import AssignBusModal from "./AssignBusModal.jsx";
 import AccessRestricted from "../../components/AccessRestricted.jsx";
 import { isPermissionDenied } from "../../utils/errors.js";
@@ -26,6 +27,7 @@ export default function Routes() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [routeToEdit, setRouteToEdit] = useState(null);
   const [routeForStops, setRouteForStops] = useState(null);
+  const [routeToView, setRouteToView] = useState(null);
   const [routeForAssignBus, setRouteForAssignBus] = useState(null);
   const [routeToUnassign, setRouteToUnassign] = useState(null);
   const [isUnassigning, setIsUnassigning] = useState(false);
@@ -326,6 +328,18 @@ export default function Routes() {
                     className="dropdown-item"
                     onClick={() => {
                       setOpenMenuRouteId(null);
+                      setRouteToView(route);
+                    }}
+                  >
+                    <i className="bi bi-list-ol"></i>
+                    <span>View stops</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="dropdown-item"
+                    onClick={() => {
+                      setOpenMenuRouteId(null);
                       setRouteForStops(route);
                     }}
                   >
@@ -395,6 +409,17 @@ export default function Routes() {
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadRoutes}
+        />
+      )}
+
+      {Boolean(routeToView) && (
+        <RouteStopsViewModal
+          route={routeToView}
+          onClose={() => setRouteToView(null)}
+          onManage={() => {
+            setRouteForStops(routeToView);
+            setRouteToView(null);
+          }}
         />
       )}
 

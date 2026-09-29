@@ -28,6 +28,10 @@ const toUiRoute = (route) => ({
   routeName: route.name,
   busId: route.bus_id,
   registrationNumber: route.registration_number,
+  startLat: route.start_lat,
+  startLng: route.start_lng,
+  endLat: route.end_lat,
+  endLng: route.end_lng,
   isActive: Boolean(route.is_active),
   createdAt: formatDate(route.created_at),
   stops: (route.stops ?? []).map(toUiRouteStop),
@@ -36,6 +40,10 @@ const toUiRoute = (route) => ({
 const toApiRoute = (route) => ({
   name: route.routeName,
   branch_id: route.branchId,
+  start_lat: route.startLat,
+  start_lng: route.startLng,
+  end_lat: route.endLat,
+  end_lng: route.endLng,
 });
 
 const toApiRouteUpdate = (route) => {
@@ -48,6 +56,18 @@ const toApiRouteUpdate = (route) => {
   }
   if (typeof isActive === "boolean") {
     body.is_active = isActive;
+  }
+  if (typeof route.startLat === "number") {
+    body.start_lat = route.startLat;
+  }
+  if (typeof route.startLng === "number") {
+    body.start_lng = route.startLng;
+  }
+  if (typeof route.endLat === "number") {
+    body.end_lat = route.endLat;
+  }
+  if (typeof route.endLng === "number") {
+    body.end_lng = route.endLng;
   }
 
   return body;

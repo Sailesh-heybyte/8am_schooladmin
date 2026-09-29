@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createStop, updateStop } from "../../api/stops.js";
 import { useBranches } from "../../context/BranchesContext.jsx";
-import LocationPicker from "../../components/LocationPicker.jsx";
+import MapPicker from "../../components/MapPicker.jsx";
 import "../Roles/RoleModal.scss";
 import TypeAhead from "../../components/TypeAhead.jsx";
 
@@ -190,10 +190,11 @@ export default function StopModal({
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
                   <label>Stop Location (Map)</label>
-                  <LocationPicker
-                    latitude={latitude}
-                    longitude={longitude}
-                    onChange={(lat, lng) => {
+                  <MapPicker
+                    points={[
+                      { key: "stop", label: "Stop", latitude, longitude },
+                    ]}
+                    onChange={(key, lat, lng) => {
                       setLatitude(String(lat));
                       setLongitude(String(lng));
                     }}

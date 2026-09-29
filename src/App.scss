@@ -2351,3 +2351,23 @@ tbody tr:hover {
   }
 }
 
+// Route modal: Start/End map and coordinate fields.
+.route-points {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+
+  > label {
+    font-size: max(0.72rem, 10px);
+    font-weight: 600;
+    color: $text-light;
+  }
+}
+
+.route-points .form-row .form-field {
+  flex: 1;
+  width: auto;
+}
+
+
