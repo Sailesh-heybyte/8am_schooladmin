@@ -3,12 +3,12 @@ import { createRoute, updateRoute } from "../../api/routes.js";
 import { useBranches } from "../../context/BranchesContext.jsx";
 import "../Roles/RoleModal.scss";
 import TypeAhead from "../../components/TypeAhead.jsx";
-import MapPicker from "../../components/MapPicker.jsx";
+import RoutePointPicker from "./RoutePointPicker.jsx";
 
 // Returns an error message for one route point, or "" when it is valid.
 const checkPoint = (label, lat, lng) => {
   if (lat === "" || lng === "") {
-    return `${label} point is required. Click the map or type its coordinates.`;
+    return `${label} point is required. Set it on the map.`;
   }
   const latNum = Number(lat);
   const lngNum = Number(lng);
@@ -42,6 +42,10 @@ export default function RouteModal({
     useBranches();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  // Full-screen map: null (closed), "start" or "end".
+  const [pickerStep, setPickerStep] = useState(null);
+  // True when Start was opened with End still empty: Start then End.
+  const [isGuidedFlow, setIsGuidedFlow] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -66,6 +70,8 @@ export default function RouteModal({
     }
     setError("");
     setIsSubmitting(false);
+    setPickerStep(null);
+    setIsGuidedFlow(false);
   }, [isOpen, route, isPinned, me.branch_id]);
 
   // Load branches only in create mode
@@ -139,6 +145,38 @@ export default function RouteModal({
     isSubmitting ||
     (!isEditMode && !isPinned && branchesLoading) ||
     (!isEditMode && !isPinned && Boolean(branchesError));
+
+  const openPicker = (step) => {
+    setIsGuidedFlow(step === "start" && endLat === "");
+    setPickerStep(step);
+  };
+
+  const closePicker = () => {
+    setPickerStep(null);
+    setIsGuidedFlow(false);
+  };
+
+  // Save the confirmed point. In the guided flow, Start leads on to End.
+  const handleConfirmPoint = (lat, lng) => {
+    setError("");
+    if (pickerStep === "start") {
+      setStartLat(lat);
+      setStartLng(lng);
+      if (isGuidedFlow) {
+        setPickerStep("end");
+        return;
+      }
+    } else {
+      setEndLat(lat);
+      setEndLng(lng);
+    }
+    closePicker();
+  };
+
+  const pointRows = [
+    { step: "start", label: "Start point", lat: startLat, lng: startLng },
+    { step: "end", label: "End point", lat: endLat, lng: endLng },
+  ];
 
   // Ignore close requests while a save is in progress.
   const requestClose = () => {
@@ -236,49 +274,30 @@ export default function RouteModal({
               </div>
 
               <div className="route-points">
-                  <label>Start and End Points *</label>
-                  <MapPicker
-                    points={[
-                      { key: "start", label: "Start", latitude: startLat, longitude: startLng },
-                      { key: "end", label: "End", latitude: endLat, longitude: endLng },
-                    ]}
-                    onChange={(key, lat, lng) => {
-                      if (key === "start") {
-                        setStartLat(String(lat));
-                        setStartLng(String(lng));
-                      } else {
-                        setEndLat(String(lat));
-                        setEndLng(String(lng));
-                      }
-                    }}
-                    disabled={isSubmitting}
-                  />
-
-                  <div className="form-row">
-                    <div className="form-field">
-                      <label htmlFor="route-start-lat">Start Latitude *</label>
-                      <input id="route-start-lat" type="number" step="any" value={startLat}
-                        onChange={(e) => setStartLat(e.target.value)} placeholder="17.000100" disabled={isSubmitting} />
+                <label>Start and End Points *</label>
+                {pointRows.map((row) => (
+                  <div className="route-point-row" key={row.step}>
+                    <span
+                      className={`route-point-dot is-${row.step}`}
+                      aria-hidden="true"
+                    ></span>
+                    <div className="route-point-text">
+                      <span className="route-point-label">{row.label}</span>
+                      <span className="route-point-value">
+                        {row.lat !== "" ? `${row.lat}, ${row.lng}` : "Not set"}
+                      </span>
                     </div>
-                    <div className="form-field">
-                      <label htmlFor="route-start-lng">Start Longitude *</label>
-                      <input id="route-start-lng" type="number" step="any" value={startLng}
-                        onChange={(e) => setStartLng(e.target.value)} placeholder="81.800100" disabled={isSubmitting} />
-                    </div>
+                    <button
+                      type="button"
+                      className="route-point-action"
+                      onClick={() => openPicker(row.step)}
+                      disabled={isSubmitting}
+                    >
+                      {row.lat !== "" ? "Change" : "Set on map"}
+                    </button>
                   </div>
-                  <div className="form-row">
-                    <div className="form-field">
-                      <label htmlFor="route-end-lat">End Latitude *</label>
-                      <input id="route-end-lat" type="number" step="any" value={endLat}
-                        onChange={(e) => setEndLat(e.target.value)} placeholder="17.050000" disabled={isSubmitting} />
-                    </div>
-                    <div className="form-field">
-                      <label htmlFor="route-end-lng">End Longitude *</label>
-                      <input id="route-end-lng" type="number" step="any" value={endLng}
-                        onChange={(e) => setEndLng(e.target.value)} placeholder="81.850000" disabled={isSubmitting} />
-                    </div>
-                  </div>
-                </div>
+                ))}
+              </div>
 
               {isEditMode && (
                 <div className="form-row" style={{ marginTop: "0.5rem" }}>
@@ -338,6 +357,33 @@ export default function RouteModal({
           </div>
         </form>
       </div>
+
+      {pickerStep && (
+        <RoutePointPicker
+          key={pickerStep}
+          step={pickerStep}
+          initialLat={pickerStep === "start" ? startLat : endLat}
+          initialLng={pickerStep === "start" ? startLng : endLng}
+          initialCenter={
+            pickerStep === "start"
+              ? endLat !== ""
+                ? [Number(endLat), Number(endLng)]
+                : null
+              : startLat !== ""
+                ? [Number(startLat), Number(startLng)]
+                : null
+          }
+          stepLabel={
+            isGuidedFlow
+              ? pickerStep === "start"
+                ? "Step 1 of 2"
+                : "Step 2 of 2"
+              : ""
+          }
+          onConfirm={handleConfirmPoint}
+          onBack={closePicker}
+        />
+      )}
     </div>
   );
 }

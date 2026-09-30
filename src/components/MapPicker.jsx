@@ -40,17 +40,13 @@ const toPosition = (point) => {
 
 const round = (value) => Number(value.toFixed(6));
 
-// Map for picking one or more points (OpenStreetMap via Leaflet).
-// points: [{ key, label, latitude, longitude }]
-// onChange(key, lat, lng) is called when a point is placed or moved.
-// mode "pins" (default): click to place pins, drag them to adjust.
-// mode "center" (one point only): a fixed pin in the middle; drag the map
-// under it, and the pin's position becomes the point.
 export default function MapPicker({
   points,
   onChange,
   disabled = false,
   mode = "pins",
+  pinTone = "",
+  initialCenter = null,
 }) {
   const isCenterMode = mode === "center";
   const hostRef = useRef(null);
@@ -64,6 +60,8 @@ export default function MapPicker({
   const activeKeyRef = useRef(points[0].key);
   // The mode never changes while the map is open.
   const isCenterModeRef = useRef(isCenterMode);
+  // Where to open the map when no point is set yet (read once).
+  const initialCenterRef = useRef(initialCenter);
   // True while the map is moving because of our own code (not the user),
   // so that move is not reported back into the fields.
   const movingByCodeRef = useRef(false);
@@ -178,8 +176,9 @@ export default function MapPicker({
 
       const placed = pointsRef.current.map(toPosition).filter(Boolean);
       const map = L.map(host, {
-        center: placed[0] || DEFAULT_CENTER,
-        zoom: placed.length ? POINT_ZOOM : DEFAULT_ZOOM,
+        center: placed[0] || initialCenterRef.current || DEFAULT_CENTER,
+        zoom:
+          placed.length || initialCenterRef.current ? POINT_ZOOM : DEFAULT_ZOOM,
       });
       mapRef.current = map;
       L.tileLayer(TILE_URL, { maxZoom: 19, attribution: ATTRIBUTION }).addTo(
@@ -415,7 +414,10 @@ export default function MapPicker({
         <div ref={hostRef} className="map-picker-map" />
         {!isReady && <div className="map-picker-loading">Loading map…</div>}
         {isCenterMode && isReady && (
-          <div className="map-picker-center-pin" aria-hidden="true">
+          <div
+            className={`map-picker-center-pin ${pinTone ? `is-${pinTone}` : ""}`}
+            aria-hidden="true"
+          >
             <i className="bi bi-geo-alt-fill"></i>
           </div>
         )}

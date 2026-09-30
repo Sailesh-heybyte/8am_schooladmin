@@ -2363,7 +2363,7 @@ tbody tr:hover {
   }
 }
 
-// Route modal: Start/End map and coordinate fields.
+// Route modal: Start/End point rows (the map opens full screen).
 .route-points {
   display: flex;
   flex-direction: column;
@@ -2377,9 +2377,57 @@ tbody tr:hover {
   }
 }
 
-.route-points .form-row .form-field {
+.route-point-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border: 0.05rem solid $border;
+  border-radius: $radius-small;
+  background: $white;
+}
+
+.route-point-text {
+  display: flex;
   flex: 1;
-  width: auto;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.route-point-label {
+  color: $text;
+  font-size: max(0.75rem, 10px);
+  font-weight: 600;
+}
+
+.route-point-value {
+  color: $text-light;
+  font-size: max(0.7rem, 10px);
+  font-variant-numeric: tabular-nums;
+}
+
+.route-point-action {
+  flex-shrink: 0;
+  height: 2rem;
+  padding: 0 0.85rem;
+  border: 0.05rem solid $primary;
+  border-radius: $radius-small;
+  background: $white;
+  color: $primary;
+  font-family: inherit;
+  font-size: max(0.7rem, 10px);
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $primary-light;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 

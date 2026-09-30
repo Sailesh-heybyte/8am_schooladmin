@@ -1,0 +1,157 @@
+@use "../../styles/colors" as *;
+
+// Full-screen point picker. Above the route modal (9999) and the
+// TypeAhead list (10000).
+.route-point-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  background: $white;
+}
+
+.route-point-picker-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 0.05rem solid $border;
+
+  h2 {
+    margin: 0;
+    color: $text;
+    font-size: max(0.95rem, 12px);
+    font-weight: 700;
+  }
+}
+
+.route-point-picker-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 0.05rem solid $border;
+  border-radius: 50%;
+  background: $white;
+  color: $text;
+  font-size: max(1rem, 12px);
+  cursor: pointer;
+
+  &:hover {
+    background: $surface-hover;
+  }
+}
+
+.route-point-picker-step {
+  margin-left: auto;
+  color: $text-light;
+  font-size: max(0.7rem, 10px);
+  font-weight: 600;
+}
+
+// Green / red dot for Start / End (also used in the route modal rows).
+.route-point-dot {
+  flex-shrink: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+
+  &.is-start {
+    background: $green-dark;
+  }
+
+  &.is-end {
+    background: $red;
+  }
+}
+
+// The map fills the space between the top bar and the bottom sheet.
+.route-point-picker-map {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  padding: 0.75rem 1rem;
+
+  .map-picker {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .map-picker-frame {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+
+  // The bottom sheet explains what to do instead.
+  .map-picker-hint {
+    display: none;
+  }
+
+  .map-picker-search-row input {
+    height: 2.6rem;
+    padding: 0 0.85rem;
+    border: 0.05rem solid $border;
+    border-radius: $radius-small;
+    background: $white;
+    color: $text;
+    font-family: inherit;
+    font-size: max(0.8rem, 10px);
+    outline: none;
+
+    &:focus {
+      border-color: $primary;
+    }
+  }
+
+  .map-picker-center-pin {
+    font-size: 2.6rem;
+  }
+}
+
+.route-point-picker-sheet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-top: 0.05rem solid $border;
+  box-shadow: $shadow;
+}
+
+.route-point-picker-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+
+  strong {
+    color: $text;
+    font-size: max(0.85rem, 10px);
+    font-variant-numeric: tabular-nums;
+  }
+
+  span {
+    color: $text-light;
+    font-size: max(0.7rem, 10px);
+  }
+}
+
+.route-point-picker-confirm {
+  flex-shrink: 0;
+  min-width: 12rem;
+}
+
+// Narrow screens: the button goes under the text, full width.
+@media (max-width: 600px) {
+  .route-point-picker-sheet {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .route-point-picker-confirm {
+    min-width: 0;
+  }
+}

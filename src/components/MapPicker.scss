@@ -127,6 +127,23 @@
 }
 
 
+// Route points: green for Start, red for End (same as the S/E pins).
+.map-picker-center-pin.is-start {
+  color: $green-dark;
+
+  &::after {
+    background: $green-dark;
+  }
+}
+
+.map-picker-center-pin.is-end {
+  color: $red;
+
+  &::after {
+    background: $red;
+  }
+}
+
 // Shown until the map has loaded.
 .map-picker-loading {
   position: absolute;
