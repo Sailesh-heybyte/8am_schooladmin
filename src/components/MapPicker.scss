@@ -76,8 +76,10 @@
   font-size: max(0.68rem, 10px);
 }
 
-// Pins. Leaflet sets their size (24px) and position.
+// Pins (S and E for routes, a single blue pin otherwise).
 .map-marker {
+  width: 1.6rem;
+  height: 1.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +87,7 @@
   border-radius: 50%;
   box-shadow: $shadow-hover;
   color: $white;
-  font-size: 0.7rem;
+  font-size: max(0.7rem, 10px);
   font-weight: 700;
   cursor: grab;
 
@@ -96,19 +98,17 @@
 }
 
 // Centre mode: a fixed pin whose tip marks the middle of the map.
-// Sits above Leaflet's map layers (which go up to 700) but below its controls.
 .map-picker-center-pin {
   position: absolute;
   left: 50%;
   top: 50%;
-  z-index: 750;
+  // Above the map; clicks pass through to the map.
+  z-index: 1;
   transform: translate(-50%, -100%);
   color: $primary;
   font-size: 2rem;
   line-height: 1;
   pointer-events: none;
-  // Above the map tiles and pins, below the zoom buttons.
-  z-index: 500;
   filter: drop-shadow($shadow-hover);
 
   // A small dot on the map where the tip points.
@@ -126,24 +126,6 @@
   }
 }
 
-
-// Route points: green for Start, red for End (same as the S/E pins).
-.map-picker-center-pin.is-start {
-  color: $green-dark;
-
-  &::after {
-    background: $green-dark;
-  }
-}
-
-.map-picker-center-pin.is-end {
-  color: $red;
-
-  &::after {
-    background: $red;
-  }
-}
-
 // Shown until the map has loaded.
 .map-picker-loading {
   position: absolute;
@@ -154,6 +136,13 @@
   color: $text-light;
   font-size: max(0.72rem, 10px);
   background: $surface-hover;
+
+  &.is-error {
+    color: $orange-dark;
+    background: $orange-light;
+    padding: 1rem;
+    text-align: center;
+  }
 }
 
 // Place search above the map.
@@ -166,10 +155,22 @@
   align-items: center;
   gap: 0.6rem;
 
-  // Looks like the other inputs in the modal (their shared style applies).
+  // Same look as the other inputs in the modals.
   input {
     flex: 1;
     min-width: 0;
+    height: 2.2rem;
+    padding: 0 0.7rem;
+    border: 0.05rem solid $border;
+    border-radius: $radius-small;
+    background: $white;
+    color: $text;
+    font-size: max(0.72rem, 10px);
+    outline: none;
+
+    &:focus {
+      border-color: $primary;
+    }
   }
 }
 
@@ -235,4 +236,17 @@
   margin: 0.35rem 0 0;
   color: $text-light;
   font-size: max(0.7rem, 10px);
+}
+
+// App-style map controls: rounded, soft shadow, quiet credits.
+.map-picker-frame {
+  .maplibregl-ctrl-group {
+    border-radius: $radius-small;
+    box-shadow: $shadow-hover;
+    overflow: hidden;
+  }
+
+  .maplibregl-ctrl-attrib {
+    font-size: max(0.6rem, 10px);
+  }
 }

@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import "leaflet/dist/leaflet.css";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { searchPlaces } from "../api/geocoding.js";
 import "./MapPicker.scss";
 
-const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-const DEFAULT_CENTER = [17.004750823000403, 81.79271807527687];
+// Free vector map: MapLibre (open-source map library) with OpenFreeMap's
+// clean light "positron" style. No key, no account, no usage limits.
+// MapLibre and its worker are downloaded only when a map first opens.
+// For a more colourful map, use ".../styles/liberty" instead.
+const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
+
+// Rajahmundry, used when no point has been placed yet. [lng, lat]
+const DEFAULT_CENTER = [81.79271807527687, 17.004750823000403];
 const DEFAULT_ZOOM = 12;
 const POINT_ZOOM = 15;
 const SEARCH_ZOOM = 17;
@@ -14,7 +18,7 @@ const SEARCH_ZOOM = 17;
 const SEARCH_MIN_LETTERS = 3;
 const SEARCH_DELAY_MS = 350;
 
-// Turns the two text fields into [lat, lng], or null when empty or invalid.
+// Turns the two text fields into [lng, lat], or null when empty or invalid.
 const toPosition = (point) => {
   const lat = Number(point.latitude);
   const lng = Number(point.longitude);
@@ -29,24 +33,27 @@ const toPosition = (point) => {
     lat <= 90 &&
     lng >= -180 &&
     lng <= 180;
-  return isSet ? [lat, lng] : null;
+  return isSet ? [lng, lat] : null;
 };
 
 const round = (value) => Number(value.toFixed(6));
 
+// Map for picking one or more points.
+// points: [{ key, label, latitude, longitude }]
+// onChange(key, lat, lng) is called when a point is placed or moved.
+// mode "pins" (default): click to place pins, drag them to adjust.
+// mode "center" (one point only): a fixed pin in the middle; drag the map
+// under it, and the pin's position becomes the point.
 export default function MapPicker({
   points,
   onChange,
   disabled = false,
   mode = "pins",
-  pinTone = "",
-  initialCenter = null,
 }) {
   const isCenterMode = mode === "center";
   const hostRef = useRef(null);
-  const leafletRef = useRef(null);
   const mapRef = useRef(null);
-  const lineRef = useRef(null);
+  const libraryRef = useRef(null);
   const markersRef = useRef({});
   const onChangeRef = useRef(onChange);
   const pointsRef = useRef(points);
@@ -54,17 +61,14 @@ export default function MapPicker({
   const activeKeyRef = useRef(points[0].key);
   // The mode never changes while the map is open.
   const isCenterModeRef = useRef(isCenterMode);
-  // Where to open the map when no point is set yet (read once).
-  const initialCenterRef = useRef(initialCenter);
-  // True while the map is moving because of our own code (not the user),
-  // so that move is not reported back into the fields.
-  const movingByCodeRef = useRef(false);
-  // Last position reported from the map, so it isn't applied back to it.
+  // Last position reported from the map, so typed values can move the map
+  // without the map reporting them straight back.
   const lastReportedRef = useRef(null);
 
   const [activeKey, setActiveKey] = useState(points[0].key);
-  // False until Leaflet has downloaded and the map exists.
-  const [isReady, setIsReady] = useState(false);
+  // "loading" until the map style has loaded, then "ready" (or "error").
+  const [status, setStatus] = useState("loading");
+  const isReady = status === "ready";
   const [searchText, setSearchText] = useState("");
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -81,17 +85,11 @@ export default function MapPicker({
     activeKeyRef.current = activeKey;
   });
 
-  // Moves the map without reporting the move as a user choice.
-  const moveMapByCode = (move) => {
-    movingByCodeRef.current = true;
-    move();
-  };
-
   // Keep pins and the line in step with the coordinates (typed or picked).
   const syncMarkers = () => {
     const map = mapRef.current;
-    const L = leafletRef.current;
-    if (!map) return;
+    const maplibregl = libraryRef.current;
+    if (!map || !isReady) return;
 
     if (isCenterModeRef.current) {
       const position = toPosition(pointsRef.current[0]);
@@ -103,9 +101,8 @@ export default function MapPicker({
         Math.abs(position[1] - last[1]) < 1e-6;
       if (position && !cameFromMap) {
         lastReportedRef.current = position;
-        moveMapByCode(() =>
-          map.setView(position, map.getZoom(), { animate: false }),
-        );
+        // Moves made by code have no originalEvent, so moveend ignores them.
+        map.jumpTo({ center: position });
       }
       return;
     }
@@ -126,115 +123,146 @@ export default function MapPicker({
 
       if (!marker) {
         const isSingle = pointsRef.current.length === 1;
-        marker = L.marker(position, {
+        const element = document.createElement("div");
+        element.className = `map-marker ${
+          isSingle ? "map-marker-single" : `map-marker-${index}`
+        }`;
+        element.textContent = isSingle ? "" : point.label[0];
+        element.setAttribute("aria-label", point.label);
+        marker = new maplibregl.Marker({
+          element,
           draggable: !disabledRef.current,
-          keyboard: false,
-          icon: L.divIcon({
-            className: `map-marker ${isSingle ? "map-marker-single" : `map-marker-${index}`}`,
-            html: isSingle ? "" : point.label[0],
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
-          }),
-        }).addTo(map);
+        })
+          .setLngLat(position)
+          .addTo(map);
         marker.on("dragend", () => {
-          const { lat, lng } = marker.getLatLng();
+          const { lat, lng } = marker.getLngLat();
           onChangeRef.current(point.key, round(lat), round(lng));
         });
         markersRef.current[point.key] = marker;
       } else {
-        marker.setLatLng(position);
-        if (disabledRef.current) marker.dragging.disable();
-        else marker.dragging.enable();
+        marker.setLngLat(position);
+        marker.setDraggable(!disabledRef.current);
       }
     });
 
-    lineRef.current.setLatLngs(positions.length > 1 ? positions : []);
+    map.getSource("picker-line").setData({
+      type: "FeatureCollection",
+      features:
+        positions.length > 1
+          ? [
+              {
+                type: "Feature",
+                geometry: { type: "LineString", coordinates: positions },
+              },
+            ]
+          : [],
+    });
   };
 
   // Create the map when the picker opens, remove it when it closes.
   useEffect(() => {
     let cancelled = false;
-    let frame = 0;
+    const host = hostRef.current;
+    const lineColor = getComputedStyle(host)
+      .getPropertyValue("--map-line-color")
+      .trim();
 
-    import("leaflet").then(({ default: L }) => {
-      if (cancelled) return;
-      leafletRef.current = L;
-      createMap(L);
-    });
+    // MapLibre runs its map work in a separate worker file; Vite gives us
+    // its URL (the "?worker&url" import), as OpenFreeMap's guide shows.
+    Promise.all([
+      import("maplibre-gl"),
+      import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url"),
+    ])
+      .then(([maplibregl, { default: workerUrl }]) => {
+        if (cancelled) return;
+        maplibregl.setWorkerUrl(workerUrl);
+        libraryRef.current = maplibregl;
 
-    const createMap = (L) => {
-      const host = hostRef.current;
-      const lineColor = getComputedStyle(host)
-        .getPropertyValue("--map-line-color")
-        .trim();
+        const placed = pointsRef.current.map(toPosition).filter(Boolean);
+        const map = new maplibregl.Map({
+          container: host,
+          style: STYLE_URL,
+          center: placed[0] || DEFAULT_CENTER,
+          zoom: placed.length ? POINT_ZOOM : DEFAULT_ZOOM,
+          attributionControl: { compact: true },
+        });
+        mapRef.current = map;
+        map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+        lastReportedRef.current = placed[0] || null;
 
-      const placed = pointsRef.current.map(toPosition).filter(Boolean);
-      const map = L.map(host, {
-        center: placed[0] || initialCenterRef.current || DEFAULT_CENTER,
-        zoom:
-          placed.length || initialCenterRef.current ? POINT_ZOOM : DEFAULT_ZOOM,
+        map.on("load", () => {
+          if (cancelled) return;
+          // Dashed line between points (routes).
+          map.addSource("picker-line", {
+            type: "geojson",
+            data: { type: "FeatureCollection", features: [] },
+          });
+          map.addLayer({
+            id: "picker-line",
+            type: "line",
+            source: "picker-line",
+            layout: { "line-cap": "round" },
+            paint: {
+              "line-color": lineColor,
+              "line-width": 3,
+              "line-dasharray": [2, 1.5],
+            },
+          });
+          if (placed.length > 1) {
+            map.fitBounds(
+              [
+                [Math.min(...placed.map((p) => p[0])), Math.min(...placed.map((p) => p[1]))],
+                [Math.max(...placed.map((p) => p[0])), Math.max(...placed.map((p) => p[1]))],
+              ],
+              { padding: 60, duration: 0, maxZoom: POINT_ZOOM },
+            );
+          }
+          // Re-render once, so the effect below draws the pins and line.
+          setStatus("ready");
+        });
+
+        // If the map style can't load (no internet, service down), say so;
+        // the coordinate fields below still work.
+        map.on("error", () => {
+          if (!map.loaded()) setStatus("error");
+        });
+
+        // Centre mode: when the user moves the map, the centre is the point.
+        // Moves made by code (typed coordinates, search) have no originalEvent.
+        map.on("moveend", (event) => {
+          if (!isCenterModeRef.current || disabledRef.current) return;
+          if (!event.originalEvent && !event.fromClick) return;
+          const center = map.getCenter();
+          const lat = round(center.lat);
+          const lng = round(center.lng);
+          lastReportedRef.current = [lng, lat];
+          onChangeRef.current(pointsRef.current[0].key, lat, lng);
+        });
+
+        map.on("click", (event) => {
+          if (disabledRef.current) return;
+          if (isCenterModeRef.current) {
+            // Glide the clicked spot under the pin; moveend reports it.
+            map.easeTo({ center: event.lngLat }, { fromClick: true });
+            return;
+          }
+          const key = activeKeyRef.current;
+          onChangeRef.current(key, round(event.lngLat.lat), round(event.lngLat.lng));
+
+          // After placing one point, move on to the next one that is still empty.
+          const next = pointsRef.current.find(
+            (point) => point.key !== key && !toPosition(point),
+          );
+          if (next) setActiveKey(next.key);
+        });
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("error");
       });
-      mapRef.current = map;
-      L.tileLayer(TILE_URL, { maxZoom: 19, attribution: ATTRIBUTION }).addTo(
-        map,
-      );
-
-      // Dashed line between points (routes).
-      lineRef.current = L.polyline([], {
-        color: lineColor,
-        weight: 3,
-        dashArray: "6 5",
-      }).addTo(map);
-
-      if (placed.length > 1) {
-        map.fitBounds(placed, { padding: [40, 40], maxZoom: POINT_ZOOM });
-      }
-      lastReportedRef.current = placed[0] || null;
-
-      // Centre mode: when the user moves the map, the centre is the point.
-      map.on("moveend", () => {
-        if (movingByCodeRef.current) {
-          movingByCodeRef.current = false;
-          return;
-        }
-        if (!isCenterModeRef.current || disabledRef.current) return;
-        const center = map.getCenter();
-        const lat = round(center.lat);
-        const lng = round(center.lng);
-        lastReportedRef.current = [lat, lng];
-        onChangeRef.current(pointsRef.current[0].key, lat, lng);
-      });
-
-      map.on("click", (event) => {
-        if (disabledRef.current) return;
-        if (isCenterModeRef.current) {
-          // Slide the clicked spot under the pin; moveend reports it.
-          map.panTo(event.latlng);
-          return;
-        }
-        const key = activeKeyRef.current;
-        onChangeRef.current(
-          key,
-          round(event.latlng.lat),
-          round(event.latlng.lng),
-        );
-
-        // After placing one point, move on to the next one that is still empty.
-        const next = pointsRef.current.find(
-          (point) => point.key !== key && !toPosition(point),
-        );
-        if (next) setActiveKey(next.key);
-      });
-
-      // The modal may still be sizing itself; let the map measure again.
-      frame = requestAnimationFrame(() => map.invalidateSize());
-      // Re-render once, so the effect below draws the pins and line.
-      setIsReady(true);
-    };
 
     return () => {
       cancelled = true;
-      cancelAnimationFrame(frame);
       if (mapRef.current) mapRef.current.remove();
       mapRef.current = null;
       markersRef.current = {};
@@ -260,7 +288,7 @@ export default function MapPicker({
       try {
         const center = mapRef.current
           ? mapRef.current.getCenter()
-          : { lat: DEFAULT_CENTER[0], lng: DEFAULT_CENTER[1] };
+          : { lat: DEFAULT_CENTER[1], lng: DEFAULT_CENTER[0] };
         const places = await searchPlaces(
           query,
           [center.lat, center.lng],
@@ -294,12 +322,11 @@ export default function MapPicker({
     lastQueryRef.current = place.label;
     const map = mapRef.current;
     if (!map) return;
-    const position = [place.lat, place.lng];
-    moveMapByCode(() => map.setView(position, SEARCH_ZOOM, { animate: false }));
+    map.jumpTo({ center: [place.lng, place.lat], zoom: SEARCH_ZOOM });
     if (isCenterMode) {
       const lat = round(place.lat);
       const lng = round(place.lng);
-      lastReportedRef.current = [lat, lng];
+      lastReportedRef.current = [lng, lat];
       onChangeRef.current(points[0].key, lat, lng);
     }
   };
@@ -406,12 +433,16 @@ export default function MapPicker({
 
       <div className="map-picker-frame">
         <div ref={hostRef} className="map-picker-map" />
-        {!isReady && <div className="map-picker-loading">Loading map…</div>}
+        {status === "loading" && (
+          <div className="map-picker-loading">Loading map…</div>
+        )}
+        {status === "error" && (
+          <div className="map-picker-loading is-error">
+            Map unavailable right now. Enter the coordinates below.
+          </div>
+        )}
         {isCenterMode && isReady && (
-          <div
-            className={`map-picker-center-pin ${pinTone ? `is-${pinTone}` : ""}`}
-            aria-hidden="true"
-          >
+          <div className="map-picker-center-pin" aria-hidden="true">
             <i className="bi bi-geo-alt-fill"></i>
           </div>
         )}
