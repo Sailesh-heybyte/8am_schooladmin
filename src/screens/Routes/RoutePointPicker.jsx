@@ -3,11 +3,6 @@ import { createPortal } from "react-dom";
 import MapPicker from "../../components/MapPicker.jsx";
 import "./RoutePointPicker.scss";
 
-// Full-screen map for choosing one route point (Start or End).
-// Search a place, drag the map under the fixed pin, then confirm.
-// step: "start" | "end". initialLat / initialLng: the current value ("" if not set).
-// initialCenter: [lat, lng] to open near (the other point), or null.
-// stepLabel: "Step 1 of 2" etc., or "".
 export default function RoutePointPicker({
   step,
   initialLat,
@@ -22,8 +17,6 @@ export default function RoutePointPicker({
   const isStart = step === "start";
   const hasPoint = lat !== "" && lng !== "";
 
-  // Escape goes back, like the back arrow. The ref keeps the listener
-  // from being re-added on every render.
   const onBackRef = useRef(onBack);
   useEffect(() => {
     onBackRef.current = onBack;
