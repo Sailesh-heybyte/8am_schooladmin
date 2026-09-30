@@ -88,8 +88,8 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
               <div className="profile-field">
                 <span className="field-label">Stop</span>
                 <span className="field-value">
-                  {student.stopId ? (
-                    <code>{student.stopId}</code>
+                  {student.stopName || student.stop_name ? (
+                    student.stopName || student.stop_name
                   ) : (
                     <span className="muted-cell">—</span>
                   )}
