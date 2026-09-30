@@ -199,6 +199,7 @@ export default function StopModal({
                       setLongitude(String(lng));
                     }}
                     disabled={isSubmitting}
+                    mode="center"
                   />
                 </div>
               </div>

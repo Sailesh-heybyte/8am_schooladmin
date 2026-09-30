@@ -12,6 +12,7 @@ import Parents from "./screens/Parents/index.jsx";
 import Stops from "./screens/Stops/index.jsx";
 import RoutesScreen from "./screens/Routes/index.jsx";
 import Trips from "./screens/Trips/index.jsx";
+import Announcements from "./screens/Announcements/index.jsx";
 import NotFound from "./components/NotFound.jsx";
 
 // Placeholders until each feature screen is built.
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="/stops" element={<Stops />} />
           <Route path="/routes" element={<RoutesScreen />} />
           <Route path="/trips" element={<Trips />} />
+          <Route path="/announcements" element={<Announcements />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<NotFound />} />
         </Route>

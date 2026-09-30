@@ -152,6 +152,27 @@
               }
             }
 
+            textarea {
+              width: 100%;
+              padding: 0.5rem 0.7rem;
+              border: 0.05rem solid $border;
+              border-radius: 0.45rem;
+              background: $white;
+              color: $text;
+              font-family: inherit;
+              font-size: max(0.68rem, 10px);
+              outline: none;
+              resize: vertical;
+
+              &:focus {
+                border-color: $primary;
+              }
+
+              &:disabled {
+                cursor: not-allowed;
+              }
+            }
+
             input[type="number"] {
               -moz-appearance: textfield;
               appearance: textfield;

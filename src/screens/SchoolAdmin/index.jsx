@@ -68,6 +68,12 @@ const menuItems = [
     icon: <i className="bi bi-clock-history"></i>,
     label: "Trips",
   },
+  {
+    id: "announcements",
+    path: "/announcements",
+    icon: <i className="bi bi-megaphone"></i>,
+    label: "Announcements",
+  },
 ];
 
 function SchoolAdmin({ onLogout }) {
