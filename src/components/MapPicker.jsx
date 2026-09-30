@@ -3,15 +3,9 @@ import "leaflet/dist/leaflet.css";
 import { searchPlaces } from "../api/geocoding.js";
 import "./MapPicker.scss";
 
-// Leaflet (the map library) is downloaded only when a map first opens,
-// so pages without a map stay light.
-
-// Free OpenStreetMap street tiles. The attribution is required by OSM.
 const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-
-// Rajahmundry, used when no point has been placed yet.
 const DEFAULT_CENTER = [17.004750823000403, 81.79271807527687];
 const DEFAULT_ZOOM = 12;
 const POINT_ZOOM = 15;
