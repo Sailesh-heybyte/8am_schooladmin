@@ -74,6 +74,12 @@ const menuItems = [
     icon: <i className="bi bi-megaphone"></i>,
     label: "Announcements",
   },
+  {
+    id: "complaints",
+    path: "/complaints",
+    icon: <i className="bi bi-chat-left-text"></i>,
+    label: "Complaints",
+  },
 ];
 
 function SchoolAdmin({ onLogout }) {

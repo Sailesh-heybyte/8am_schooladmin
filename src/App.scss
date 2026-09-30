@@ -1060,7 +1060,8 @@ tbody tr:hover {
 
   &.on-route,
   &.active,
-  &.completed {
+  &.completed,
+  &.resolved {
     background: $green-light;
     color: $green;
   }
@@ -1073,7 +1074,8 @@ tbody tr:hover {
   &.delayed,
   &.on-leave,
   &.medium,
-  &.expiring-soon {
+  &.expiring-soon,
+  &.open {
     background: $orange-light;
     color: $orange;
   }
@@ -1839,6 +1841,16 @@ tbody tr:hover {
   justify-content: flex-end;
   border-bottom: 0.05rem solid $border;
   background: $white;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+
+  .secondary-button {
+    height: 2.3rem;
+  }
 }
 
 .table-search-box {

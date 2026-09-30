@@ -15,3 +15,7 @@ export const hasValue = (val) => {
   if (typeof val === "string" && val.trim() === "") return false;
   return true;
 };
+
+export const formatEnumLabel = (value) =>
+  value.charAt(0).toUpperCase() + value.slice(1).replaceAll("_", " ");
+

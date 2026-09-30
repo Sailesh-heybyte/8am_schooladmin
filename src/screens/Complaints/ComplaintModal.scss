@@ -1,0 +1,38 @@
+@use "../../styles/colors" as *;
+
+.profile-modal.complaint-modal .profile-modal-footer {
+  gap: 0.6rem;
+}
+
+.complaint-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.complaint-note-input {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.5rem 0.7rem;
+  border: 0.05rem solid $border;
+  border-radius: 0.45rem;
+  background: $white;
+  color: $text;
+  font-family: inherit;
+  font-size: max(0.72rem, 10px);
+  outline: none;
+  resize: vertical;
+
+  &:focus {
+    border-color: $primary;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.complaint-note-error {
+  margin-top: 0.35rem;
+  color: $red;
+  font-size: max(0.68rem, 10px);
+}
