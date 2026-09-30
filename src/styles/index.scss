@@ -3,6 +3,6 @@
 @use "./screens/usersRoles.scss";
 
 html {
-  font-size: clamp(12px, min(calc(100vw / 72), calc(100vh / 41)), 20px);
+  font-size: clamp(12px, min(calc(100vw / 72), calc(100vh / 48)), 20px);
 }
 
