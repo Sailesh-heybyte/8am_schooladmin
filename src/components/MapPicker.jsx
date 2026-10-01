@@ -16,7 +16,7 @@ const POINT_ZOOM = 15;
 const SEARCH_ZOOM = 17;
 // Search starts at this many letters, after this pause in typing.
 const SEARCH_MIN_LETTERS = 3;
-const SEARCH_DELAY_MS = 350;
+const SEARCH_DELAY_MS = 200;
 
 // Turns the two text fields into [lng, lat], or null when empty or invalid.
 const toPosition = (point) => {
