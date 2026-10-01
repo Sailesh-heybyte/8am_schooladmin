@@ -24,13 +24,11 @@ export default function StopModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Prefill fields in edit mode, reset in create mode
   useEffect(() => {
     if (!isOpen) return;
 
     if (stop) {
       setStopName(stop.stopName || "");
-      // A null latitude or longitude must prefill as an empty string, never as 0
       setLatitude(
         stop.latitude !== null && stop.latitude !== undefined
           ? String(stop.latitude)
@@ -54,10 +52,9 @@ export default function StopModal({
     setIsSubmitting(false);
   }, [isOpen, stop, isPinned, me.branch_id]);
 
-  // Load branches inside the modal only for create mode
   useEffect(() => {
     if (!isOpen) return;
-    if (stop) return; // Skip fetch entirely in edit mode
+    if (stop) return;
     if (isPinned) return;
 
     loadBranches();
@@ -106,7 +103,6 @@ export default function StopModal({
 
     try {
       if (isEditMode) {
-        // Do NOT send branchId, routeId or sequence on update
         await updateStop(stop.id, {
           stopName: stopName.trim(),
           latitude: latNum,
@@ -138,7 +134,6 @@ export default function StopModal({
     (!isEditMode && !isPinned && branchesLoading) ||
     (!isEditMode && !isPinned && Boolean(branchesError));
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();
@@ -186,7 +181,6 @@ export default function StopModal({
                 </div>
               </div>
 
-              {/* Map Location Picker */}
               <div className="form-row">
                 <div className="form-field" style={{ flex: 1, width: "100%" }}>
                   <label>Stop Location (Map)</label>
@@ -281,7 +275,6 @@ export default function StopModal({
                 ) : null}
               </div>
 
-              {/* Route Display in Edit Mode if Stop is on a Route */}
               {isEditMode && stop.routeId && (
                 <div className="form-row">
                   <div
@@ -310,7 +303,6 @@ export default function StopModal({
                 </div>
               )}
 
-              {/* Active Checkbox in Edit Mode */}
               {isEditMode && (
                 <div className="form-row" style={{ marginTop: "0.5rem" }}>
                   <label

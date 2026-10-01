@@ -13,7 +13,6 @@ import { isPermissionDenied } from "../../utils/errors.js";
 import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getRoutes, unassignBus } from "../../api/routes.js";
 
-// Latitude above longitude, or "Not set" for older routes without coordinates.
 const formatPoint = (lat, lng, key) =>
   lat !== null && lng !== null ? (
     <span key={key} className="coord-cell">
@@ -48,7 +47,6 @@ export default function Routes() {
 
   const [openMenuRouteId, setOpenMenuRouteId] = useState(null);
 
-  // Load routes on mount. This is the ONLY request this screen makes on page load.
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -72,7 +70,6 @@ export default function Routes() {
     };
   }, []);
 
-  // Close the three-dot action menu when clicking anywhere outside
   useEffect(() => {
     if (!openMenuRouteId) return;
 

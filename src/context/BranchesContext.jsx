@@ -15,10 +15,6 @@ export function BranchesProvider({ schoolId, children }) {
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [branchesError, setBranchesError] = useState("");
 
-  // Both are refs, not state. If they were state, loadBranches would get a
-  // new identity every time they changed, and any effect listing it as a
-  // dependency would re-run. That fired getRoles three times in
-  // BranchUserModal.
   const loadedRef = useRef(false);
   const inFlightRef = useRef(null);
 
@@ -48,8 +44,6 @@ export function BranchesProvider({ schoolId, children }) {
     return promise;
   }, [schoolId]);
 
-  // Fetches only the first time. Identity never changes, so effects that
-  // depend on it do not re-run.
   const loadBranches = useCallback(() => {
     if (loadedRef.current) return;
     return fetchBranches();

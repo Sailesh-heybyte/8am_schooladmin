@@ -20,7 +20,6 @@ export default function ParentModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Reset form when modal opens
   useEffect(() => {
     if (!isOpen) return;
 
@@ -31,7 +30,6 @@ export default function ParentModal({
     setIsSubmitting(false);
   }, [isOpen, isPinned, me.branch_id]);
 
-  // Load branches inside the modal only
   useEffect(() => {
     if (!isOpen) return;
     if (isPinned) return;
@@ -86,7 +84,6 @@ export default function ParentModal({
     (!isPinned && branchesLoading) ||
     (!isPinned && Boolean(branchesError));
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

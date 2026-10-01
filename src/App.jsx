@@ -16,7 +16,6 @@ import Announcements from "./screens/Announcements/index.jsx";
 import Complaints from "./screens/Complaints/index.jsx";
 import NotFound from "./components/NotFound.jsx";
 
-// Placeholders until each feature screen is built.
 const Placeholder = ({ name }) => <p>{name} screen coming soon.</p>;
 
 export default function App() {
@@ -24,8 +23,6 @@ export default function App() {
     () => !!localStorage.getItem("school_access_token"),
   );
 
-  // A session is only valid when memory and storage agree. If they
-  // disagree the app can bounce between /login and /dashboard forever.
   const hasSession =
     isAuthenticated && Boolean(localStorage.getItem("school_access_token"));
 

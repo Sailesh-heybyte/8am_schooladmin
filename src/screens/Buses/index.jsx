@@ -29,7 +29,6 @@ export default function Buses() {
   const [isUnassigning, setIsUnassigning] = useState(false);
   const [unassignError, setUnassignError] = useState("");
 
-  // Load buses on mount
   useEffect(() => {
     let isMounted = true;
     setLoading(true);

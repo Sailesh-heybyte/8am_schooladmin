@@ -28,7 +28,6 @@ export default function Parents() {
   const [openMenuParentId, setOpenMenuParentId] = useState(null);
   const [parentForDetails, setParentForDetails] = useState(null);
 
-  // Load parents on mount. This is the ONLY request this screen makes on page load.
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -52,7 +51,6 @@ export default function Parents() {
     };
   }, []);
 
-  // Close the three-dot action menu when clicking anywhere outside
   useEffect(() => {
     if (!openMenuParentId) return;
 

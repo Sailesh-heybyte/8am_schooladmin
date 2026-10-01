@@ -23,7 +23,6 @@ export default function BusModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Reset form when modal opens
   useEffect(() => {
     if (!isOpen) return;
 
@@ -46,10 +45,9 @@ export default function BusModal({
     setIsSubmitting(false);
   }, [isOpen, bus, isPinned, me.branch_id]);
 
-  // Load branches inside the modal for create mode
   useEffect(() => {
     if (!isOpen) return;
-    if (bus) return; // Edit mode does not need branches
+    if (bus) return;
     if (isPinned) return;
 
     loadBranches();
@@ -113,7 +111,6 @@ export default function BusModal({
     (!isEditMode && !isPinned && branchesLoading) ||
     (!isEditMode && !isPinned && Boolean(branchesError));
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

@@ -20,8 +20,6 @@ function ScreenCrashed() {
   );
 }
 
-// React can only catch crashes with a class component, so this one
-// small class is the only one in the project.
 export default class ErrorBoundary extends Component {
   state = { hasError: false };
 

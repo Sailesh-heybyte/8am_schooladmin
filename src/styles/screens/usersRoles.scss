@@ -327,10 +327,6 @@
   }
 }
 
-/* ---------- Branches page ---------- */
-
-// Shown when no school is selected, or the selected school has no
-// branches. Sits in place of the table so the page keeps its shape.
 .branch-empty-card {
   display: flex;
   flex-direction: column;
@@ -396,7 +392,6 @@
   font-weight: 600;
 }
 
-// Small pill in the Main Branch column. Easier to scan than "Yes".
 .main-branch-tag {
   display: inline-block;
   padding: 0.15rem 0.5rem;

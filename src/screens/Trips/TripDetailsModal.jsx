@@ -58,7 +58,6 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
 
     return (
       <div className="profile-modal-body">
-        {/* Trip Group */}
         <div className="profile-section">
           <h3 className="profile-section-title">Trip</h3>
           <div className="profile-account-grid">
@@ -83,7 +82,6 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
           </div>
         </div>
 
-        {/* Timing Group */}
         <div className="profile-section">
           <h3 className="profile-section-title">Timing</h3>
           <div className="profile-account-grid">
@@ -105,7 +103,6 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
           </div>
         </div>
 
-        {/* Assignment Group */}
         <div className="profile-section">
           <h3 className="profile-section-title">Assignment</h3>
           <div className="profile-account-grid">
@@ -139,7 +136,6 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
           </div>
         </div>
 
-        {/* Record Group */}
         <div className="profile-section">
           <h3 className="profile-section-title">Record</h3>
           <div className="profile-account-grid">

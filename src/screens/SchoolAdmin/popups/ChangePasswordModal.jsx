@@ -3,7 +3,6 @@ import "../../Roles/RoleModal.scss";
 import "./ChangePasswordModal.scss";
 import { changePassword } from "../../../api/auth.js";
 
-// One password input with its own show/hide eye button.
 function PasswordField({ id, label, value, onChange, autoComplete, disabled }) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -33,8 +32,6 @@ function PasswordField({ id, label, value, onChange, autoComplete, disabled }) {
   );
 }
 
-// Change password from the profile menu. On success the parent signs the
-// user out, because the backend revokes refresh tokens on a password change.
 export default function ChangePasswordModal({ onClose, onChanged }) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -43,8 +40,6 @@ export default function ChangePasswordModal({ onClose, onChanged }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const passwordsMatch = newPassword === confirmPassword;
-  // Change Password stays disabled until every field is filled and the
-  // new password and its confirmation match.
   const canSubmit =
     currentPassword !== "" &&
     newPassword !== "" &&

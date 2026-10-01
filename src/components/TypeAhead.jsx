@@ -22,9 +22,6 @@ export default function TypeAhead({
   const dropdownRef = useRef(null);
   const [dropdownPosition, setDropdownPosition] = useState(null);
 
-  // The list is drawn on document.body (see createPortal below) so a
-  // scrolling modal cannot clip it. This places it under the input, or
-  // above it when there is not enough room below.
   const placeDropdown = () => {
     const rect = containerRef.current.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
@@ -63,16 +60,12 @@ export default function TypeAhead({
     selectedOptionRef.current = selectedOption;
   }, [selectedOption]);
 
-  // Keep input text in sync with selected option when panel is closed
   useEffect(() => {
     if (!isOpen) {
       setSearchText(selectedOption ? selectedOption.label : "");
     }
   }, [isOpen, selectedOption]);
 
-  // Close on any interaction outside the component, by mouse OR by keyboard.
-  // mousedown covers clicking elsewhere on the page.
-  // focusin covers tabbing to another field, which fires no click at all.
   useEffect(() => {
     const closeIfOutside = (event) => {
       if (!containerRef.current) return;
@@ -95,7 +88,6 @@ export default function TypeAhead({
     };
   }, []);
 
-  // Keep the list under its input while anything scrolls or resizes.
   useEffect(() => {
     if (!isOpen) return;
     window.addEventListener("scroll", placeDropdown, true);

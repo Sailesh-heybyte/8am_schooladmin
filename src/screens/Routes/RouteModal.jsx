@@ -5,7 +5,6 @@ import "../Roles/RoleModal.scss";
 import TypeAhead from "../../components/TypeAhead.jsx";
 import RoutePointPicker from "./RoutePointPicker.jsx";
 
-// Returns an error message for one route point, or "" when it is valid.
 const checkPoint = (label, lat, lng) => {
   if (lat === "" || lng === "") {
     return `${label} point is required. Set it on the map.`;
@@ -42,9 +41,7 @@ export default function RouteModal({
     useBranches();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  // Full-screen map: null (closed), "start" or "end".
   const [pickerStep, setPickerStep] = useState(null);
-  // True when Start was opened with End still empty: Start then End.
   const [isGuidedFlow, setIsGuidedFlow] = useState(false);
 
   useEffect(() => {
@@ -54,7 +51,6 @@ export default function RouteModal({
       setRouteName(route.routeName || "");
       setBranchId(route.branchId || "");
       setIsActive(Boolean(route.isActive));
-      // Older routes have no points yet: prefill as empty, never as 0.
       setStartLat(route.startLat !== null ? String(route.startLat) : "");
       setStartLng(route.startLng !== null ? String(route.startLng) : "");
       setEndLat(route.endLat !== null ? String(route.endLat) : "");
@@ -74,10 +70,9 @@ export default function RouteModal({
     setIsGuidedFlow(false);
   }, [isOpen, route, isPinned, me.branch_id]);
 
-  // Load branches only in create mode
   useEffect(() => {
     if (!isOpen) return;
-    if (route) return; // Skip fetch entirely in edit mode
+    if (route) return;
     if (isPinned) return;
 
     loadBranches();
@@ -156,7 +151,6 @@ export default function RouteModal({
     setIsGuidedFlow(false);
   };
 
-  // Save the confirmed point. In the guided flow, Start leads on to End.
   const handleConfirmPoint = (lat, lng) => {
     setError("");
     if (pickerStep === "start") {
@@ -178,7 +172,6 @@ export default function RouteModal({
     { step: "end", label: "End point", lat: endLat, lng: endLng },
   ];
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

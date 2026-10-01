@@ -79,7 +79,6 @@ export default function AssignBusModal({
     buses.length === 0 ||
     !selectedBusId;
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

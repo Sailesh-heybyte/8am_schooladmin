@@ -24,7 +24,6 @@ export default function DriverModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Prefill every field from driver prop in edit mode, reset in create mode
   useEffect(() => {
     if (!isOpen) return;
 
@@ -47,10 +46,9 @@ export default function DriverModal({
     setIsSubmitting(false);
   }, [isOpen, driver, isPinned, me.branch_id]);
 
-  // Load branches inside the modal only for create mode
   useEffect(() => {
     if (!isOpen) return;
-    if (driver) return; // Skip fetch entirely in edit mode
+    if (driver) return;
     if (isPinned) return;
 
     loadBranches();
@@ -92,7 +90,6 @@ export default function DriverModal({
 
     try {
       if (isEditMode) {
-        // Do NOT send branchId on update
         await updateDriver(driver.id, {
           fullName: fullName.trim(),
           phone: `+91-${cleanedPhone}`,
@@ -125,7 +122,6 @@ export default function DriverModal({
     (!isEditMode && !isPinned && branchesLoading) ||
     (!isEditMode && !isPinned && Boolean(branchesError));
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

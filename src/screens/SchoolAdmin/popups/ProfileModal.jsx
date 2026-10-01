@@ -30,7 +30,6 @@ export default function ProfileModal({ isOpen, me, onClose }) {
         </div>
 
         <div className="profile-modal-body">
-          {/* Account Section */}
           <div className="profile-section">
             <h3 className="profile-section-title">Account</h3>
             <div className="profile-account-grid">
@@ -62,7 +61,6 @@ export default function ProfileModal({ isOpen, me, onClose }) {
             </div>
           </div>
 
-          {/* Permissions Section */}
           <div className="profile-section">
             <h3 className="profile-section-title">
               Permissions ({permissions.length})

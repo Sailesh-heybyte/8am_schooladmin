@@ -85,16 +85,12 @@ async function parseErrorMessage(response) {
   return fallback;
 }
 
-// Ends the session: clears both tokens and reloads, which lands on /login.
 function endSession() {
   localStorage.removeItem("school_access_token");
   localStorage.removeItem("school_refresh_token");
   window.location.reload();
 }
 
-// fetch() only throws when the request never reached the server
-// (no internet, server down, request blocked). Show a clear message
-// instead of the browser's "Failed to fetch".
 async function send(url, init) {
   try {
     return await fetch(url, init);

@@ -20,7 +20,6 @@ export default function BranchUsers() {
   const [roleFilter, setRoleFilter] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Load users on mount
   useEffect(() => {
     let isMounted = true;
     setLoading(true);

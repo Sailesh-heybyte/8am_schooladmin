@@ -17,7 +17,6 @@ export default function AssignStopModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Load stops inside the modal on open, keyed on [isOpen]
   useEffect(() => {
     if (!isOpen) return;
 
@@ -80,7 +79,6 @@ export default function AssignStopModal({
     stops.length === 0 ||
     !selectedStopId;
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

@@ -56,7 +56,6 @@ export default function StudentParentsModal({ isOpen, student, onClose }) {
         </div>
 
         <div className="profile-modal-body">
-          {/* Student Context */}
           <div className="profile-section">
             <h3 className="profile-section-title">Student</h3>
             <div className="profile-account-grid">
@@ -76,7 +75,6 @@ export default function StudentParentsModal({ isOpen, student, onClose }) {
             </div>
           </div>
 
-          {/* Linked Parents Section */}
           <div className="profile-section">
             <h3 className="profile-section-title">
               Linked Parents {loading ? "" : `(${parents.length})`}

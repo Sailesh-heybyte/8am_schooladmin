@@ -141,7 +141,6 @@ export default function Stops() {
   const [stopForDetails, setStopForDetails] = useState(null);
   const [openMenuStopId, setOpenMenuStopId] = useState(null);
 
-  // Load stops on mount. This is the ONLY request this screen makes on page load.
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -165,7 +164,6 @@ export default function Stops() {
     };
   }, []);
 
-  // Close the three-dot action menu when clicking anywhere outside
   useEffect(() => {
     if (!openMenuStopId) return;
 

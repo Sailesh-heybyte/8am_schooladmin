@@ -51,7 +51,6 @@ export default function BranchUserModal({
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
 
-  // Reset form and fetch branches and roles when modal opens
   useEffect(() => {
     if (!isOpen) return;
 
@@ -219,7 +218,6 @@ export default function BranchUserModal({
     Boolean(loadError) ||
     (!isPinned && Boolean(branchesError));
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();
@@ -245,7 +243,6 @@ export default function BranchUserModal({
 
         <form onSubmit={handleSubmit}>
           <div className="add-user-body">
-            {/* Section 1: User Information */}
             <div className="form-section">
               <h3 className="form-section-title">User Information</h3>
               <div className="form-row">
@@ -289,7 +286,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 2: Branch and Roles */}
             <div className="form-section">
               <h3 className="form-section-title">Branch and Roles</h3>
               {!isPinned && (
@@ -354,7 +350,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 3: Personal Details */}
             <div className="form-section">
               <h3 className="form-section-title">Personal Details</h3>
               <div className="form-row">
@@ -433,7 +428,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 4: Address */}
             <div className="form-section">
               <h3 className="form-section-title">Address</h3>
               <div className="form-row">
@@ -501,7 +495,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 5: Emergency Contact */}
             <div className="form-section">
               <h3 className="form-section-title">Emergency Contact</h3>
               <div className="form-row">
@@ -550,7 +543,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 6: Bank Details */}
             <div className="form-section">
               <h3 className="form-section-title">Bank Details</h3>
               <div className="form-row">
@@ -594,7 +586,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 7: Government Details */}
             <div className="form-section">
               <h3 className="form-section-title">Government Details</h3>
               <div className="form-row">
@@ -627,7 +618,6 @@ export default function BranchUserModal({
               </div>
             </div>
 
-            {/* Section 8: Additional */}
             <div className="form-section">
               <h3 className="form-section-title">Additional</h3>
               <div className="form-row">

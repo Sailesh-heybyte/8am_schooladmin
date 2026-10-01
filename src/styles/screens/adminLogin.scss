@@ -319,8 +319,6 @@
       width: 100%;
       min-width: 0;
       min-height: 0;
-      // Bottom space comes from the ::after spacer below, not padding, so
-      // a sticky table footer can sit right at the bottom edge.
       padding: 0 1.5rem 0 1.5rem;
       overflow-y: auto;
       overflow-x: hidden;
@@ -334,10 +332,6 @@
     }
   }
 }
-
-/* =========================
-   RESPONSIVE
-========================= */
 
 @media (max-width: 1100px) {
   .admin-app {

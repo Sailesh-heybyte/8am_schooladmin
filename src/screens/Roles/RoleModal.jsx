@@ -105,7 +105,6 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
     event.preventDefault();
     setError("");
 
-    // If zero permissions are checked, warn and require a second click to confirm
     if (checkedCodenames.length === 0 && !confirmZeroWarning) {
       setConfirmZeroWarning(true);
       return;
@@ -127,7 +126,6 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
       onSaved();
       onClose();
     } catch (err) {
-      // Modal stays open on failure, displays inline error
       setError(err.message || "Failed to save role. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -140,7 +138,6 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
     (isEditMode && !isRoleLoaded) ||
     Boolean(error);
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

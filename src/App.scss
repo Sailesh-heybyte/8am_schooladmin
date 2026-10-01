@@ -5,7 +5,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  // Sized by its content, not a share of the screen height.
   padding: 1.25rem 0 1rem;
 
   h2 {
@@ -57,10 +56,6 @@
     background: $surface-hover;
   }
 }
-
-/* =========================
-   CARDS / STATS
-========================= */
 
 .stats-grid {
   width: 100%;
@@ -157,10 +152,6 @@
   font-size: max(0.68rem, 10px);
   cursor: pointer;
 }
-
-/* =========================
-   DASHBOARD
-========================= */
 
 .super-dashboard-grid {
   display: flex;
@@ -540,10 +531,6 @@
   }
 }
 
-/* =========================
-   FILTERS / TABLES
-========================= */
-
 .filter-card {
   display: flex;
   padding: 1.25rem 0.8rem;
@@ -832,7 +819,6 @@ tbody tr:hover {
 }
 
 .pagination {
-  // Keep the page buttons in view while scrolling a long table.
   position: sticky;
   bottom: 0;
   z-index: 1;
@@ -1035,10 +1021,6 @@ tbody tr:hover {
   }
 }
 
-/* =========================
-   STATUS
-========================= */
-
 .status {
   display: inline-flex !important;
   flex-direction: row !important;
@@ -1103,10 +1085,6 @@ tbody tr:hover {
   }
 }
 
-/* =========================
-   DIRECTION BADGE
-========================= */
-
 .direction-badge {
   display: inline-flex !important;
   flex-direction: row !important;
@@ -1144,10 +1122,6 @@ tbody tr:hover {
     border: 0.05rem solid #eaecf0;
   }
 }
-
-/* =========================
-   LIVE FLEET
-========================= */
 
 .fleet-layout {
   height: 86%;
@@ -1251,10 +1225,6 @@ tbody tr:hover {
   }
 }
 
-/* =========================
-   REPORTS
-========================= */
-
 .reports-dashboard {
   height: 67%;
   display: flex;
@@ -1284,7 +1254,6 @@ tbody tr:hover {
       border: 0.05rem solid $border;
       border-bottom-left-radius: $radius;
       border-bottom-right-radius: $radius;
-      // background: #ffcc00;
     }
   }
 }
@@ -1381,10 +1350,6 @@ tbody tr:hover {
     color: $primary;
   }
 }
-
-/* =========================
-   ALERTS
-========================= */
 
 .alert-filter {
   display: flex;
@@ -1793,10 +1758,6 @@ tbody tr:hover {
   font-size: max(0.72rem, 10px);
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
-
 @media (max-width: 1280px) {
   .stats-grid {
     height: auto;
@@ -2019,7 +1980,6 @@ tbody tr:hover {
   }
 }
 
-/* Dashboard Placeholder & Guard Loading Styles */
 .dashboard-loading-container {
   min-height: 100vh;
   display: flex;
@@ -2129,11 +2089,6 @@ tbody tr:hover {
   }
 }
 
-/* =========================
-   ROUTE STOPS MODAL
-========================= */
-
-// The modal turns every <form> into a centred column; this bar is a row.
 .add-user-overlay .add-user-modal form.route-stops-add-bar,
 .route-stops-add-bar {
   display: flex;
@@ -2363,7 +2318,6 @@ tbody tr:hover {
   }
 }
 
-// Route modal: Start/End point rows (the map opens full screen).
 .route-points {
   display: flex;
   flex-direction: column;
@@ -2431,7 +2385,6 @@ tbody tr:hover {
 }
 
 
-// Coordinates in a table cell: latitude above longitude.
 .coord-cell {
   display: inline-flex;
   flex-direction: column;

@@ -117,13 +117,11 @@ function toApiUser(uiUser = {}) {
   return body;
 }
 
-// GET /api/v1/iam/users
 export const getUsers = async () => {
   const data = await apiCall("/iam/users");
   return data.map(toUiUser);
 };
 
-// POST /api/v1/iam/users
 export const createUser = (data) =>
   apiCall("/iam/users", {
     method: "POST",

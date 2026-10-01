@@ -17,7 +17,6 @@ export default function AssignDriverModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Load drivers inside the modal on open, matching BusModal's pattern
   useEffect(() => {
     if (!isOpen) return;
 
@@ -80,7 +79,6 @@ export default function AssignDriverModal({
     drivers.length === 0 ||
     !selectedDriverId;
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

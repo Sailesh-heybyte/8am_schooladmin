@@ -3,22 +3,15 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { searchPlaces } from "../api/geocoding.js";
 import "./MapPicker.scss";
 
-// Free vector map: MapLibre (open-source map library) with OpenFreeMap's
-// clean light "positron" style. No key, no account, no usage limits.
-// MapLibre and its worker are downloaded only when a map first opens.
-// For a more colourful map, use ".../styles/liberty" instead.
 const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
 
-// Rajahmundry, used when no point has been placed yet. [lng, lat]
 const DEFAULT_CENTER = [81.79271807527687, 17.004750823000403];
 const DEFAULT_ZOOM = 12;
 const POINT_ZOOM = 15;
 const SEARCH_ZOOM = 17;
-// Search starts at this many letters, after this pause in typing.
 const SEARCH_MIN_LETTERS = 3;
 const SEARCH_DELAY_MS = 200;
 
-// Turns the two text fields into [lng, lat], or null when empty or invalid.
 const toPosition = (point) => {
   const lat = Number(point.latitude);
   const lng = Number(point.longitude);
@@ -38,16 +31,6 @@ const toPosition = (point) => {
 
 const round = (value) => Number(value.toFixed(6));
 
-// Map for picking one or more points.
-// points: [{ key, label, latitude, longitude }]
-// onChange(key, lat, lng) is called when a point is placed or moved.
-// mode "pins" (default): click to place pins, drag them to adjust.
-// mode "center" (one point only): a fixed pin in the middle; drag the map
-// under it, and the pin's position becomes the point.
-// pinTone "start" / "end": colours the centre pin green / red (Routes).
-// initialCenter [lat, lng]: where to open when the point is still empty
-// (Routes opens the End picker near the Start point). Note the order:
-// [lat, lng] here; MapLibre itself uses [lng, lat].
 export default function MapPicker({
   points,
   onChange,
@@ -65,16 +48,11 @@ export default function MapPicker({
   const pointsRef = useRef(points);
   const disabledRef = useRef(disabled);
   const activeKeyRef = useRef(points[0].key);
-  // The mode never changes while the map is open.
   const isCenterModeRef = useRef(isCenterMode);
-  // Read once when the map is created.
   const initialCenterRef = useRef(initialCenter);
-  // Last position reported from the map, so typed values can move the map
-  // without the map reporting them straight back.
   const lastReportedRef = useRef(null);
 
   const [activeKey, setActiveKey] = useState(points[0].key);
-  // "loading" until the map style has loaded, then "ready" (or "error").
   const [status, setStatus] = useState("loading");
   const isReady = status === "ready";
   const [searchText, setSearchText] = useState("");
@@ -83,7 +61,6 @@ export default function MapPicker({
   const [searchError, setSearchError] = useState("");
   const [highlighted, setHighlighted] = useState(-1);
   const [isListOpen, setIsListOpen] = useState(false);
-  // The query that was last sent, so the same search is never repeated.
   const lastQueryRef = useRef("");
 
   useEffect(() => {
@@ -93,7 +70,6 @@ export default function MapPicker({
     activeKeyRef.current = activeKey;
   });
 
-  // Keep pins and the line in step with the coordinates (typed or picked).
   const syncMarkers = () => {
     const map = mapRef.current;
     const maplibregl = libraryRef.current;
@@ -109,7 +85,6 @@ export default function MapPicker({
         Math.abs(position[1] - last[1]) < 1e-6;
       if (position && !cameFromMap) {
         lastReportedRef.current = position;
-        // Moves made by code have no originalEvent, so moveend ignores them.
         map.jumpTo({ center: position });
       }
       return;
@@ -168,7 +143,6 @@ export default function MapPicker({
     });
   };
 
-  // Create the map when the picker opens, remove it when it closes.
   useEffect(() => {
     let cancelled = false;
     const host = hostRef.current;
@@ -176,8 +150,6 @@ export default function MapPicker({
       .getPropertyValue("--map-line-color")
       .trim();
 
-    // MapLibre runs its map work in a separate worker file; Vite gives us
-    // its URL (the "?worker&url" import), as OpenFreeMap's guide shows.
     Promise.all([
       import("maplibre-gl"),
       import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url"),
@@ -188,7 +160,6 @@ export default function MapPicker({
         libraryRef.current = maplibregl;
 
         const placed = pointsRef.current.map(toPosition).filter(Boolean);
-        // initialCenter is [lat, lng]; MapLibre wants [lng, lat].
         const nearby = initialCenterRef.current
           ? [initialCenterRef.current[1], initialCenterRef.current[0]]
           : null;
@@ -201,10 +172,6 @@ export default function MapPicker({
         });
         mapRef.current = map;
         map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
-        // Centre mode: zooming (wheel, pinch, + / -) must keep the pinned
-        // spot under the pin, so zoom around the centre, not the cursor.
-        // Double-click is off because a click already glides the spot.
-        // (enable() ignores options while already enabled, so disable first.)
         if (isCenterModeRef.current) {
           map.scrollZoom.disable();
           map.scrollZoom.enable({ around: "center" });
@@ -216,7 +183,6 @@ export default function MapPicker({
 
         map.on("load", () => {
           if (cancelled) return;
-          // Dashed line between points (routes).
           map.addSource("picker-line", {
             type: "geojson",
             data: { type: "FeatureCollection", features: [] },
@@ -241,18 +207,13 @@ export default function MapPicker({
               { padding: 60, duration: 0, maxZoom: POINT_ZOOM },
             );
           }
-          // Re-render once, so the effect below draws the pins and line.
           setStatus("ready");
         });
 
-        // If the map style can't load (no internet, service down), say so;
-        // the coordinate fields below still work.
         map.on("error", () => {
           if (!map.loaded()) setStatus("error");
         });
 
-        // Centre mode: when the user moves the map, the centre is the point.
-        // Moves made by code (typed coordinates, search) have no originalEvent.
         map.on("moveend", (event) => {
           if (!isCenterModeRef.current || disabledRef.current) return;
           if (!event.originalEvent && !event.fromClick) return;
@@ -266,14 +227,12 @@ export default function MapPicker({
         map.on("click", (event) => {
           if (disabledRef.current) return;
           if (isCenterModeRef.current) {
-            // Glide the clicked spot under the pin; moveend reports it.
             map.easeTo({ center: event.lngLat }, { fromClick: true });
             return;
           }
           const key = activeKeyRef.current;
           onChangeRef.current(key, round(event.lngLat.lat), round(event.lngLat.lng));
 
-          // After placing one point, move on to the next one that is still empty.
           const next = pointsRef.current.find(
             (point) => point.key !== key && !toPosition(point),
           );
@@ -296,8 +255,6 @@ export default function MapPicker({
     syncMarkers();
   });
 
-  // Search as you type: waits for a pause, skips short or repeated
-  // queries, and cancels a request that is no longer needed.
   useEffect(() => {
     const query = searchText.trim();
     if (query.length < SEARCH_MIN_LETTERS || query === lastQueryRef.current) {
@@ -337,8 +294,6 @@ export default function MapPicker({
     };
   }, [searchText]);
 
-  // Fly to the chosen place. In centre mode the pin lands on it, so it
-  // becomes the point; in pin mode the user then clicks to place a pin.
   const choosePlace = (place) => {
     setIsListOpen(false);
     setSearchText(place.label);
@@ -406,7 +361,6 @@ export default function MapPicker({
                   (current + step + results.length) % results.length,
                 );
               }
-              // Enter picks a place; it must never submit the modal's form.
               if (e.key === "Enter") {
                 e.preventDefault();
                 if (isListOpen && results[highlighted]) {
@@ -437,7 +391,6 @@ export default function MapPicker({
                 <button
                   type="button"
                   className={index === highlighted ? "is-highlighted" : ""}
-                  // mousedown, so the input's blur doesn't close the list first
                   onMouseDown={(e) => {
                     e.preventDefault();
                     choosePlace(place);

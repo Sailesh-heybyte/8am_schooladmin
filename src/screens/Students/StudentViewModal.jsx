@@ -44,7 +44,6 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
         </div>
 
         <div className="profile-modal-body">
-          {/* Student Information */}
           <div className="profile-section">
             <h3 className="profile-section-title">Student Information</h3>
             <div className="profile-account-grid">
@@ -153,7 +152,6 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
             </div>
           </div>
 
-          {/* Parents Section */}
           <div className="profile-section">
             <h3 className="profile-section-title">
               Parents {parents.length > 0 ? `(${parents.length})` : ""}

@@ -5,7 +5,6 @@
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
-  // Read by MapPicker.jsx for the line between points.
   --map-line-color: #{$primary};
 }
 
@@ -76,7 +75,6 @@
   font-size: max(0.68rem, 10px);
 }
 
-// Pins (S and E for routes, a single blue pin otherwise).
 .map-marker {
   width: 1.6rem;
   height: 1.6rem;
@@ -91,18 +89,15 @@
   font-weight: 700;
   cursor: grab;
 
-  // A single point uses the brand colour.
   &.map-marker-single {
     background: $primary;
   }
 }
 
-// Centre mode: a fixed pin whose tip marks the middle of the map.
 .map-picker-center-pin {
   position: absolute;
   left: 50%;
   top: 50%;
-  // Above the map; clicks pass through to the map.
   z-index: 1;
   transform: translate(-50%, -100%);
   color: $primary;
@@ -111,7 +106,6 @@
   pointer-events: none;
   filter: drop-shadow($shadow-hover);
 
-  // A small dot on the map where the tip points.
   &::after {
     content: "";
     position: absolute;
@@ -126,7 +120,6 @@
   }
 }
 
-// Routes: green pin for Start, red for End (same as the S/E pins).
 .map-picker-center-pin.is-start {
   color: $green-dark;
 
@@ -143,7 +136,6 @@
   }
 }
 
-// Shown until the map has loaded.
 .map-picker-loading {
   position: absolute;
   inset: 0;
@@ -162,7 +154,6 @@
   }
 }
 
-// Place search above the map.
 .map-picker-search {
   position: relative;
 }
@@ -172,7 +163,6 @@
   align-items: center;
   gap: 0.6rem;
 
-  // Same look as the other inputs in the modals.
   input {
     flex: 1;
     min-width: 0;
@@ -191,7 +181,6 @@
   }
 }
 
-// Small spinner beside the search box while a search is running.
 .map-picker-search-spinner {
   flex-shrink: 0;
   width: 0.9rem;
@@ -208,7 +197,6 @@
   }
 }
 
-// Results float over the map, above its tiles and controls.
 .map-picker-results {
   position: absolute;
   top: calc(100% + 0.25rem);
@@ -255,7 +243,6 @@
   font-size: max(0.7rem, 10px);
 }
 
-// App-style map controls: rounded, soft shadow, quiet credits.
 .map-picker-frame {
   .maplibregl-ctrl-group {
     border-radius: $radius-small;

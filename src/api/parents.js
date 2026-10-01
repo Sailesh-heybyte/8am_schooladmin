@@ -19,27 +19,22 @@ const toApiParent = (parent) => ({
   branch_id: parent.branchId,
 });
 
-// GET /api/v1/people/parents
 export const getParents = async () => {
   const data = await apiCall("/people/parents");
   return data.map(toUiParent);
 };
 
-// GET /api/v1/people/parents/{parent_id}
 export const getParent = async (id) => {
   const data = await apiCall(`/people/parents/${id}`);
   return toUiParent(data);
 };
 
-// POST /api/v1/people/parents
 export const createParent = (data) =>
   apiCall("/people/parents", {
     method: "POST",
     body: toApiParent(data),
   });
 
-// PATCH /api/v1/people/parents/{parent_id}
-// Endpoint accepts is_active only
 export const setParentActive = async (parentId, isActive) => {
   const data = await apiCall(`/people/parents/${parentId}`, {
     method: "PATCH",

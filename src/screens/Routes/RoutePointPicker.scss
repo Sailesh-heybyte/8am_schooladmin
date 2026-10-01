@@ -1,7 +1,5 @@
 @use "../../styles/colors" as *;
 
-// Full-screen point picker. Above the route modal (9999) and the
-// TypeAhead list (10000).
 .route-point-picker {
   position: fixed;
   inset: 0;
@@ -51,7 +49,6 @@
   font-weight: 600;
 }
 
-// Green / red dot for Start / End (also used in the route modal rows).
 .route-point-dot {
   flex-shrink: 0;
   width: 0.7rem;
@@ -67,7 +64,6 @@
   }
 }
 
-// The map fills the space between the top bar and the bottom sheet.
 .route-point-picker-map {
   flex: 1;
   min-height: 0;
@@ -85,7 +81,6 @@
     min-height: 0;
   }
 
-  // The bottom sheet explains what to do instead.
   .map-picker-hint {
     display: none;
   }
@@ -144,7 +139,6 @@
   min-width: 12rem;
 }
 
-// Narrow screens: the button goes under the text, full width.
 @media (max-width: 600px) {
   .route-point-picker-sheet {
     flex-direction: column;

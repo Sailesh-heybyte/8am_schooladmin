@@ -141,7 +141,6 @@ export default function RouteStopsModal({
     })
   );
 
-  // Load route detail and all stops on open
   useEffect(() => {
     if (!isOpen || !route?.id) return;
 
@@ -176,14 +175,12 @@ export default function RouteStopsModal({
 
   if (!isOpen || !route) return null;
 
-  // Determine if order changed relative to initialStopIds
   const currentIds = orderedStops.map((s) => s.id);
   const hasUnsavedOrder =
     currentIds.length === initialStopIds.length &&
     currentIds.length > 0 &&
     currentIds.some((id, idx) => id !== initialStopIds[idx]);
 
-  // Stops available to add (not already on route)
   const availableStopsToAdd = allStops.filter(
     (s) => !orderedStops.some((os) => os.id === s.id)
   );
@@ -191,10 +188,8 @@ export default function RouteStopsModal({
   const isBusy = loading || isAdding || isSavingOrder || isRemoving;
 
   const handleClose = () => {
-    // Ignore close requests while something is saving.
     if (isBusy) return;
 
-    // A reordered list is only kept after "Save order", so ask first.
     if (
       hasUnsavedOrder &&
       !window.confirm("Discard the new stop order? It hasn't been saved.")
@@ -318,7 +313,6 @@ export default function RouteStopsModal({
         </div>
 
         <div className="add-user-body" style={{ padding: "1.25rem 1.5rem" }}>
-          {/* Add Stop Section */}
           <form onSubmit={handleAddStop} className="route-stops-add-bar">
             <div className="route-stops-add-field">
               <TypeAhead
@@ -353,7 +347,6 @@ export default function RouteStopsModal({
             </div>
           )}
 
-          {/* Stops List */}
           <div className="route-stops-list-wrapper">
             <div className="route-stops-list-header">
               <span>ORDERED STOPS ({orderedStops.length})</span>
@@ -404,7 +397,6 @@ export default function RouteStopsModal({
             )}
           </div>
 
-          {/* Unsaved Order Save Banner */}
           {hasUnsavedOrder && (
             <div className="unsaved-order-footer-bar">
               <div>
@@ -435,7 +427,6 @@ export default function RouteStopsModal({
         </div>
       </div>
 
-      {/* Remove Stop Confirmation Modal */}
       {stopToRemove && (
         <div
           className="add-user-overlay"

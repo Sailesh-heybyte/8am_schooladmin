@@ -3,11 +3,9 @@ import { getRoute } from "../../api/routes.js";
 import "../Roles/RoleModal.scss";
 import "./RouteStopsViewModal.scss";
 
-// "17.0001, 81.8001", or null when the point is not set.
 const formatCoords = (lat, lng) =>
   lat !== null && lng !== null ? `${lat}, ${lng}` : null;
 
-// Read-only view of a route: start point, its stops in order, end point.
 export default function RouteStopsViewModal({ route, onClose, onManage }) {
   const [stops, setStops] = useState([]);
   const [loading, setLoading] = useState(true);

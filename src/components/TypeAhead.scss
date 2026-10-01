@@ -85,7 +85,6 @@
 }
 
 .typeahead-dropdown {
-  // Drawn on document.body; top/left/width are set by the component.
   position: fixed;
   background: $white;
   border: 0.05rem solid $border;
@@ -171,7 +170,6 @@
   background: $background;
 }
 
-// Prevent panel from being clipped by the scroll container of modal popups (such as .add-school-body in CardMapModal)
 .add-school-body:has(.typeahead-container),
 .add-school-body:has(.typeahead-dropdown) {
   overflow: visible;
@@ -181,7 +179,6 @@
   overflow: visible;
 }
 
-// Integration with filter bars (e.g. Branches screen)
 .filter-group .typeahead-container {
   width: 13rem;
 }

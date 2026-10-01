@@ -49,10 +49,8 @@ export default function Students() {
   const [isUnassigning, setIsUnassigning] = useState(false);
   const [unassignError, setUnassignError] = useState("");
 
-  // Track the open three-dot menu by student id (only one open at a time)
   const [openMenuStudentId, setOpenMenuStudentId] = useState(null);
 
-  // Load students on mount. This is the ONLY request this screen makes on page load.
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -76,7 +74,6 @@ export default function Students() {
     };
   }, []);
 
-  // Close the three-dot action menu when clicking anywhere outside
   useEffect(() => {
     if (!openMenuStudentId) return;
 

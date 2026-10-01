@@ -80,7 +80,6 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
   const isSaveDisabled =
     isSubmitting || !parentId || !parentId.trim() || parentsLoading;
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

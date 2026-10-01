@@ -5,7 +5,6 @@ import { useBranches } from "../../context/BranchesContext.jsx";
 import TypeAhead from "../../components/TypeAhead.jsx";
 import "../Roles/RoleModal.scss";
 
-// Alert times allowed by the backend: multiples of 5, up to 30 minutes.
 const ALERT_MINUTE_OPTIONS = [5, 10, 15, 20, 25, 30].map((minutes) => ({
   value: String(minutes),
   label: `${minutes} minutes`,
@@ -40,7 +39,6 @@ export default function StudentModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Prefill every field from student prop in edit mode, reset in create mode
   useEffect(() => {
     if (!isOpen) return;
 
@@ -156,7 +154,6 @@ export default function StudentModal({
 
     try {
       if (isEditMode) {
-        // Do NOT send branchId or parents on update
         await updateStudent(student.id, {
           fullName: fullName.trim(),
           admissionNumber: admissionNumber.trim(),
@@ -203,7 +200,6 @@ export default function StudentModal({
     (!isEditMode && !isPinned && Boolean(branchesError)) ||
     (!isEditMode && parentsLoading);
 
-  // Ignore close requests while a save is in progress.
   const requestClose = () => {
     if (isSubmitting) return;
     onClose();

@@ -27,7 +27,6 @@ export default function Trips() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTripId, setSelectedTripId] = useState(null);
 
-  // Load trips on mount. This is the ONLY request this screen makes on page load.
   useEffect(() => {
     let isMounted = true;
 
