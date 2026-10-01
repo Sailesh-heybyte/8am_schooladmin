@@ -1,0 +1,114 @@
+@use "../styles/colors" as *;
+
+.add-user-overlay .add-user-modal.import-modal {
+  width: min(64rem, 94vw);
+
+  .add-user-body {
+    overflow-y: auto;
+  }
+}
+
+.import-text {
+  margin: 0 0 0.6rem;
+  color: $text-light;
+  font-size: max(0.72rem, 10px);
+}
+
+.import-note {
+  margin: 0.75rem 0 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: $radius-small;
+  background: $orange-light;
+  color: $text;
+  font-size: max(0.72rem, 10px);
+}
+
+.import-error {
+  margin: 0.5rem 0 0;
+  color: $red;
+  font-size: max(0.72rem, 10px);
+}
+
+.import-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.import-upload {
+  cursor: pointer;
+
+  input {
+    display: none;
+  }
+}
+
+.import-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  color: $text;
+  font-size: max(0.72rem, 10px);
+}
+
+.import-chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  background: $background;
+  color: $text-light;
+  font-weight: 600;
+
+  &.is-ready {
+    background: $green-light;
+    color: $green-dark;
+  }
+
+  &.is-problem {
+    background: $red-light;
+    color: $red-dark;
+  }
+}
+
+.import-toggle {
+  margin-left: auto;
+}
+
+.import-ready {
+  color: $green-dark;
+  font-weight: 600;
+}
+
+.import-problems {
+  margin: 0;
+  padding-left: 1rem;
+  color: $red-dark;
+}
+
+.import-footer-note {
+  margin-right: auto;
+  color: $text-light;
+  font-size: max(0.7rem, 10px);
+}
+
+.table-card.import-table {
+  .table-wrapper tbody tr td {
+    height: auto;
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    vertical-align: top;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 4rem;
+  }
+
+  th:last-child,
+  td:last-child {
+    width: 30%;
+  }
+}

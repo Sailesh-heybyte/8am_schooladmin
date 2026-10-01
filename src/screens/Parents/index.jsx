@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
+import ParentImportModal from "./ParentImportModal.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import TypeAhead from "../../components/TypeAhead.jsx";
@@ -22,6 +23,7 @@ export default function Parents() {
   const [statusFilter, setStatusFilter] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [parentToToggle, setParentToToggle] = useState(null);
   const [isToggling, setIsToggling] = useState(false);
   const [toggleError, setToggleError] = useState("");
@@ -151,6 +153,8 @@ export default function Parents() {
         description="Manage parents and guardians."
         button="+ Add Parent"
         onButtonClick={openCreate}
+        secondaryButton="Import"
+        onSecondaryButtonClick={() => setIsImportOpen(true)}
       />
 
       <div className="filter-card admin-filter">
@@ -334,6 +338,9 @@ export default function Parents() {
         />
       )}
 
+      {isImportOpen && (
+        <ParentImportModal me={me} onClose={() => setIsImportOpen(false)} />
+      )}
       {isModalOpen && (
         <ParentModal
           isOpen={isModalOpen}

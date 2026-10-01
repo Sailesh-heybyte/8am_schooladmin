@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import PageTitle from "../../components/PageTitle.jsx";
+import StudentImportModal from "./StudentImportModal.jsx";
 import DataTable from "../../components/DataTable.jsx";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import TypeAhead from "../../components/TypeAhead.jsx";
@@ -40,6 +41,7 @@ export default function Students() {
   const [stopFilter, setStopFilter] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
   const [studentForView, setStudentForView] = useState(null);
   const [studentForParents, setStudentForParents] = useState(null);
@@ -193,6 +195,8 @@ export default function Students() {
         description="Manage student records, parent contacts, and enrollments."
         button="+ Add Student"
         onButtonClick={openCreate}
+        secondaryButton="Import"
+        onSecondaryButtonClick={() => setIsImportOpen(true)}
       />
 
       <div className="filter-card admin-filter">
@@ -436,6 +440,9 @@ export default function Students() {
         />
       )}
 
+      {isImportOpen && (
+        <StudentImportModal me={me} onClose={() => setIsImportOpen(false)} />
+      )}
       {isModalOpen && (
         <StudentModal
           isOpen={isModalOpen}
