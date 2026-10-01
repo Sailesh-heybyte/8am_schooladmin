@@ -44,11 +44,17 @@ const round = (value) => Number(value.toFixed(6));
 // mode "pins" (default): click to place pins, drag them to adjust.
 // mode "center" (one point only): a fixed pin in the middle; drag the map
 // under it, and the pin's position becomes the point.
+// pinTone "start" / "end": colours the centre pin green / red (Routes).
+// initialCenter [lat, lng]: where to open when the point is still empty
+// (Routes opens the End picker near the Start point). Note the order:
+// [lat, lng] here; MapLibre itself uses [lng, lat].
 export default function MapPicker({
   points,
   onChange,
   disabled = false,
   mode = "pins",
+  pinTone = "",
+  initialCenter = null,
 }) {
   const isCenterMode = mode === "center";
   const hostRef = useRef(null);
@@ -61,6 +67,8 @@ export default function MapPicker({
   const activeKeyRef = useRef(points[0].key);
   // The mode never changes while the map is open.
   const isCenterModeRef = useRef(isCenterMode);
+  // Read once when the map is created.
+  const initialCenterRef = useRef(initialCenter);
   // Last position reported from the map, so typed values can move the map
   // without the map reporting them straight back.
   const lastReportedRef = useRef(null);
@@ -180,15 +188,30 @@ export default function MapPicker({
         libraryRef.current = maplibregl;
 
         const placed = pointsRef.current.map(toPosition).filter(Boolean);
+        // initialCenter is [lat, lng]; MapLibre wants [lng, lat].
+        const nearby = initialCenterRef.current
+          ? [initialCenterRef.current[1], initialCenterRef.current[0]]
+          : null;
         const map = new maplibregl.Map({
           container: host,
           style: STYLE_URL,
-          center: placed[0] || DEFAULT_CENTER,
-          zoom: placed.length ? POINT_ZOOM : DEFAULT_ZOOM,
+          center: placed[0] || nearby || DEFAULT_CENTER,
+          zoom: placed.length || nearby ? POINT_ZOOM : DEFAULT_ZOOM,
           attributionControl: { compact: true },
         });
         mapRef.current = map;
         map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+        // Centre mode: zooming (wheel, pinch, + / -) must keep the pinned
+        // spot under the pin, so zoom around the centre, not the cursor.
+        // Double-click is off because a click already glides the spot.
+        // (enable() ignores options while already enabled, so disable first.)
+        if (isCenterModeRef.current) {
+          map.scrollZoom.disable();
+          map.scrollZoom.enable({ around: "center" });
+          map.touchZoomRotate.disable();
+          map.touchZoomRotate.enable({ around: "center" });
+          map.doubleClickZoom.disable();
+        }
         lastReportedRef.current = placed[0] || null;
 
         map.on("load", () => {
@@ -442,7 +465,10 @@ export default function MapPicker({
           </div>
         )}
         {isCenterMode && isReady && (
-          <div className="map-picker-center-pin" aria-hidden="true">
+          <div
+            className={`map-picker-center-pin ${pinTone ? `is-${pinTone}` : ""}`}
+            aria-hidden="true"
+          >
             <i className="bi bi-geo-alt-fill"></i>
           </div>
         )}
