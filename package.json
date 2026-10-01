@@ -15,7 +15,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@microsoft/fetch-event-source": "^2.0.1",
     "bootstrap-icons": "^1.13.1",
-    "leaflet": "^1.9.4",
     "maplibre-gl": "^6.11.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
