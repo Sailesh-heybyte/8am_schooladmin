@@ -9,6 +9,7 @@ import AccessRestricted from "../../components/AccessRestricted.jsx";
 import { isPermissionDenied } from "../../utils/errors.js";
 import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getTrips } from "../../api/trips.js";
+import { normalizeDateToYMD, formatDateDMY } from "../../utils/helpers.js";
 
 const formatTime = (dateStr) => {
   if (!dateStr) return "-";
@@ -89,7 +90,7 @@ export default function Trips() {
         return false;
       }
 
-      if (selectedDate && trip.tripDate !== selectedDate) {
+      if (selectedDate && normalizeDateToYMD(trip.tripDate) !== selectedDate) {
         return false;
       }
 
@@ -241,7 +242,7 @@ export default function Trips() {
           ]}
           className="users-table-card"
           rows={filteredTrips.map((trip) => [
-            <strong key={`date-${trip.id}`}>{trip.tripDate}</strong>,
+            <strong key={`date-${trip.id}`}>{formatDateDMY(trip.tripDate)}</strong>,
             <DirectionBadge
               key={`direction-${trip.id}`}
               direction={trip.direction}
@@ -264,7 +265,7 @@ export default function Trips() {
             </div>,
           ])}
           sortValues={filteredTrips.map((trip) => [
-            trip.tripDate,
+            normalizeDateToYMD(trip.tripDate),
             null,
             trip.registrationNumber,
             trip.routeName,

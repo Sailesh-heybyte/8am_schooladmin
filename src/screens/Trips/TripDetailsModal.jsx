@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import StatusBadge from "../../components/StatusBadge.jsx";
 import DirectionBadge from "../../components/DirectionBadge.jsx";
 import { getTrip } from "../../api/trips.js";
-import { formatDateTime } from "../../utils/helpers.js";
+import { formatDateTime, formatDateDMY } from "../../utils/helpers.js";
 import "../SchoolAdmin/popups/ProfileModal.scss";
 
 export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
@@ -64,7 +64,7 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
           <div className="profile-account-grid">
             <div className="profile-field">
               <span className="field-label">Date</span>
-              <strong className="field-value">{trip.tripDate}</strong>
+              <strong className="field-value">{formatDateDMY(trip.tripDate)}</strong>
             </div>
 
             <div className="profile-field">
