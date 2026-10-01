@@ -14,11 +14,11 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
   const homeLat =
     student.homeLatitude !== null && student.homeLatitude !== undefined
       ? student.homeLatitude
-      : "—";
+      : null;
   const homeLng =
     student.homeLongitude !== null && student.homeLongitude !== undefined
       ? student.homeLongitude
-      : "—";
+      : null;
   const createdDate = formatDate(student.createdAt) || "—";
 
   return (
@@ -96,14 +96,59 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
                 </span>
               </div>
 
+              <div className="profile-field profile-field-wide">
+                <span className="field-label">Home Address</span>
+                <span className="field-value">
+                  {student.homeAddress || (
+                    <span className="muted-cell">
+                      Not added yet (parents can add it in the app)
+                    </span>
+                  )}
+                </span>
+              </div>
+
+              <div className="profile-field">
+                <span className="field-label">Morning alert</span>
+                <span className="field-value">
+                  {student.amNotifyLeadMinutes !== null
+                    ? `${student.amNotifyLeadMinutes} min before pickup`
+                    : "—"}
+                </span>
+              </div>
+
+              <div className="profile-field">
+                <span className="field-label">Evening alert</span>
+                <span className="field-value">
+                  {student.pmNotifyLeadMinutes !== null
+                    ? `${student.pmNotifyLeadMinutes} min before drop`
+                    : "—"}
+                </span>
+              </div>
+
               <div className="profile-field">
                 <span className="field-label">Home Latitude</span>
-                <span className="field-value">{homeLat}</span>
+                <span className="field-value">
+                  {homeLat !== null ? (
+                    homeLat
+                  ) : (
+                    <span className="muted-cell">
+                      Not added yet (parents can set it in the app)
+                    </span>
+                  )}
+                </span>
               </div>
 
               <div className="profile-field">
                 <span className="field-label">Home Longitude</span>
-                <span className="field-value">{homeLng}</span>
+                <span className="field-value">
+                  {homeLng !== null ? (
+                    homeLng
+                  ) : (
+                    <span className="muted-cell">
+                      Not added yet (parents can set it in the app)
+                    </span>
+                  )}
+                </span>
               </div>
             </div>
           </div>

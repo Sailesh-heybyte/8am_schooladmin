@@ -5,6 +5,12 @@ import { useBranches } from "../../context/BranchesContext.jsx";
 import TypeAhead from "../../components/TypeAhead.jsx";
 import "../Roles/RoleModal.scss";
 
+// Alert times allowed by the backend: multiples of 5, up to 30 minutes.
+const ALERT_MINUTE_OPTIONS = [5, 10, 15, 20, 25, 30].map((minutes) => ({
+  value: String(minutes),
+  label: `${minutes} minutes`,
+}));
+
 export default function StudentModal({
   isOpen,
   student = null,
@@ -20,6 +26,9 @@ export default function StudentModal({
   const [branchId, setBranchId] = useState("");
   const [homeLatitude, setHomeLatitude] = useState("");
   const [homeLongitude, setHomeLongitude] = useState("");
+  const [homeAddress, setHomeAddress] = useState("");
+  const [amNotifyLeadMinutes, setAmNotifyLeadMinutes] = useState("15");
+  const [pmNotifyLeadMinutes, setPmNotifyLeadMinutes] = useState("15");
   const [isActive, setIsActive] = useState(true);
   const [parentId, setParentId] = useState("");
   const [relationship, setRelationship] = useState("");
@@ -50,6 +59,17 @@ export default function StudentModal({
           : "",
       );
       setIsActive(Boolean(student.isActive));
+      setHomeAddress(student.homeAddress !== null ? student.homeAddress : "");
+      setAmNotifyLeadMinutes(
+        student.amNotifyLeadMinutes !== null
+          ? String(student.amNotifyLeadMinutes)
+          : "",
+      );
+      setPmNotifyLeadMinutes(
+        student.pmNotifyLeadMinutes !== null
+          ? String(student.pmNotifyLeadMinutes)
+          : "",
+      );
       setParentId("");
       setRelationship("");
     } else {
@@ -58,6 +78,9 @@ export default function StudentModal({
       setBranchId(isPinned ? me.branch_id : "");
       setHomeLatitude("");
       setHomeLongitude("");
+      setHomeAddress("");
+      setAmNotifyLeadMinutes("15");
+      setPmNotifyLeadMinutes("15");
       setIsActive(true);
       setParentId("");
       setRelationship("");
@@ -120,6 +143,15 @@ export default function StudentModal({
       }
     }
 
+    if (!amNotifyLeadMinutes) {
+      setError("Please choose the morning alert time.");
+      return;
+    }
+    if (!pmNotifyLeadMinutes) {
+      setError("Please choose the evening alert time.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -132,6 +164,9 @@ export default function StudentModal({
             homeLatitude.trim() !== "" ? Number(homeLatitude) : undefined,
           homeLongitude:
             homeLongitude.trim() !== "" ? Number(homeLongitude) : undefined,
+          homeAddress: homeAddress.trim(),
+          amNotifyLeadMinutes,
+          pmNotifyLeadMinutes,
           isActive,
         });
       } else {
@@ -143,6 +178,9 @@ export default function StudentModal({
             homeLatitude.trim() !== "" ? Number(homeLatitude) : undefined,
           homeLongitude:
             homeLongitude.trim() !== "" ? Number(homeLongitude) : undefined,
+          homeAddress: homeAddress.trim(),
+          amNotifyLeadMinutes,
+          pmNotifyLeadMinutes,
           parentId: parentId.trim(),
           relationship: relationship.trim(),
         });
@@ -278,10 +316,15 @@ export default function StudentModal({
                   <label htmlFor="student-lat">Home Latitude</label>
                   <input
                     id="student-lat"
-                    type="number"
-                    step="any"
+                    type="text"
+                    inputMode="decimal"
                     value={homeLatitude}
-                    onChange={(e) => setHomeLatitude(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "" || /^-?\d*\.?\d*$/.test(val)) {
+                        setHomeLatitude(val);
+                      }
+                    }}
                     placeholder="12.9716"
                     disabled={isSubmitting}
                   />
@@ -291,12 +334,68 @@ export default function StudentModal({
                   <label htmlFor="student-lng">Home Longitude</label>
                   <input
                     id="student-lng"
-                    type="number"
-                    step="any"
+                    type="text"
+                    inputMode="decimal"
                     value={homeLongitude}
-                    onChange={(e) => setHomeLongitude(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "" || /^-?\d*\.?\d*$/.test(val)) {
+                        setHomeLongitude(val);
+                      }
+                    }}
                     placeholder="77.5946"
                     disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field role-description-field">
+                  <label htmlFor="student-address">Home Address</label>
+                  <input
+                    id="student-address"
+                    type="text"
+                    value={homeAddress}
+                    onChange={(e) => setHomeAddress(e.target.value)}
+                    placeholder="12-3-45, Tilak Road, Rajahmundry"
+                    disabled={isSubmitting}
+                  />
+                  <span
+                    className="roles-message"
+                    style={{ marginTop: "0.25rem", display: "block" }}
+                  >
+                    Optional — parents can also set home location and address in
+                    the parent app.
+                  </span>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-field role-description-field">
+                  <label>
+                    Morning alert (minutes before pickup) *
+                  </label>
+                  <TypeAhead
+                    options={ALERT_MINUTE_OPTIONS}
+                    value={amNotifyLeadMinutes}
+                    onChange={setAmNotifyLeadMinutes}
+                    placeholder="Choose minutes"
+                    disabled={isSubmitting}
+                    noMatchMessage="Choose 5, 10, 15, 20, 25 or 30"
+                  />
+                </div>
+
+                <div className="form-field role-description-field">
+                  <label>
+                    Evening alert (minutes before drop) *
+                  </label>
+                  <TypeAhead
+                    options={ALERT_MINUTE_OPTIONS}
+                    value={pmNotifyLeadMinutes}
+                    onChange={setPmNotifyLeadMinutes}
+                    placeholder="Choose minutes"
+                    disabled={isSubmitting}
+                    noMatchMessage="Choose 5, 10, 15, 20, 25 or 30"
                   />
                 </div>
               </div>

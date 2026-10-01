@@ -22,6 +22,9 @@ const toUiStudent = (student) => ({
   admissionNumber: student.admission_number,
   homeLatitude: student.home_latitude ?? null,
   homeLongitude: student.home_longitude ?? null,
+  homeAddress: student.home_address,
+  amNotifyLeadMinutes: student.am_notify_lead_minutes,
+  pmNotifyLeadMinutes: student.pm_notify_lead_minutes,
   stopId: student.stop_id ?? null,
   stopName: student.stop_name,
   isActive: Boolean(student.is_active),
@@ -42,6 +45,15 @@ const toApiStudent = (student) => {
   }
   if (hasValue(student.homeLongitude)) {
     body.home_longitude = Number(student.homeLongitude);
+  }
+  if (hasValue(student.homeAddress)) {
+    body.home_address = student.homeAddress;
+  }
+  if (hasValue(student.amNotifyLeadMinutes)) {
+    body.am_notify_lead_minutes = Number(student.amNotifyLeadMinutes);
+  }
+  if (hasValue(student.pmNotifyLeadMinutes)) {
+    body.pm_notify_lead_minutes = Number(student.pmNotifyLeadMinutes);
   }
   body.parents = [
     {
@@ -74,6 +86,15 @@ const toApiStudentUpdate = (student) => {
   }
   if (hasValue(homeLongitude)) {
     body.home_longitude = Number(homeLongitude);
+  }
+  if (hasValue(student.homeAddress)) {
+    body.home_address = student.homeAddress;
+  }
+  if (hasValue(student.amNotifyLeadMinutes)) {
+    body.am_notify_lead_minutes = Number(student.amNotifyLeadMinutes);
+  }
+  if (hasValue(student.pmNotifyLeadMinutes)) {
+    body.pm_notify_lead_minutes = Number(student.pmNotifyLeadMinutes);
   }
   if (typeof isActive === "boolean") {
     body.is_active = isActive;
