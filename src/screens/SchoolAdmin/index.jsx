@@ -7,6 +7,8 @@ import ProfileModal from "./popups/ProfileModal.jsx";
 import ChangePasswordModal from "./popups/ChangePasswordModal.jsx";
 import { BranchesProvider } from "../../context/BranchesContext.jsx";
 import ErrorBoundary from "../../components/ErrorBoundary.jsx";
+import logoImg from "../../assets/8am-logo.png";
+import logoMark from "../../assets/8am-mark.png";
 
 const menuItems = [
   {
@@ -80,6 +82,12 @@ const menuItems = [
     path: "/complaints",
     icon: <i className="bi bi-chat-left-text"></i>,
     label: "Complaints",
+  },
+  {
+    id: "live-tracking",
+    path: "/live-tracking",
+    icon: <i className="bi bi-bus-front"></i>,
+    label: "Live Tracking",
   },
 ];
 
@@ -187,12 +195,13 @@ function SchoolAdmin({ onLogout }) {
     <div className="admin-app">
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="brand">
-          <i className="bi bi-bus-front"></i>
-          {sidebarOpen && (
-            <div>
-              <h2>
-                8AM<span>School</span>
-              </h2>
+          {sidebarOpen ? (
+            <div className="brand-expanded">
+              <img src={logoImg} alt="8AM" className="brand-logo-img" />
+            </div>
+          ) : (
+            <div className="brand-collapsed">
+              <img src={logoMark} alt="8AM" className="brand-mark-img" />
             </div>
           )}
         </div>
