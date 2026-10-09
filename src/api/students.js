@@ -81,15 +81,11 @@ const toApiStudentUpdate = (student) => {
   if (hasValue(admissionNumber)) {
     body.admission_number = admissionNumber;
   }
-  if (hasValue(homeLatitude)) {
-    body.home_latitude = Number(homeLatitude);
-  }
-  if (hasValue(homeLongitude)) {
-    body.home_longitude = Number(homeLongitude);
-  }
-  if (hasValue(student.homeAddress)) {
-    body.home_address = student.homeAddress;
-  }
+  body.home_latitude = hasValue(homeLatitude) ? Number(homeLatitude) : null;
+  body.home_longitude = hasValue(homeLongitude) ? Number(homeLongitude) : null;
+  body.home_address = hasValue(student.homeAddress)
+    ? student.homeAddress
+    : null;
   if (hasValue(student.amNotifyLeadMinutes)) {
     body.am_notify_lead_minutes = Number(student.amNotifyLeadMinutes);
   }
