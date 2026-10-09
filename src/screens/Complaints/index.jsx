@@ -72,7 +72,11 @@ export default function Complaints() {
 
   const categoryOptions = useMemo(
     () =>
-      [...new Set(complaints.map((c) => c.category))].map((s) => ({
+      [
+        ...new Set(
+          complaints.filter((c) => c.category).map((c) => c.category),
+        ),
+      ].map((s) => ({
         value: s,
         label: formatEnumLabel(s),
       })),
@@ -224,7 +228,7 @@ export default function Complaints() {
           className="users-table-card"
           rows={filteredComplaints.map((c) => [
             c.subject.length > 60 ? c.subject.slice(0, 60) + "…" : c.subject,
-            formatEnumLabel(c.category),
+            c.category ? formatEnumLabel(c.category) : "-",
             <StatusBadge key={`status-${c.id}`} status={c.status} />,
             formatDateTime(c.createdAtIso),
           ])}

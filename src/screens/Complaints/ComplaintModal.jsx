@@ -110,7 +110,9 @@ export default function ComplaintModal({ complaint, onClose, onSaved }) {
               <div className="profile-field">
                 <span className="field-label">Category</span>
                 <span className="field-value">
-                  {formatEnumLabel(complaint.category)}
+                  {complaint.category
+                    ? formatEnumLabel(complaint.category)
+                    : "-"}
                 </span>
               </div>
 
