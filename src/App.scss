@@ -288,7 +288,7 @@
   }
 
   .map {
-    background: #e3e3e3;
+    background: $map-placeholder;
     height: 86%;
     position: relative;
   }
@@ -308,7 +308,7 @@
       rgba(72, 200, 150, 0.1),
       transparent 30%
     ),
-    #eef3f7;
+    $map-base;
   height: 90%;
 }
 
@@ -560,7 +560,7 @@
     flex-direction: column;
 
     label {
-      color: #000000;
+      color: $black;
       font-size: max(0.58rem, 10px);
       margin-bottom: 0.4rem;
     }
@@ -1116,21 +1116,21 @@ tbody tr:hover {
   }
 
   &.am-pickup {
-    background: #fff8eb;
-    color: #b54708;
-    border: 0.05rem solid #fedf89;
+    background: $orange-light;
+    color: $warning-dark;
+    border: 0.05rem solid $warning-border;
   }
 
   &.pm-drop {
-    background: #f4f3ff;
-    color: #5925dc;
-    border: 0.05rem solid #d9d6fe;
+    background: $purple-light;
+    color: $violet;
+    border: 0.05rem solid $violet-border;
   }
 
   &.default {
-    background: #f2f4f7;
-    color: #344054;
-    border: 0.05rem solid #eaecf0;
+    background: $gray-100;
+    color: $text-strong;
+    border: 0.05rem solid $gray-200;
   }
 }
 
@@ -1232,7 +1232,7 @@ tbody tr:hover {
 
   .map {
     height: 90%;
-    background: #e3e3e3;
+    background: $map-placeholder;
   }
 }
 
@@ -1288,7 +1288,7 @@ tbody tr:hover {
     }
 
     p {
-      color: #155eef;
+      color: $primary;
       font-size: max(0.68rem, 10px);
       cursor: pointer;
     }
@@ -1315,7 +1315,7 @@ tbody tr:hover {
   flex: 1;
   min-width: 1.2rem;
   border-radius: 0.35rem 0.35rem 0 0;
-  background: linear-gradient(to top, #4776e6, #8e54e9);
+  background: linear-gradient(to top, $chart-gradient-start, $chart-gradient-end);
 }
 
 .chart-bar span {
@@ -1914,13 +1914,13 @@ tbody tr:hover {
     margin-bottom: 0.4rem;
 
     &.danger {
-      background: #FEF3F2;
-      color: #D92D20;
-      border: 1px solid #FECDCA;
+      background: $red-light;
+      color: $red-dark;
+      border: 1px solid $red-border;
     }
 
     &.neutral {
-      background: #F8F9FC;
+      background: $background;
       color: $primary;
       border: 1px solid rgba(21, 94, 239, 0.15);
     }
@@ -1929,7 +1929,7 @@ tbody tr:hover {
   .state-spinner {
     width: 2.2rem;
     height: 2.2rem;
-    border: 3px solid #F2F4F7;
+    border: 3px solid $gray-100;
     border-top-color: $primary;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -1974,7 +1974,7 @@ tbody tr:hover {
       color: $text-white;
 
       &:hover {
-        background: #1048bc;
+        background: $primary-dark;
       }
     }
 
@@ -1985,7 +1985,7 @@ tbody tr:hover {
 
       &:hover {
         background: $surface-hover;
-        border-color: #D0D5DD;
+        border-color: $border-strong;
       }
     }
   }
@@ -2024,7 +2024,7 @@ tbody tr:hover {
   .dashboard-placeholder-card {
     width: 100%;
     max-width: 30rem;
-    background: #ffffff;
+    background: $white;
     border: 1px solid rgba(231, 234, 240, 0.9);
     border-radius: 1rem;
     box-shadow: 0 10px 30px -5px rgba(16, 24, 40, 0.08);
@@ -2074,7 +2074,7 @@ tbody tr:hover {
       padding: 0.65rem 1.25rem;
       border: 1px solid $border;
       border-radius: 0.5rem;
-      background: #ffffff;
+      background: $white;
       color: $text;
       font-size: 0.85rem;
       font-weight: 500;
@@ -2087,7 +2087,7 @@ tbody tr:hover {
       }
 
       &:hover:not(:disabled) {
-        background: #fdf2f2;
+        background: $red-light;
         border-color: rgba(240, 68, 56, 0.3);
         color: $red-dark;
       }
@@ -2108,7 +2108,7 @@ tbody tr:hover {
   align-items: center;
   margin-bottom: 1.25rem;
   padding: 0.85rem;
-  background: #F8F9FC;
+  background: $background;
   border: 1px solid $border;
   border-radius: $radius-small;
 }
@@ -2158,8 +2158,8 @@ tbody tr:hover {
     gap: 0.3rem;
     padding: 0.2rem 0.5rem;
     border-radius: 1rem;
-    background: #FEF0C7;
-    color: #B54708;
+    background: $warning-light;
+    color: $warning-dark;
     font-size: max(0.6rem, 10px);
     font-weight: 600;
     letter-spacing: normal;
@@ -2185,18 +2185,18 @@ tbody tr:hover {
   }
 
   &:hover {
-    background: #FAFBFC;
+    background: $surface-hover;
   }
 
   &.dragging {
-    background: #EFF4FE;
+    background: $blue-light;
     box-shadow: 0 4px 12px rgba(21, 94, 239, 0.12);
   }
 
   .stop-grip {
     background: transparent;
     border: none;
-    color: #98A2B3;
+    color: $text-muted;
     font-size: 1.1rem;
     cursor: grab;
     padding: 0.15rem;
@@ -2222,7 +2222,7 @@ tbody tr:hover {
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 50%;
-    background: #F2F4F7;
+    background: $gray-100;
     color: $text;
     font-size: max(0.65rem, 10px);
     font-weight: 600;
@@ -2268,9 +2268,9 @@ tbody tr:hover {
       }
 
       &.remove:hover:not(:disabled) {
-        border-color: #FECDCA;
-        color: #D92D20;
-        background: #FEF3F2;
+        border-color: $red-border;
+        color: $red-dark;
+        background: $red-light;
       }
 
       &:disabled {
@@ -2305,19 +2305,19 @@ tbody tr:hover {
   margin-top: 1rem;
   padding: 0.75rem 1rem;
   border-radius: $radius-small;
-  background: #FEF0C7;
-  border: 1px solid #FEDF89;
+  background: $warning-light;
+  border: 1px solid $warning-border;
 
   strong {
     display: block;
-    color: #B54708;
+    color: $warning-dark;
     font-size: max(0.72rem, 10px);
     font-weight: 700;
   }
 
   p {
     margin: 0.15rem 0 0;
-    color: #93370D;
+    color: $warning-darker;
     font-size: max(0.65rem, 10px);
   }
 
@@ -2401,4 +2401,48 @@ tbody tr:hover {
   flex-direction: column;
   line-height: 1.25;
   font-variant-numeric: tabular-nums;
+}
+
+.filter-card .filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+
+  .secondary-button {
+    height: 2.3rem;
+  }
+}
+
+.stops-empty-box {
+  .state-spinner {
+    width: 1.8rem;
+    height: 1.8rem;
+    margin: 0 auto 0.5rem;
+  }
+
+  > .bi {
+    margin-bottom: 0.4rem;
+    color: $text-muted;
+    font-size: 1.8rem;
+  }
+
+  small {
+    color: $text-light;
+  }
+}
+
+.table-state-card {
+  a.state-action-btn {
+    text-decoration: none;
+  }
+
+  .not-found-path {
+    padding: 0.15rem 0.35rem;
+    border: 1px solid $red-border;
+    border-radius: 4px;
+    background: $red-light;
+    color: $red-dark;
+    font-weight: 600;
+    word-break: break-all;
+  }
 }

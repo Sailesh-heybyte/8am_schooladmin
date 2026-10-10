@@ -5,7 +5,7 @@
   height: 100dvh;
   display: flex;
   overflow: hidden;
-  background: #ffffff;
+  background: $white;
 
   .sidebar {
     width: 15rem;
@@ -15,7 +15,7 @@
     flex-direction: column;
     overflow: visible;
     transition: width 0.25s ease;
-    background-color: #ffffff;
+    background-color: $white;
     border-right: 0.05rem solid $border;
 
     &.closed {
@@ -109,12 +109,12 @@
           color 0.2s ease;
 
         &:hover {
-          background: #f0f0f0;
+          background: $menu-hover;
         }
 
         &.active {
-          background: #e1e1fb;
-          color: #000000;
+          background: $menu-active;
+          color: $black;
         }
 
         .menu-icon {
@@ -187,14 +187,14 @@
           }
 
           &.danger {
-            color: #d9534f;
+            color: $red-dark;
 
             i {
-              color: #d9534f;
+              color: $red-dark;
             }
 
             &:hover {
-              background: #fdf2f2;
+              background: $red-light;
             }
           }
         }

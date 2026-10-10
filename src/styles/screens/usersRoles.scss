@@ -384,10 +384,10 @@
 .branch-error {
   margin: 0 0 1rem;
   padding: 0.6rem 0.9rem;
-  border: 0.05rem solid #f5c6cb;
+  border: 0.05rem solid $red-border;
   border-radius: $radius-small;
-  background: #fdf2f2;
-  color: #d9534f;
+  background: $red-light;
+  color: $red-dark;
   font-size: max(0.62rem, 10px);
   font-weight: 600;
 }

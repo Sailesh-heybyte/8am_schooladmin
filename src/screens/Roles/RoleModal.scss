@@ -27,6 +27,22 @@
       width: 52rem;
     }
 
+    &.is-confirm {
+      width: 28rem;
+    }
+
+    &.is-narrow {
+      width: 32rem;
+    }
+
+    &.is-medium {
+      width: 36rem;
+    }
+
+    &.is-wide {
+      width: 42rem;
+    }
+
     form {
       display: flex;
       flex-direction: column;
@@ -63,7 +79,7 @@
         border: none;
         border-radius: 50%;
         background: transparent;
-        color: #000;
+        color: $black;
         font-size: 1.4rem;
         line-height: 1;
         cursor: pointer;
@@ -81,6 +97,39 @@
       overflow-y: auto;
       padding: 0 1.25rem;
       scrollbar-width: thin;
+
+      &.is-padded {
+        padding: 1.25rem;
+      }
+
+      .confirm-text {
+        margin: 0;
+        color: $text-secondary;
+        font-size: 0.9rem;
+      }
+
+      .add-user-error.is-inline {
+        margin-top: 1rem;
+      }
+
+      &.is-roomy {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .add-user-error.is-block {
+        margin: 1rem 0;
+      }
+
+      .add-user-error.is-warning {
+        margin-top: 0.85rem;
+        border-top-color: $warning-border;
+        background: $warning-light;
+        color: $warning-dark;
+
+        .bi {
+          margin-right: 0.4rem;
+        }
+      }
 
       .form-section {
         padding-bottom: 1rem;
@@ -105,6 +154,10 @@
             margin-top: 0.85rem;
           }
 
+          &.is-spaced {
+            margin-top: 1rem;
+          }
+
           .form-field {
             width: 14rem;
             display: flex;
@@ -114,6 +167,38 @@
             &.role-description-field {
               flex: 1;
               width: 100%;
+            }
+
+            &.is-full {
+              flex: 1;
+              width: 100%;
+            }
+
+            &.is-wide {
+              flex: 2;
+              width: 100%;
+            }
+
+            .roles-message.is-hint,
+            .roles-error {
+              display: block;
+              margin-top: 0.25rem;
+            }
+
+            .roles-error {
+              color: $red-dark;
+            }
+
+            .checkbox-label {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              cursor: pointer;
+
+              input[type="checkbox"] {
+                width: 1.1rem;
+                height: 1.1rem;
+              }
             }
 
             label {
@@ -141,13 +226,13 @@
               }
 
               &::placeholder {
-                color: #a7adba;
+                color: $text-muted;
               }
 
               &:read-only,
               &:disabled {
-                background: #f8fafc;
-                color: #64748b;
+                background: $background;
+                color: $text-light;
                 cursor: not-allowed;
               }
             }
@@ -203,15 +288,24 @@
           color: $text-muted;
           font-size: max(0.68rem, 10px);
         }
+
+        .roles-message.is-section-note {
+          display: block;
+          margin: -0.35rem 0 0.85rem;
+        }
+
+        .roles-message.is-loading {
+          margin: 1rem 0;
+        }
       }
     }
 
     .add-user-error {
       flex-shrink: 0;
       padding: 0.6rem 1.25rem;
-      border-top: 0.05rem solid #f5c6cb;
-      background: #fdf2f2;
-      color: #d9534f;
+      border-top: 0.05rem solid $red-border;
+      background: $red-light;
+      color: $red-dark;
       font-size: max(0.68rem, 10px);
       font-weight: 600;
     }
@@ -254,6 +348,15 @@
         &:hover {
           background: $primary-dark;
         }
+
+        &.is-danger {
+          border-color: $red-dark;
+          background: $red-dark;
+
+          &:hover {
+            background: $red-dark;
+          }
+        }
       }
 
       .modal-cancel:disabled,
@@ -263,4 +366,8 @@
       }
     }
   }
+}
+
+.add-user-overlay.is-nested {
+  z-index: 1100;
 }
