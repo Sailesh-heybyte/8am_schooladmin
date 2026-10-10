@@ -17,6 +17,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
   const [isRoleLoaded, setIsRoleLoaded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [saveError, setSaveError] = useState("");
   const [confirmZeroWarning, setConfirmZeroWarning] = useState(false);
 
   useEffect(() => {
@@ -25,6 +26,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
     let isMounted = true;
     setIsLoading(true);
     setError("");
+    setSaveError("");
     setConfirmZeroWarning(false);
 
     if (isEditMode) {
@@ -84,6 +86,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
     );
 
   const handleToggleSelectAll = () => {
+    setSaveError("");
     setConfirmZeroWarning(false);
     if (allSelected) {
       setCheckedCodenames([]);
@@ -93,6 +96,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
   };
 
   const togglePermission = (codename) => {
+    setSaveError("");
     setConfirmZeroWarning(false);
     setCheckedCodenames((prev) =>
       prev.includes(codename)
@@ -103,7 +107,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
+    setSaveError("");
 
     if (checkedCodenames.length === 0 && !confirmZeroWarning) {
       setConfirmZeroWarning(true);
@@ -126,7 +130,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
       onSaved();
       onClose();
     } catch (err) {
-      setError(err.message || "Failed to save role. Please try again.");
+      setSaveError(err.message || "Failed to save role. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -182,10 +186,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
                     placeholder="Coordinator"
                   />
                   {isEditMode && (
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       Role name cannot be changed after creation.
                     </span>
                   )}
@@ -210,7 +211,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
               </div>
 
               {isLoading ? (
-                <p className="roles-message" style={{ margin: "1rem 0" }}>
+                <p className="roles-message is-loading">
                   Loading permissions...
                 </p>
               ) : (!isEditMode || isRoleLoaded) && !error ? (
@@ -235,6 +236,7 @@ export default function RoleModal({ isOpen, role, me, onClose, onSaved }) {
           </div>
 
           {error && <div className="add-user-error">{error}</div>}
+          {saveError && <div className="add-user-error">{saveError}</div>}
 
           {confirmZeroWarning && (
             <div className="add-user-error">

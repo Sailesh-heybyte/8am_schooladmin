@@ -11,12 +11,13 @@ export default function ComplaintModal({ complaint, onClose, onSaved }) {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [studentName, setStudentName] = useState("");
-  const [studentLoading, setStudentLoading] = useState(true);
+  const [studentLoading, setStudentLoading] = useState(Boolean(complaint.studentId));
   const [studentError, setStudentError] = useState("");
 
   const isResolved = complaint.status === "resolved";
 
   useEffect(() => {
+    if (!complaint.studentId) return;
     let isMounted = true;
 
     getStudent(complaint.studentId)
@@ -99,11 +100,13 @@ export default function ComplaintModal({ complaint, onClose, onSaved }) {
               <div className="profile-field">
                 <span className="field-label">Student</span>
                 <span className="field-value">
-                  {studentLoading
-                    ? "Loading…"
-                    : studentError
-                      ? studentError
-                      : studentName}
+                  {!complaint.studentId
+                    ? "-"
+                    : studentLoading
+                      ? "Loading…"
+                      : studentError
+                        ? studentError
+                        : studentName}
                 </span>
               </div>
 

@@ -303,14 +303,7 @@ export default function BranchUserModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}
@@ -649,10 +642,7 @@ export default function BranchUserModal({
           </div>
 
           {(loadError || (!isPinned && branchesError)) && (
-            <div
-              className="roles-error"
-              style={{ margin: "0 1.5rem 1rem", color: "#d9534f" }}
-            >
+            <div className="add-user-error">
               {loadError || branchesError}
             </div>
           )}

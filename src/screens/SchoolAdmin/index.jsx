@@ -94,7 +94,7 @@ function SchoolAdmin({ onLogout }) {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
-  const [loadError, setLoadError] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const [me, setMe] = useState(null);
 
   const activeMenu = menuItems.find((item) => item.path === location.pathname);
@@ -135,7 +135,7 @@ function SchoolAdmin({ onLogout }) {
           await handleLogout();
           navigate("/login", { replace: true });
         } else {
-          setLoadError(true);
+          setLoadError(err.message || "Something went wrong. Please try again.");
         }
       })
       .finally(() => setCheckingAccess(false));
@@ -171,8 +171,8 @@ function SchoolAdmin({ onLogout }) {
         <div className="state-icon-badge danger">
           <i className="bi bi-exclamation-triangle"></i>
         </div>
-        <h3>Can't reach the server</h3>
-        <p>Please check your connection and try again.</p>
+        <h3>Couldn't load your account</h3>
+        <p>{loadError}</p>
         <button
           type="button"
           className="state-action-btn secondary"
@@ -205,7 +205,6 @@ function SchoolAdmin({ onLogout }) {
             <NavLink
               key={item.id}
               to={item.path}
-              style={{ textDecoration: "none", color: "inherit" }}
               className={({ isActive }) =>
                 `menu-item ${isActive ? "active" : ""}`
               }

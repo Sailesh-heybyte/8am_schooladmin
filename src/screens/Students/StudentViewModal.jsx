@@ -19,13 +19,12 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
     student.homeLongitude !== null && student.homeLongitude !== undefined
       ? student.homeLongitude
       : null;
-  const createdDate = formatDate(student.createdAt) || "—";
+  const createdDate = formatDate(student.createdAtIso) || "—";
 
   return (
     <div className="profile-modal-overlay" onMouseDown={onClose}>
       <div
-        className="profile-modal"
-        style={{ width: "38rem" }}
+        className="profile-modal is-wide"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="profile-modal-header">
@@ -61,7 +60,7 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
 
               <div className="profile-field">
                 <span className="field-label">Status</span>
-                <div style={{ marginTop: "0.15rem" }}>
+                <div className="field-badge">
                   <StatusBadge
                     status={student.isActive ? "Active" : "Inactive"}
                   />
@@ -162,17 +161,7 @@ export default function StudentViewModal({ isOpen, student, onClose }) {
               parents.map((p, idx) => (
                 <div
                   key={p.parentId || `parent-${idx}`}
-                  className="profile-account-grid"
-                  style={{
-                    gridTemplateColumns: "1.2fr 1fr 1fr",
-                    ...(idx > 0
-                      ? {
-                          marginTop: "0.75rem",
-                          paddingTop: "0.75rem",
-                          borderTop: "0.05rem solid #e4e7ec",
-                        }
-                      : {}),
-                  }}
+                  className="profile-account-grid is-parent"
                 >
                   <div className="profile-field">
                     <span className="field-label">Full Name</span>

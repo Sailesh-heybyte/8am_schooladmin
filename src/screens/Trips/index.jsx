@@ -14,7 +14,7 @@ import { normalizeDateToYMD, formatDateDMY } from "../../utils/helpers.js";
 const formatTime = (dateStr) => {
   if (!dateStr) return "-";
   const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "-" : d.toLocaleTimeString();
+  return isNaN(d.getTime()) ? "-" : d.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" });
 };
 
 export default function Trips() {
@@ -131,7 +131,7 @@ export default function Trips() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           <div className="filter-group">
             <label>Direction:</label>
             <TypeAhead
@@ -174,7 +174,6 @@ export default function Trips() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClearFilters}
             >
               Clear
@@ -192,15 +191,24 @@ export default function Trips() {
       </div>
 
       {error && (
-        <div
-          className="roles-error"
-          style={{ margin: "1rem 0", color: "#d9534f" }}
-        >
-          {error.message}
+        <div className="table-state-card">
+          <div className="state-icon-badge danger">
+            <i className="bi bi-exclamation-triangle"></i>
+          </div>
+          <h3>Couldn't load trips</h3>
+          <p>{error.message}</p>
+          <button
+            type="button"
+            className="state-action-btn secondary"
+            onClick={reloadTrips}
+          >
+            <i className="bi bi-arrow-clockwise"></i>
+            <span>Retry</span>
+          </button>
         </div>
       )}
 
-      {loading ? (
+      {error && trips.length === 0 ? null : loading ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

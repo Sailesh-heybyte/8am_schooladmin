@@ -1,13 +1,13 @@
 export const formatDate = (dateStr) => {
   if (!dateStr) return "";
   const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
+  return isNaN(d.getTime()) ? "" : d.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" });
 };
 
 export const formatDateTime = (dateStr, fallback = "-") => {
   if (!dateStr) return fallback;
   const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? fallback : d.toLocaleString();
+  return isNaN(d.getTime()) ? fallback : d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 };
 
 export const hasValue = (val) => {

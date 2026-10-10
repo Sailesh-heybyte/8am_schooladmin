@@ -93,7 +93,7 @@ export default function Roles() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           <div className="filter-group">
             <label>Scope:</label>
             <TypeAhead
@@ -112,7 +112,6 @@ export default function Roles() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClear}
             >
               Clear

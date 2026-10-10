@@ -39,5 +39,5 @@ export const downloadCsv = (fileName, headers, rows) => {
   link.href = URL.createObjectURL(blob);
   link.download = fileName;
   link.click();
-  URL.revokeObjectURL(link.href);
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 };

@@ -11,17 +11,7 @@ export default function NotFound() {
       <h3>Page Not Found</h3>
       <p>
         The requested path{" "}
-        <code
-          style={{
-            background: "#fef3f2",
-            color: "#d92d20",
-            border: "1px solid #fecdca",
-            padding: "0.15rem 0.35rem",
-            borderRadius: "4px",
-            fontWeight: "600",
-            wordBreak: "break-all",
-          }}
-        >
+        <code className="not-found-path">
           {location.pathname}
         </code>{" "}
         does not exist.
@@ -29,7 +19,6 @@ export default function NotFound() {
       <Link
         to="/dashboard"
         className="state-action-btn primary"
-        style={{ textDecoration: "none" }}
       >
         <i className="bi bi-arrow-left"></i>
         <span>Back to Dashboard</span>

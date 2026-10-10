@@ -29,7 +29,7 @@ export default function AssignDriverModal({
     getDrivers()
       .then((data) => {
         if (!isMounted) return;
-        setDrivers(data || []);
+        setDrivers(data.filter((driver) => driver.branchId === bus.branchId));
       })
       .catch((err) => {
         if (!isMounted) return;
@@ -44,7 +44,7 @@ export default function AssignDriverModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen]);
+  }, [isOpen, bus]);
 
   if (!isOpen || !bus) return null;
 
@@ -87,8 +87,7 @@ export default function AssignDriverModal({
   return (
     <div className="add-user-overlay">
       <div
-        className="add-user-modal"
-        style={{ width: "36rem" }}
+        className="add-user-modal is-medium"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="add-user-header">
@@ -112,7 +111,7 @@ export default function AssignDriverModal({
               <h3 className="form-section-title">Driver Assignment</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-bus-name">Bus</label>
                   <input
                     id="assign-bus-name"
@@ -125,7 +124,7 @@ export default function AssignDriverModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-driver-select">Driver *</label>
                   <TypeAhead
                     options={drivers.map((d) => ({ value: d.id, label: d.fullName }))}
@@ -134,32 +133,18 @@ export default function AssignDriverModal({
                     placeholder="Select a driver..."
                     disabled={isSubmitting || loading || Boolean(loadError)}
                     loading={loading}
-                    emptyMessage="No drivers found. Add a driver first."
+                    emptyMessage="No drivers in this branch. Add a driver first."
                     noMatchMessage="No drivers found"
                   />
 
                   {loadError && (
-                    <span
-                      className="roles-error"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#d9534f",
-                      }}
-                    >
+                    <span className="roles-error">
                       {loadError}
                     </span>
                   )}
 
                   {!loading && !loadError && drivers.length === 0 && (
-                    <span
-                      className="roles-message"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#667085",
-                      }}
-                    >
+                    <span className="roles-message is-hint">
                       No drivers found. Add a driver first.
                     </span>
                   )}

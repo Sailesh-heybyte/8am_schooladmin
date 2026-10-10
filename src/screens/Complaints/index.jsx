@@ -184,12 +184,24 @@ export default function Complaints() {
       </div>
 
       {error && (
-        <div className="roles-error">
-          {error.message}
+        <div className="table-state-card">
+          <div className="state-icon-badge danger">
+            <i className="bi bi-exclamation-triangle"></i>
+          </div>
+          <h3>Couldn't load complaints</h3>
+          <p>{error.message}</p>
+          <button
+            type="button"
+            className="state-action-btn secondary"
+            onClick={reloadComplaints}
+          >
+            <i className="bi bi-arrow-clockwise"></i>
+            <span>Retry</span>
+          </button>
         </div>
       )}
 
-      {loading ? (
+      {error && complaints.length === 0 ? null : loading ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

@@ -182,7 +182,10 @@ export default function RouteStopsModal({
     currentIds.some((id, idx) => id !== initialStopIds[idx]);
 
   const availableStopsToAdd = allStops.filter(
-    (s) => !orderedStops.some((os) => os.id === s.id)
+    (s) =>
+      s.branchId === route.branchId &&
+      (!s.routeId || s.routeId === route.id) &&
+      !orderedStops.some((os) => os.id === s.id)
   );
 
   const isBusy = loading || isAdding || isSavingOrder || isRemoving;
@@ -293,8 +296,7 @@ export default function RouteStopsModal({
   return (
     <div className="add-user-overlay" onMouseDown={!isBusy ? handleClose : undefined}>
       <div
-        className="add-user-modal route-stops-modal-container"
-        style={{ width: "42rem" }}
+        className="add-user-modal route-stops-modal-container is-wide"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="add-user-header">
@@ -312,7 +314,7 @@ export default function RouteStopsModal({
           </button>
         </div>
 
-        <div className="add-user-body" style={{ padding: "1.25rem 1.5rem" }}>
+        <div className="add-user-body is-roomy">
           <form onSubmit={handleAddStop} className="route-stops-add-bar">
             <div className="route-stops-add-field">
               <TypeAhead
@@ -321,7 +323,7 @@ export default function RouteStopsModal({
                 onChange={setSelectedStopIdToAdd}
                 placeholder="Select a stop to add..."
                 disabled={isBusy}
-                emptyMessage="All stops are on this route"
+                emptyMessage="No more stops to add. Stops from other branches or other routes are hidden."
                 noMatchMessage="No stops found"
               />
             </div>
@@ -336,13 +338,13 @@ export default function RouteStopsModal({
           </form>
 
           {loadError && (
-            <div className="add-user-error" style={{ margin: "1rem 0" }}>
+            <div className="add-user-error is-block">
               {loadError}
             </div>
           )}
 
           {actionError && (
-            <div className="add-user-error" style={{ margin: "1rem 0" }}>
+            <div className="add-user-error is-block">
               {actionError}
             </div>
           )}
@@ -359,14 +361,14 @@ export default function RouteStopsModal({
 
             {loading ? (
               <div className="stops-empty-box">
-                <div className="state-spinner" style={{ width: "1.8rem", height: "1.8rem", margin: "0 auto 0.5rem" }}></div>
+                <div className="state-spinner"></div>
                 <p>Loading route stops...</p>
               </div>
             ) : orderedStops.length === 0 ? (
               <div className="stops-empty-box">
-                <i className="bi bi-signpost-split" style={{ fontSize: "1.8rem", color: "#98A2B3", marginBottom: "0.4rem" }}></i>
+                <i className="bi bi-signpost-split"></i>
                 <p>No stops on this route yet.</p>
-                <small style={{ color: "#667085" }}>Select a stop above to add it to this route.</small>
+                <small>Select a stop above to add it to this route.</small>
               </div>
             ) : (
               <DndContext
@@ -429,13 +431,11 @@ export default function RouteStopsModal({
 
       {stopToRemove && (
         <div
-          className="add-user-overlay"
-          style={{ zIndex: 1100 }}
+          className="add-user-overlay is-nested"
           onMouseDown={() => !isRemoving && setStopToRemove(null)}
         >
           <div
-            className="add-user-modal"
-            style={{ width: "28rem" }}
+            className="add-user-modal is-confirm"
             onMouseDown={(e) => e.stopPropagation()}
           >
             <div className="add-user-header">
@@ -453,21 +453,13 @@ export default function RouteStopsModal({
               </button>
             </div>
 
-            <div className="add-user-body" style={{ padding: "1.25rem" }}>
-              <p style={{ margin: 0, color: "#475467", fontSize: "0.85rem", lineHeight: 1.5 }}>
+            <div className="add-user-body is-padded">
+              <p className="confirm-text">
                 Remove <strong>{stopToRemove.stopName}</strong> from this route? The stop stays in the system.
               </p>
               {hasUnsavedOrder && (
-                <div
-                  className="add-user-error"
-                  style={{
-                    marginTop: "0.85rem",
-                    background: "#FEF0C7",
-                    borderColor: "#FEDF89",
-                    color: "#B54708",
-                  }}
-                >
-                  <i className="bi bi-exclamation-triangle" style={{ marginRight: "0.4rem" }}></i>
+                <div className="add-user-error is-warning">
+                  <i className="bi bi-exclamation-triangle"></i>
                   Warning: Removing this stop will discard any unsaved order changes.
                 </div>
               )}
@@ -484,8 +476,7 @@ export default function RouteStopsModal({
               </button>
               <button
                 type="button"
-                className="modal-save"
-                style={{ background: "#d9534f", borderColor: "#d9534f" }}
+                className="modal-save is-danger"
                 onClick={handleConfirmRemove}
                 disabled={isRemoving}
               >

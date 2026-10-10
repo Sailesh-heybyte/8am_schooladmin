@@ -47,9 +47,9 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
     if (error) {
       return (
         <div className="profile-modal-body">
-          <div className="add-user-error" style={{ color: "#d9534f" }}>
+          <p className="empty-permissions is-error">
             {error}
-          </div>
+          </p>
         </div>
       );
     }
@@ -68,14 +68,14 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
 
             <div className="profile-field">
               <span className="field-label">Direction</span>
-              <div style={{ marginTop: "0.15rem" }}>
+              <div className="field-badge">
                 <DirectionBadge direction={trip.direction} />
               </div>
             </div>
 
             <div className="profile-field">
               <span className="field-label">Status</span>
-              <div style={{ marginTop: "0.15rem" }}>
+              <div className="field-badge">
                 <StatusBadge status={trip.status} />
               </div>
             </div>
@@ -162,7 +162,6 @@ export default function TripDetailsModal({ isOpen = true, tripId, onClose }) {
     <div className="profile-modal-overlay" onMouseDown={onClose}>
       <div
         className="profile-modal"
-        style={{ width: "36rem" }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="profile-modal-header">

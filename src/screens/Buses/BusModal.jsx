@@ -146,7 +146,7 @@ export default function BusModal({
             <div className="form-section">
               <h3 className="form-section-title">Bus Details</h3>
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="bus-name">Bus Name *</label>
                   <input
                     id="bus-name"
@@ -158,7 +158,7 @@ export default function BusModal({
                     disabled={isSubmitting}
                   />
                 </div>
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="bus-registration">
                     Registration Number *
                   </label>
@@ -175,7 +175,7 @@ export default function BusModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="bus-capacity">Capacity *</label>
                   <input
                     id="bus-capacity"
@@ -190,7 +190,7 @@ export default function BusModal({
                 </div>
 
                 {isEditMode ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="bus-branch">Branch</label>
                     <input
                       id="bus-branch"
@@ -199,15 +199,12 @@ export default function BusModal({
                       readOnly
                       disabled
                     />
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       A bus cannot be moved between branches.
                     </span>
                   </div>
                 ) : !isPinned ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="bus-branch">Branch *</label>
                     <TypeAhead
                       options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
@@ -220,14 +217,7 @@ export default function BusModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}

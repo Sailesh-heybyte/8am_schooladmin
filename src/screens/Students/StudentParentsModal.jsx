@@ -37,8 +37,7 @@ export default function StudentParentsModal({ isOpen, student, onClose }) {
   return (
     <div className="profile-modal-overlay" onMouseDown={onClose}>
       <div
-        className="profile-modal"
-        style={{ width: "38rem" }}
+        className="profile-modal is-wide"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="profile-modal-header">
@@ -83,29 +82,15 @@ export default function StudentParentsModal({ isOpen, student, onClose }) {
             {loading ? (
               <p className="empty-permissions">Loading parents...</p>
             ) : error ? (
-              <p className="empty-permissions" style={{ color: "#d9534f" }}>
+              <p className="empty-permissions is-error">
                 {error}
               </p>
             ) : parents.length === 0 ? (
-              <div style={{ padding: "0.25rem 0" }}>
-                <p
-                  style={{
-                    margin: 0,
-                    color: "#475467",
-                    fontSize: "0.75rem",
-                    fontWeight: 500,
-                  }}
-                >
+              <div className="parents-empty">
+                <p>
                   No parents linked to this student.
                 </p>
-                <span
-                  className="muted-cell"
-                  style={{
-                    fontSize: "0.7rem",
-                    marginTop: "0.25rem",
-                    display: "block",
-                  }}
-                >
+                <span className="muted-cell">
                   Use &quot;Add parent&quot; from the student&apos;s three-dot
                   menu to link a guardian.
                 </span>
@@ -114,16 +99,7 @@ export default function StudentParentsModal({ isOpen, student, onClose }) {
               parents.map((p, idx) => (
                 <div
                   key={p.parentId || idx}
-                  className="profile-account-grid"
-                  style={
-                    idx > 0
-                      ? {
-                          marginTop: "0.75rem",
-                          paddingTop: "0.75rem",
-                          borderTop: "0.05rem solid #e4e7ec",
-                        }
-                      : undefined
-                  }
+                  className="profile-account-grid is-separated"
                 >
                   <div className="profile-field">
                     <span className="field-label">Full Name</span>

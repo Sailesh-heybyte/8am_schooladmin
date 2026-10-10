@@ -116,7 +116,7 @@ export default function ParentModal({
               <h3 className="form-section-title">Parent Details</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="parent-fullname">Full Name *</label>
                   <input
                     id="parent-fullname"
@@ -129,7 +129,7 @@ export default function ParentModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="parent-phone">Phone (10 digits) *</label>
                   <input
                     id="parent-phone"
@@ -149,7 +149,7 @@ export default function ParentModal({
 
               {!isPinned && (
                 <div className="form-row">
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="parent-branch">Branch *</label>
                     <TypeAhead
                       options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
@@ -162,14 +162,7 @@ export default function ParentModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}

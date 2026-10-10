@@ -47,7 +47,7 @@ export default function ParentDetailsModal({ isOpen, parentId, onClose }) {
     if (error) {
       return (
         <div className="profile-modal-body">
-          <p className="empty-permissions" style={{ color: "#d9534f" }}>
+          <p className="empty-permissions is-error">
             {error}
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function ParentDetailsModal({ isOpen, parentId, onClose }) {
 
             <div className="profile-field">
               <span className="field-label">Status</span>
-              <div style={{ marginTop: "0.15rem" }}>
+              <div className="field-badge">
                 <StatusBadge
                   status={parent.isActive ? "Active" : "Inactive"}
                 />
@@ -107,7 +107,6 @@ export default function ParentDetailsModal({ isOpen, parentId, onClose }) {
     <div className="profile-modal-overlay" onMouseDown={onClose}>
       <div
         className="profile-modal"
-        style={{ width: "36rem" }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="profile-modal-header">

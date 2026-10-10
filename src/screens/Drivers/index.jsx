@@ -129,7 +129,7 @@ export default function Drivers() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
@@ -162,7 +162,6 @@ export default function Drivers() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClear}
             >
               Clear
@@ -179,15 +178,24 @@ export default function Drivers() {
       </div>
 
       {error && (
-        <div
-          className="roles-error"
-          style={{ margin: "1rem 0", color: "#d9534f" }}
-        >
-          {error.message}
+        <div className="table-state-card">
+          <div className="state-icon-badge danger">
+            <i className="bi bi-exclamation-triangle"></i>
+          </div>
+          <h3>Couldn't load drivers</h3>
+          <p>{error.message}</p>
+          <button
+            type="button"
+            className="state-action-btn secondary"
+            onClick={reloadDrivers}
+          >
+            <i className="bi bi-arrow-clockwise"></i>
+            <span>Retry</span>
+          </button>
         </div>
       )}
 
-      {loading && drivers.length === 0 ? (
+      {error && drivers.length === 0 ? null : loading && drivers.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>

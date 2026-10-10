@@ -150,6 +150,15 @@ export default function StudentModal({
       return;
     }
 
+    if (homeLatitude.trim() !== "" && isNaN(Number(homeLatitude))) {
+      setError("Home latitude must be a number.");
+      return;
+    }
+    if (homeLongitude.trim() !== "" && isNaN(Number(homeLongitude))) {
+      setError("Home longitude must be a number.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -233,7 +242,7 @@ export default function StudentModal({
               <h3 className="form-section-title">Student Details</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="student-fullname">Full Name *</label>
                   <input
                     id="student-fullname"
@@ -246,7 +255,7 @@ export default function StudentModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="student-admission">Admission Number *</label>
                   <input
                     id="student-admission"
@@ -262,7 +271,7 @@ export default function StudentModal({
 
               <div className="form-row">
                 {isEditMode ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="student-branch">Branch</label>
                     <input
                       id="student-branch"
@@ -271,15 +280,12 @@ export default function StudentModal({
                       readOnly
                       disabled
                     />
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       A student cannot be moved between branches.
                     </span>
                   </div>
                 ) : !isPinned ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="student-branch">Branch *</label>
                     <TypeAhead
                       options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
@@ -292,14 +298,7 @@ export default function StudentModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}
@@ -308,7 +307,7 @@ export default function StudentModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="student-lat">Home Latitude</label>
                   <input
                     id="student-lat"
@@ -326,7 +325,7 @@ export default function StudentModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="student-lng">Home Longitude</label>
                   <input
                     id="student-lng"
@@ -356,10 +355,7 @@ export default function StudentModal({
                     placeholder="12-3-45, Tilak Road, Rajahmundry"
                     disabled={isSubmitting}
                   />
-                  <span
-                    className="roles-message"
-                    style={{ marginTop: "0.25rem", display: "block" }}
-                  >
+                  <span className="roles-message is-hint">
                     Optional — parents can also set home location and address in
                     the parent app.
                   </span>
@@ -397,19 +393,11 @@ export default function StudentModal({
               </div>
 
               {isEditMode && (
-                <div className="form-row" style={{ marginTop: "1rem" }}>
-                  <div
-                    className="form-field"
-                    style={{ flex: 1, width: "100%" }}
-                  >
+                <div className="form-row is-spaced">
+                  <div className="form-field is-full">
                     <label
                       htmlFor="student-active"
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        cursor: "pointer",
-                      }}
+                      className="checkbox-label"
                     >
                       <input
                         id="student-active"
@@ -417,7 +405,6 @@ export default function StudentModal({
                         checked={isActive}
                         onChange={(e) => setIsActive(e.target.checked)}
                         disabled={isSubmitting}
-                        style={{ width: "1.1rem", height: "1.1rem" }}
                       />
                       <span>Active Student</span>
                     </label>
@@ -429,22 +416,12 @@ export default function StudentModal({
             {!isEditMode && (
               <div className="form-section">
                 <h3 className="form-section-title">Parents</h3>
-                <span
-                  className="roles-message"
-                  style={{
-                    marginTop: "-0.35rem",
-                    marginBottom: "0.85rem",
-                    display: "block",
-                  }}
-                >
+                <span className="roles-message is-section-note">
                   At least one parent is required.
                 </span>
 
                 <div className="form-row">
-                  <div
-                    className="form-field"
-                    style={{ flex: 2, width: "100%" }}
-                  >
+                  <div className="form-field is-wide">
                     <label>Parent *</label>
                     <TypeAhead
                       options={parentOptions}
@@ -461,23 +438,13 @@ export default function StudentModal({
                       noMatchMessage="No parents found"
                     />
                     {parentsError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {parentsError}
                       </span>
                     )}
                   </div>
 
-                  <div
-                    className="form-field"
-                    style={{ flex: 1, width: "100%" }}
-                  >
+                  <div className="form-field is-full">
                     <label htmlFor="student-relationship">Relationship</label>
                     <TypeAhead
                       options={[

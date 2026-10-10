@@ -158,7 +158,7 @@ export default function DriverModal({
               <h3 className="form-section-title">Driver Details</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="driver-fullname">Full Name *</label>
                   <input
                     id="driver-fullname"
@@ -171,7 +171,7 @@ export default function DriverModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="driver-phone">Phone (10 digits) *</label>
                   <input
                     id="driver-phone"
@@ -190,7 +190,7 @@ export default function DriverModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="driver-licensenumber">
                     License Number *
                   </label>
@@ -205,7 +205,7 @@ export default function DriverModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="driver-licenseexpiry">
                     License Expiry *
                   </label>
@@ -222,7 +222,7 @@ export default function DriverModal({
 
               <div className="form-row">
                 {isEditMode ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="driver-branch">Branch</label>
                     <input
                       id="driver-branch"
@@ -231,15 +231,12 @@ export default function DriverModal({
                       readOnly
                       disabled
                     />
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       A driver cannot be moved between branches.
                     </span>
                   </div>
                 ) : !isPinned ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="driver-branch">Branch *</label>
                     <TypeAhead
                       options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
@@ -252,14 +249,7 @@ export default function DriverModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}

@@ -18,7 +18,6 @@ function StopDetailsModal({ isOpen, stop, onClose }) {
     <div className="profile-modal-overlay" onMouseDown={onClose}>
       <div
         className="profile-modal"
-        style={{ width: "36rem" }}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="profile-modal-header">
@@ -101,7 +100,7 @@ function StopDetailsModal({ isOpen, stop, onClose }) {
 
               <div className="profile-field">
                 <span className="field-label">Status</span>
-                <div style={{ marginTop: "0.15rem" }}>
+                <div className="field-badge">
                   <StatusBadge status={stop.isActive ? "Active" : "Inactive"} />
                 </div>
               </div>
@@ -267,7 +266,7 @@ export default function Stops() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
@@ -314,7 +313,6 @@ export default function Stops() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClear}
             >
               Clear

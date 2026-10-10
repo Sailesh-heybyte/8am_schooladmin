@@ -29,7 +29,7 @@ export default function AssignBusModal({
     getBuses()
       .then((data) => {
         if (!isMounted) return;
-        setBuses(data || []);
+        setBuses(data.filter((bus) => bus.branchId === route.branchId));
       })
       .catch((err) => {
         if (!isMounted) return;
@@ -44,7 +44,7 @@ export default function AssignBusModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen]);
+  }, [isOpen, route]);
 
   if (!isOpen || !route) return null;
 
@@ -87,8 +87,7 @@ export default function AssignBusModal({
   return (
     <div className="add-user-overlay">
       <div
-        className="add-user-modal"
-        style={{ width: "32rem" }}
+        className="add-user-modal is-narrow"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="add-user-header">
@@ -112,7 +111,7 @@ export default function AssignBusModal({
               <h3 className="form-section-title">Bus Assignment</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-route-name">Route</label>
                   <input
                     id="assign-route-name"
@@ -125,7 +124,7 @@ export default function AssignBusModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-bus-select">Bus *</label>
                   <TypeAhead
                     options={buses.map((b) => ({
@@ -139,19 +138,12 @@ export default function AssignBusModal({
                     placeholder="Select a bus..."
                     disabled={isSubmitting || loading || Boolean(loadError)}
                     loading={loading}
-                    emptyMessage="No buses available. Add a bus first."
+                    emptyMessage="No buses in this branch. Add a bus first."
                     noMatchMessage="No buses found"
                   />
 
                   {loadError && (
-                    <span
-                      className="roles-error"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#d9534f",
-                      }}
-                    >
+                    <span className="roles-error">
                       {loadError}
                     </span>
                   )}

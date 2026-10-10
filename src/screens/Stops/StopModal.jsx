@@ -167,7 +167,7 @@ export default function StopModal({
               <h3 className="form-section-title">Stop Details</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="stop-name">Stop Name *</label>
                   <input
                     id="stop-name"
@@ -182,7 +182,7 @@ export default function StopModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label>Stop Location (Map)</label>
                   <MapPicker
                     points={[
@@ -199,7 +199,7 @@ export default function StopModal({
               </div>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="stop-latitude">Latitude *</label>
                   <input
                     id="stop-latitude"
@@ -213,7 +213,7 @@ export default function StopModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="stop-longitude">Longitude *</label>
                   <input
                     id="stop-longitude"
@@ -230,7 +230,7 @@ export default function StopModal({
 
               <div className="form-row">
                 {isEditMode ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="stop-branch">Branch</label>
                     <input
                       id="stop-branch"
@@ -239,15 +239,12 @@ export default function StopModal({
                       readOnly
                       disabled
                     />
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       A stop cannot be moved between branches.
                     </span>
                   </div>
                 ) : !isPinned ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="stop-branch">Branch *</label>
                     <TypeAhead
                       options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
@@ -260,14 +257,7 @@ export default function StopModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}
@@ -277,10 +267,7 @@ export default function StopModal({
 
               {isEditMode && stop.routeId && (
                 <div className="form-row">
-                  <div
-                    className="form-field"
-                    style={{ flex: 1, width: "100%" }}
-                  >
+                  <div className="form-field is-full">
                     <label htmlFor="stop-route">Route</label>
                     <input
                       id="stop-route"
@@ -293,10 +280,7 @@ export default function StopModal({
                       readOnly
                       disabled
                     />
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       Route membership is managed from the Routes screen.
                     </span>
                   </div>
@@ -304,27 +288,18 @@ export default function StopModal({
               )}
 
               {isEditMode && (
-                <div className="form-row" style={{ marginTop: "0.5rem" }}>
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      cursor: "pointer",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      color: "#344054",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isActive}
-                      onChange={(e) => setIsActive(e.target.checked)}
-                      disabled={isSubmitting}
-                      style={{ width: "1rem", height: "1rem" }}
-                    />
-                    Active stop
-                  </label>
+                <div className="form-row is-spaced">
+                  <div className="form-field is-full">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={(e) => setIsActive(e.target.checked)}
+                        disabled={isSubmitting}
+                      />
+                      Active stop
+                    </label>
+                  </div>
                 </div>
               )}
             </div>

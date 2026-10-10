@@ -205,7 +205,7 @@ export default function RouteModal({
               <h3 className="form-section-title">Route Details</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="route-name">Route Name *</label>
                   <input
                     id="route-name"
@@ -221,7 +221,7 @@ export default function RouteModal({
 
               <div className="form-row">
                 {isEditMode ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="route-branch">Branch</label>
                     <input
                       id="route-branch"
@@ -230,15 +230,12 @@ export default function RouteModal({
                       readOnly
                       disabled
                     />
-                    <span
-                      className="roles-message"
-                      style={{ marginTop: "0.25rem", display: "block" }}
-                    >
+                    <span className="roles-message is-hint">
                       A route's branch cannot be modified after creation.
                     </span>
                   </div>
                 ) : !isPinned ? (
-                  <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                  <div className="form-field is-full">
                     <label htmlFor="route-branch">Branch *</label>
                     <TypeAhead
                       options={branches.map((b) => ({ value: b.id, label: b.branchName }))}
@@ -251,14 +248,7 @@ export default function RouteModal({
                       noMatchMessage="No branches found"
                     />
                     {branchesError && (
-                      <span
-                        className="roles-error"
-                        style={{
-                          marginTop: "0.25rem",
-                          display: "block",
-                          color: "#d9534f",
-                        }}
-                      >
+                      <span className="roles-error">
                         {branchesError}
                       </span>
                     )}
@@ -293,19 +283,11 @@ export default function RouteModal({
               </div>
 
               {isEditMode && (
-                <div className="form-row" style={{ marginTop: "0.5rem" }}>
-                  <div
-                    className="form-field"
-                    style={{ flex: 1, width: "100%" }}
-                  >
+                <div className="form-row is-spaced">
+                  <div className="form-field is-full">
                     <label
                       htmlFor="route-active"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        cursor: "pointer",
-                      }}
+                      className="checkbox-label"
                     >
                       <input
                         id="route-active"
@@ -313,7 +295,6 @@ export default function RouteModal({
                         checked={isActive}
                         onChange={(e) => setIsActive(e.target.checked)}
                         disabled={isSubmitting}
-                        style={{ width: "1.1rem", height: "1.1rem" }}
                       />
                       <span>Active Route</span>
                     </label>

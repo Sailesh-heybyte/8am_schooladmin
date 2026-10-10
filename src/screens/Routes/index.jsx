@@ -183,7 +183,7 @@ export default function Routes() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
@@ -230,7 +230,6 @@ export default function Routes() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClear}
             >
               Clear
@@ -463,8 +462,7 @@ export default function Routes() {
           onMouseDown={() => !isUnassigning && setRouteToUnassign(null)}
         >
           <div
-            className="add-user-modal"
-            style={{ width: "28rem" }}
+            className="add-user-modal is-confirm"
             onMouseDown={(e) => e.stopPropagation()}
           >
             <div className="add-user-header">
@@ -482,21 +480,14 @@ export default function Routes() {
               </button>
             </div>
 
-            <div className="add-user-body" style={{ padding: "1.25rem" }}>
-              <p
-                style={{
-                  margin: 0,
-                  color: "#475467",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.5,
-                }}
-              >
+            <div className="add-user-body is-padded">
+              <p className="confirm-text">
                 Remove assigned bus from{" "}
                 <strong>{routeToUnassign.routeName}</strong>? The bus will
                 remain in the system.
               </p>
               {unassignError && (
-                <div className="add-user-error" style={{ marginTop: "1rem" }}>
+                <div className="add-user-error is-inline">
                   {unassignError}
                 </div>
               )}
@@ -513,8 +504,7 @@ export default function Routes() {
               </button>
               <button
                 type="button"
-                className="modal-save"
-                style={{ background: "#d9534f", borderColor: "#d9534f" }}
+                className="modal-save is-danger"
                 onClick={handleConfirmUnassign}
                 disabled={isUnassigning}
               >

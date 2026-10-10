@@ -87,8 +87,7 @@ export default function AssignStopModal({
   return (
     <div className="add-user-overlay">
       <div
-        className="add-user-modal"
-        style={{ width: "36rem" }}
+        className="add-user-modal is-medium"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="add-user-header">
@@ -112,7 +111,7 @@ export default function AssignStopModal({
               <h3 className="form-section-title">Student Information</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-student-name">Student Name</label>
                   <input
                     id="assign-student-name"
@@ -123,7 +122,7 @@ export default function AssignStopModal({
                   />
                 </div>
 
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-student-admission">
                     Admission Number
                   </label>
@@ -142,7 +141,7 @@ export default function AssignStopModal({
               <h3 className="form-section-title">Stop Assignment</h3>
 
               <div className="form-row">
-                <div className="form-field" style={{ flex: 1, width: "100%" }}>
+                <div className="form-field is-full">
                   <label htmlFor="assign-stop-select">Stop *</label>
                   <TypeAhead
                     options={stops.map((s) => ({ value: s.id, label: s.stopName }))}
@@ -156,27 +155,13 @@ export default function AssignStopModal({
                   />
 
                   {loadError && (
-                    <span
-                      className="roles-error"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#d9534f",
-                      }}
-                    >
+                    <span className="roles-error">
                       {loadError}
                     </span>
                   )}
 
                   {!loading && !loadError && stops.length === 0 && (
-                    <span
-                      className="roles-message"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#667085",
-                      }}
-                    >
+                    <span className="roles-message is-hint">
                       No stops found. Add a stop first.
                     </span>
                   )}

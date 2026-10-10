@@ -120,7 +120,7 @@ export default function BranchUsers() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
@@ -152,7 +152,6 @@ export default function BranchUsers() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClear}
             >
               Clear

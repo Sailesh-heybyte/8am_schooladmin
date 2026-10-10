@@ -154,7 +154,7 @@ export default function Parents() {
       />
 
       <div className="filter-card admin-filter">
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
+        <div className="filter-row">
           {me.branch_id === null && (
             <div className="filter-group">
               <label>Branch:</label>
@@ -187,7 +187,6 @@ export default function Parents() {
             <button
               type="button"
               className="secondary-button"
-              style={{ height: "2.3rem" }}
               onClick={handleClear}
             >
               Clear
@@ -204,15 +203,24 @@ export default function Parents() {
       </div>
 
       {error && (
-        <div
-          className="roles-error"
-          style={{ margin: "1rem 0", color: "#d9534f" }}
-        >
-          {error.message}
+        <div className="table-state-card">
+          <div className="state-icon-badge danger">
+            <i className="bi bi-exclamation-triangle"></i>
+          </div>
+          <h3>Couldn't load parents</h3>
+          <p>{error.message}</p>
+          <button
+            type="button"
+            className="state-action-btn secondary"
+            onClick={reloadParents}
+          >
+            <i className="bi bi-arrow-clockwise"></i>
+            <span>Retry</span>
+          </button>
         </div>
       )}
 
-      {loading && parents.length === 0 ? (
+      {error && parents.length === 0 ? null : loading && parents.length === 0 ? (
         <div className="table-card">
           <div className="table-empty">
             <span>{showLoading ? "Loading…" : ""}</span>
@@ -357,8 +365,7 @@ export default function Parents() {
           onMouseDown={() => !isToggling && setParentToToggle(null)}
         >
           <div
-            className="add-user-modal"
-            style={{ width: "28rem" }}
+            className="add-user-modal is-confirm"
             onMouseDown={(e) => e.stopPropagation()}
           >
             <div className="add-user-header">
@@ -380,14 +387,14 @@ export default function Parents() {
               </button>
             </div>
 
-            <div className="add-user-body" style={{ padding: "1.25rem" }}>
-              <p style={{ margin: 0, color: "#475467", fontSize: "0.9rem" }}>
+            <div className="add-user-body is-padded">
+              <p className="confirm-text">
                 {parentToToggle.isActive
                   ? "Deactivate this parent? They will stay linked to their students but the account will be inactive."
                   : "Activate this parent?"}
               </p>
               {toggleError && (
-                <div className="add-user-error" style={{ marginTop: "1rem" }}>
+                <div className="add-user-error is-inline">
                   {toggleError}
                 </div>
               )}
@@ -404,12 +411,7 @@ export default function Parents() {
               </button>
               <button
                 type="button"
-                className="modal-save"
-                style={
-                  parentToToggle.isActive
-                    ? { background: "#d9534f", borderColor: "#d9534f" }
-                    : undefined
-                }
+                className={parentToToggle.isActive ? "modal-save is-danger" : "modal-save"}
                 onClick={handleConfirmToggle}
                 disabled={isToggling}
               >

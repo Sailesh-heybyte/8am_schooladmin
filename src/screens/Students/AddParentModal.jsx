@@ -88,8 +88,7 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
   return (
     <div className="add-user-overlay">
       <div
-        className="add-user-modal"
-        style={{ width: "36rem" }}
+        className="add-user-modal is-medium"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="add-user-header">
@@ -113,10 +112,7 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
               <h3 className="form-section-title">Parent Contact</h3>
 
               <div className="form-row">
-                <div
-                  className="form-field"
-                  style={{ flex: 2, width: "100%" }}
-                >
+                <div className="form-field is-wide">
                   <label>Parent *</label>
                   <TypeAhead
                     options={parentOptions}
@@ -133,23 +129,13 @@ export default function AddParentModal({ isOpen, student, onClose, onSaved }) {
                     noMatchMessage="No parents found"
                   />
                   {parentsError && (
-                    <span
-                      className="roles-error"
-                      style={{
-                        marginTop: "0.25rem",
-                        display: "block",
-                        color: "#d9534f",
-                      }}
-                    >
+                    <span className="roles-error">
                       {parentsError}
                     </span>
                   )}
                 </div>
 
-                <div
-                  className="form-field"
-                  style={{ flex: 1, width: "100%" }}
-                >
+                <div className="form-field is-full">
                   <label htmlFor="add-parent-relationship">Relationship</label>
                   <TypeAhead
                     options={[
