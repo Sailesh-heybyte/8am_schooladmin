@@ -106,14 +106,19 @@ export async function apiCall(path, options = {}) {
   let response = await send(`${BASE_URL}${path}`, buildRequest(options));
 
   if (response.status === 401 && !options.skipAuth && !options.isRetry) {
+    const refreshTokenBefore = localStorage.getItem("school_refresh_token");
     try {
       await doRefresh();
     } catch (err) {
-      if (err.status >= 400 && err.status < 500) {
-        endSession();
-        throw new Error("Session expired", { cause: err });
+      const otherTabRefreshed =
+        localStorage.getItem("school_refresh_token") !== refreshTokenBefore;
+      if (!otherTabRefreshed) {
+        if (err.status >= 400 && err.status < 500) {
+          endSession();
+          throw new Error("Session expired", { cause: err });
+        }
+        throw err;
       }
-      throw err;
     }
 
     response = await send(
@@ -152,6 +157,7 @@ function readTokenPayload() {
 }
 
 export function getTokenPermissions() {
+  if (!localStorage.getItem("school_access_token")) return [];
   return readTokenPayload().permissions;
 }
 
