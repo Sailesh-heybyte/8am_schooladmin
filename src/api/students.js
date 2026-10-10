@@ -148,3 +148,48 @@ export const unassignStop = async (studentId) => {
   });
   return toUiStudent(data);
 };
+
+const toApiImportParent = (parent) => ({
+  full_name: parent.fullName,
+  phone: `+91-${parent.phone}`,
+  ...(hasValue(parent.relationship) ? { relationship: parent.relationship } : {}),
+});
+
+const toApiImportStudent = (student) => {
+  const body = {
+    full_name: student.fullName,
+    admission_number: student.admissionNumber,
+    branch_id: student.branchId,
+    parents: student.parents.map(toApiImportParent),
+  };
+
+  if (hasValue(student.homeAddress)) {
+    body.home_address = student.homeAddress;
+  }
+  if (hasValue(student.homeLatitude)) {
+    body.home_latitude = Number(student.homeLatitude);
+  }
+  if (hasValue(student.homeLongitude)) {
+    body.home_longitude = Number(student.homeLongitude);
+  }
+  if (hasValue(student.amNotifyLeadMinutes)) {
+    body.am_notify_lead_minutes = Number(student.amNotifyLeadMinutes);
+  }
+  if (hasValue(student.pmNotifyLeadMinutes)) {
+    body.pm_notify_lead_minutes = Number(student.pmNotifyLeadMinutes);
+  }
+
+  return body;
+};
+
+export const importStudents = async (students) => {
+  const data = await apiCall("/people/students/import", {
+    method: "POST",
+    body: { students: students.map(toApiImportStudent) },
+  });
+  return {
+    studentsCreated: data.students_created,
+    parentsCreated: data.parents_created,
+    parentsLinked: data.parents_linked,
+  };
+};

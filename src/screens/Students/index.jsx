@@ -9,10 +9,12 @@ import StudentViewModal from "./StudentViewModal.jsx";
 import StudentParentsModal from "./StudentParentsModal.jsx";
 import AddParentModal from "./AddParentModal.jsx";
 import AssignStopModal from "./AssignStopModal.jsx";
+import StudentImportModal from "./StudentImportModal.jsx";
 import AccessRestricted from "../../components/AccessRestricted.jsx";
 import { isPermissionDenied } from "../../utils/errors.js";
 import { useDebouncedLoading } from "../../hooks/useDebouncedLoading.js";
 import { getStudents, unassignStop } from "../../api/students.js";
+import { getTokenPermissions } from "../../api/client.js";
 
 function renderParentsCell(parents = []) {
   if (!parents || parents.length === 0) {
@@ -31,6 +33,8 @@ function renderParentsCell(parents = []) {
 
 export default function Students() {
   const { me } = useOutletContext();
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const canImport = getTokenPermissions().includes("create_student");
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -193,6 +197,8 @@ export default function Students() {
         description="Manage student records, parent contacts, and enrollments."
         button="+ Add Student"
         onButtonClick={openCreate}
+        secondaryButton={canImport ? "Import" : ""}
+        onSecondaryButtonClick={() => setIsImportOpen(true)}
       />
 
       <div className="filter-card admin-filter">
@@ -443,6 +449,14 @@ export default function Students() {
           me={me}
           onClose={() => setIsModalOpen(false)}
           onSaved={reloadStudents}
+        />
+      )}
+
+      {isImportOpen && (
+        <StudentImportModal
+          me={me}
+          onClose={() => setIsImportOpen(false)}
+          onImported={reloadStudents}
         />
       )}
 

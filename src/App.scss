@@ -20,6 +20,17 @@
   }
 }
 
+.page-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  .secondary-button {
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+  }
+}
+
 .primary-button {
   padding: 0.7rem 1rem;
   border: none;

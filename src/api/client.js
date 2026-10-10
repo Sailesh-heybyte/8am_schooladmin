@@ -128,17 +128,19 @@ export async function apiCall(path, options = {}) {
   }
 
   if (!response.ok) {
+    const body = await response.clone().json().catch(() => null);
     const errorMessage = await parseErrorMessage(response);
     console.error("API error", response.status, errorMessage);
     const error = new Error(errorMessage);
     error.status = response.status;
+    error.detail = body ? body.detail : null;
     throw error;
   }
 
   return response.json();
 }
 
-export function getTokenPermissions() {
+function readTokenPayload() {
   const token = localStorage.getItem("school_access_token");
   const payload = token.split(".")[1];
   const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
@@ -146,10 +148,17 @@ export function getTokenPermissions() {
     base64.length + ((4 - (base64.length % 4)) % 4),
     "=",
   );
-  const data = JSON.parse(atob(padded));
-  return data.permissions;
+  return JSON.parse(atob(padded));
+}
+
+export function getTokenPermissions() {
+  return readTokenPayload().permissions;
+}
+
+export function getTokenExpiresAtMs() {
+  return readTokenPayload().exp * 1000;
 }
 
 export async function refreshSession() {
   return doRefresh();
-}
+}
