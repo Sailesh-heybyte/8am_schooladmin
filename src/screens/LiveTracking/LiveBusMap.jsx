@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import busIcon from "../../assets/bus-marker-cropped.png";
 import busStopPin from "../../assets/bus-stop-pin.png";
-import { splitPath } from "./splitPath.js";
+import { lineString, point } from "@turf/helpers";
+import { nearestPointOnLine } from "@turf/nearest-point-on-line";
+import { distance } from "@turf/distance";
 
 const STYLE_URL = "https://tiles.openfreemap.org/styles/bright";
 const DEFAULT_CENTER = [81.7927, 17.0047];
@@ -171,15 +173,21 @@ export default function LiveBusMap({ location, isLive, routePath, routePoints })
       if (!path || !moveRef.current || !mapRef.current.getSource("route")) return;
 
       const { lng, lat } = markerRef.current.getLngLat();
-      const split = splitPath(path, [lng, lat]);
+      const route = lineString(path);
+      const bus = point([lng, lat]);
+      const busOnRoute = nearestPointOnLine(route, bus);
 
-      if (split.distanceMetres > MAX_OFF_ROUTE_METRES) {
-        mapRef.current.getSource("route").setData(toLine(path));
+      if (distance(bus, busOnRoute, { units: "meters" }) > MAX_OFF_ROUTE_METRES) {
+        mapRef.current.getSource("route").setData(route);
         mapRef.current.getSource("route-done").setData(EMPTY_LINE);
         return;
       }
-      mapRef.current.getSource("route").setData(toLine(split.ahead));
-      mapRef.current.getSource("route-done").setData(toLine(split.done));
+
+      // cut the route where the bus is: everything before = done (grey), after = ahead (blue)
+      const cutAt = Math.min(busOnRoute.properties.segmentIndex, path.length - 2);
+      const cutPoint = busOnRoute.geometry.coordinates;
+      mapRef.current.getSource("route").setData(toLine([cutPoint, ...path.slice(cutAt + 1)]));
+      mapRef.current.getSource("route-done").setData(toLine([...path.slice(0, cutAt + 1), cutPoint]));
     };
 
     const drawFrame = (now) => {
