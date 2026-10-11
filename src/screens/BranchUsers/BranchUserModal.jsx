@@ -165,7 +165,7 @@ export default function BranchUserModal({
       await createUser({
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
-        phoneNumber: `+91${formData.phoneNumber.trim()}`,
+        phoneNumber: `+91-${formData.phoneNumber.trim()}`,
         branchId: isPinned ? me.branch_id : formData.branchId,
         roleIds: formData.roleIds,
 
@@ -184,7 +184,7 @@ export default function BranchUserModal({
         emergencyName: formData.emergencyName.trim(),
         emergencyRelationship: formData.emergencyRelationship.trim(),
         emergencyPhone: formData.emergencyPhone.trim()
-          ? `+91${formData.emergencyPhone.trim()}`
+          ? `+91-${formData.emergencyPhone.trim()}`
           : "",
 
         bankName: formData.bankName.trim(),

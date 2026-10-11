@@ -102,24 +102,28 @@ async function send(url, init) {
   }
 }
 
+async function refreshAfter401() {
+  const refreshTokenBefore = localStorage.getItem("school_refresh_token");
+  try {
+    await doRefresh();
+  } catch (err) {
+    const otherTabRefreshed =
+      localStorage.getItem("school_refresh_token") !== refreshTokenBefore;
+    if (!otherTabRefreshed) {
+      if (err.status >= 400 && err.status < 500) {
+        endSession();
+        throw new Error("Session expired", { cause: err });
+      }
+      throw err;
+    }
+  }
+}
+
 export async function apiCall(path, options = {}) {
   let response = await send(`${BASE_URL}${path}`, buildRequest(options));
 
   if (response.status === 401 && !options.skipAuth && !options.isRetry) {
-    const refreshTokenBefore = localStorage.getItem("school_refresh_token");
-    try {
-      await doRefresh();
-    } catch (err) {
-      const otherTabRefreshed =
-        localStorage.getItem("school_refresh_token") !== refreshTokenBefore;
-      if (!otherTabRefreshed) {
-        if (err.status >= 400 && err.status < 500) {
-          endSession();
-          throw new Error("Session expired", { cause: err });
-        }
-        throw err;
-      }
-    }
+    await refreshAfter401();
 
     response = await send(
       `${BASE_URL}${path}`,
@@ -167,4 +171,54 @@ export function getTokenExpiresAtMs() {
 
 export async function refreshSession() {
   return doRefresh();
-}
+}
+
+function buildStreamRequest(signal) {
+  return {
+    headers: {
+      Accept: "text/event-stream",
+      Authorization: `Bearer ${localStorage.getItem("school_access_token")}`,
+    },
+    signal,
+  };
+}
+
+export async function apiStream(path, { signal, onOpen, onAlive, onMessage }) {
+  let response = await send(`${BASE_URL}${path}`, buildStreamRequest(signal));
+
+  if (response.status === 401) {
+    await refreshAfter401();
+    response = await send(`${BASE_URL}${path}`, buildStreamRequest(signal));
+    if (response.status === 401) {
+      endSession();
+      throw new Error("Session expired");
+    }
+  }
+
+  if (!response.ok) {
+    const error = new Error(await parseErrorMessage(response));
+    error.status = response.status;
+    throw error;
+  }
+
+  onOpen();
+
+  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+  let leftover = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) return;
+    onAlive();
+
+    const text = leftover + value.replace(/\r\n/g, "\n");
+    const events = text.split("\n\n");
+    leftover = events.pop();
+
+    events.forEach((event) => {
+      const dataLine = event.split("\n").find((line) => line.startsWith("data:"));
+      if (dataLine) onMessage(JSON.parse(dataLine.slice(5)));
+    });
+  }
+}
+
