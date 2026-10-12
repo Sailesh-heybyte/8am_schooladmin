@@ -83,12 +83,6 @@ const menuItems = [
     icon: <i className="bi bi-chat-left-text"></i>,
     label: "Complaints",
   },
-  // {
-  //   id: "live-tracking",
-  //   path: "/live-tracking",
-  //   icon: <i className="bi bi-broadcast"></i>,
-  //   label: "Live Tracking",
-  // },
 ];
 
 function SchoolAdmin({ onLogout }) {
