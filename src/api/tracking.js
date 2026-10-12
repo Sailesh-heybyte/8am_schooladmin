@@ -11,9 +11,7 @@ const toUiLocation = (location) => ({
   heading: location.heading,
 });
 
-// The browser's EventSource can't send headers, so we give the library our own fetch.
-// It adds the latest token on every (re)connect, and on 401 refreshes it and tries once more.
-const authFetch = async (url, init) => {
+const createAuthFetch = (onAlive) => async (url, init) => {
   const send = () =>
     fetch(url, {
       ...init,
@@ -29,26 +27,32 @@ const authFetch = async (url, init) => {
     response = await send();
     if (response.status === 401) endSession();
   }
-  return response;
+  if (!response.ok) return response;
+
+  const watchBytes = new TransformStream({
+    transform(chunk, controller) {
+      onAlive();
+      controller.enqueue(chunk);
+    },
+  });
+  return new Response(response.body.pipeThrough(watchBytes), {
+    status: response.status,
+    headers: response.headers,
+  });
 };
 
-export const openBusLocationStream = (busId, { onOpen, onLocation, onNoTrip, onError }) => {
+export const openBusLocationStream = (
+  busId,
+  { onOpen, onAlive, onLocation, onNoTrip, onError },
+) => {
   const stream = new EventSource(`${BASE_URL}/tracking/buses/${busId}/school-events`, {
-    fetch: authFetch,
+    fetch: createAuthFetch(onAlive),
   });
-
   stream.addEventListener("open", onOpen);
-
-  stream.addEventListener("message", (event) => {
-    const message = JSON.parse(event.data);
-    if (message.type === "location") onLocation(toUiLocation(message.data));
-    if (message.type === "no_active_trip") onNoTrip();
+  stream.addEventListener("location", (event) => {
+    onLocation(toUiLocation(JSON.parse(event.data).data));
   });
-
-  stream.addEventListener("error", (err) => {
-    const gaveUp = stream.readyState === EventSource.CLOSED;
-    onError({ gaveUp, message: err.message });
-  });
-
+  stream.addEventListener("no_active_trip", onNoTrip);
+  stream.addEventListener("error", (event) => onError(event.code));
   return stream;
 };
