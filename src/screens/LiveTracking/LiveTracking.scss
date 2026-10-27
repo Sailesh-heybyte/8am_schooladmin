@@ -123,8 +123,6 @@
 }
 
 .live-map {
-  --route-color: #{$primary};
-  --route-done-color: #{$text-muted};
   width: 100%;
   height: 100%;
   background: $map-base;
@@ -142,23 +140,7 @@
   }
 }
 
-.live-recenter {
-  position: absolute;
-  right: 1rem;
-  bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.9rem;
-  border: 0.05rem solid $border;
-  border-radius: 2rem;
-  background: $white;
-  color: $primary;
-  font-size: max(0.68rem, 10px);
-  font-weight: 600;
-  box-shadow: $shadow-hover;
-  cursor: pointer;
-}
+
 
 .live-map-message {
   position: absolute;
@@ -199,45 +181,7 @@
   font-weight: 700;
 }
 
-.live-info-time {
-  color: $text-light;
-  font-size: max(0.62rem, 10px);
-}
 
-.live-info-note {
-  margin-top: 0.3rem;
-  color: $orange-dark;
-  font-size: max(0.6rem, 10px);
-}
 
-.live-route-point {
-  width: 0.75rem;
-  height: 0.75rem;
-  border: 0.15rem solid $primary;
-  border-radius: 50%;
-  background: $white;
-  box-shadow: $shadow;
 
-  &.is-start {
-    border-color: $green-dark;
-    background: $green;
-  }
-
-  &.is-end {
-    border-color: $red-dark;
-    background: $red;
-  }
-}
-
-.live-stop-pin {
-  width: 1.15rem;
-  height: auto;
-  display: block;
-  cursor: pointer;
-  filter: drop-shadow(0 0.15rem 0.2rem rgba($black, 0.35));
-
-  &:hover {
-    filter: drop-shadow(0 0.2rem 0.3rem rgba($black, 0.5)) brightness(1.08);
-  }
-}
 
