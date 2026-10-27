@@ -85,7 +85,7 @@ async function parseErrorMessage(response) {
   return fallback;
 }
 
-function endSession() {
+export function endSession() {
   localStorage.removeItem("school_access_token");
   localStorage.removeItem("school_refresh_token");
   window.location.reload();
@@ -102,7 +102,7 @@ async function send(url, init) {
   }
 }
 
-async function refreshAfter401() {
+export async function refreshAfter401() {
   const refreshTokenBefore = localStorage.getItem("school_refresh_token");
   try {
     await doRefresh();

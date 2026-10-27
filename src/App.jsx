@@ -15,6 +15,7 @@ import Trips from "./screens/Trips/index.jsx";
 import Announcements from "./screens/Announcements/index.jsx";
 import Complaints from "./screens/Complaints/index.jsx";
 import NotFound from "./components/NotFound.jsx";
+import LiveTracking from "./screens/LiveTracking/index.jsx";
 
 const Placeholder = ({ name }) => <p>{name} screen coming soon.</p>;
 
@@ -67,6 +68,7 @@ export default function App() {
           <Route path="/students" element={<Students />} />
           <Route path="/stops" element={<Stops />} />
           <Route path="/routes" element={<RoutesScreen />} />
+          <Route path="/live-tracking" element={<LiveTracking />} />
           <Route path="/trips" element={<Trips />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/complaints" element={<Complaints />} />
