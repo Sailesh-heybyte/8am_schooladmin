@@ -6,17 +6,11 @@ import { readImportFile, downloadCsv } from "../../utils/importFile.js";
 import "./StudentImportModal.scss";
 
 const MAX_ROWS = 500;
-const ALERT_MINUTES = ["5", "10", "15", "20", "25", "30"];
 
 const COLUMNS = [
   { key: "fullName", label: "Student Name" },
   { key: "admissionNumber", label: "Admission Number" },
   { key: "branchName", label: "Branch" },
-  { key: "homeAddress", label: "Home Address" },
-  { key: "homeLatitude", label: "Home Latitude" },
-  { key: "homeLongitude", label: "Home Longitude" },
-  { key: "amNotifyLeadMinutes", label: "Morning Alert (min)" },
-  { key: "pmNotifyLeadMinutes", label: "Evening Alert (min)" },
   { key: "parent1Name", label: "Parent 1 Name" },
   { key: "parent1Phone", label: "Parent 1 Phone" },
   { key: "parent1Relationship", label: "Parent 1 Relationship" },
@@ -33,19 +27,14 @@ const REQUIRED_COLUMNS = [
 ];
 
 const EXAMPLE_ROW = [
-  "Sai Charan", "RJY-101", "Rajahmundry Campus", "Alcot Gardens", "16.98395",
-  "81.7792", "15", "15", "Lakshmi Devi", "7745456101", "Mother", "", "", "",
+  "Sai Charan", "RJY-101", "Rajahmundry Campus", "Lakshmi Devi", "7745456101",
+  "Mother", "", "", "",
 ];
 
 const STUDENT_FIELD_LABELS = {
   full_name: "Student name",
   admission_number: "Admission number",
   branch_id: "Branch",
-  home_address: "Home address",
-  home_latitude: "Home latitude",
-  home_longitude: "Home longitude",
-  am_notify_lead_minutes: "Morning alert",
-  pm_notify_lead_minutes: "Evening alert",
   parents: "Parents",
 };
 
@@ -63,8 +52,6 @@ const toTenDigits = (phone) => {
     ? digits.slice(2)
     : digits;
 };
-
-const isNumber = (value) => value !== "" && !Number.isNaN(Number(value));
 
 const getParentProblems = (number, name, phone, relationship) => {
   const problems = [];
@@ -94,19 +81,6 @@ const getRowProblems = (row, { needsRowBranch, branchId, admissionCounts, phoneN
         : "Branch is required.",
     );
   }
-  if (row.homeLatitude && !isNumber(row.homeLatitude)) {
-    problems.push("Home latitude must be a number.");
-  }
-  if (row.homeLongitude && !isNumber(row.homeLongitude)) {
-    problems.push("Home longitude must be a number.");
-  }
-  if (row.amNotifyLeadMinutes && !ALERT_MINUTES.includes(row.amNotifyLeadMinutes)) {
-    problems.push("Morning alert must be 5, 10, 15, 20, 25 or 30.");
-  }
-  if (row.pmNotifyLeadMinutes && !ALERT_MINUTES.includes(row.pmNotifyLeadMinutes)) {
-    problems.push("Evening alert must be 5, 10, 15, 20, 25 or 30.");
-  }
-
   problems.push(
     ...getParentProblems(1, row.parent1Name, row.parent1Phone, row.parent1Relationship),
   );
@@ -279,11 +253,6 @@ export default function StudentImportModal({ me, onClose, onImported }) {
         : needsRowBranch
           ? getRowBranchId(row)
           : allBranchId,
-      homeAddress: row.homeAddress,
-      homeLatitude: row.homeLatitude,
-      homeLongitude: row.homeLongitude,
-      amNotifyLeadMinutes: row.amNotifyLeadMinutes,
-      pmNotifyLeadMinutes: row.pmNotifyLeadMinutes,
       parents: toParents(row),
     }));
 
@@ -430,11 +399,10 @@ export default function StudentImportModal({ me, onClose, onImported }) {
             <div className="import-empty">
               <p>Required columns: {REQUIRED_COLUMNS.join(", ")}.</p>
               <p>
-                Optional: Branch, Home Address, Home Latitude, Home Longitude, Morning Alert
-                (min), Evening Alert (min), Parent 1 Relationship, and Parent 2 Name / Phone /
+                Optional: Branch, Parent 1 Relationship, and Parent 2 Name / Phone /
                 Relationship.
               </p>
-              <p>Alerts must be 5, 10, 15, 20, 25 or 30 (default 15). Phone: 10 digits.</p>
+              <p>Phone: 10 digits.</p>
             </div>
           ) : (
             <div className="import-table-wrap">
@@ -608,15 +576,6 @@ function ImportRowForm({ row, showBranch, branchOptions, onCancel, onSave }) {
                 </div>
               </div>
             )}
-            <div className="form-row">
-              {field("homeAddress", "Home Address")}
-              {field("homeLatitude", "Home Latitude", "16.98395")}
-              {field("homeLongitude", "Home Longitude", "81.7792")}
-            </div>
-            <div className="form-row">
-              {field("amNotifyLeadMinutes", "Morning Alert (min)", "15")}
-              {field("pmNotifyLeadMinutes", "Evening Alert (min)", "15")}
-            </div>
           </div>
 
           <div className="form-section">
