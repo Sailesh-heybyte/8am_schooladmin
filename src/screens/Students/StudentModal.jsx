@@ -3,6 +3,7 @@ import { createStudent, updateStudent } from "../../api/students.js";
 import { getParents } from "../../api/parents.js";
 import { useBranches } from "../../context/BranchesContext.jsx";
 import TypeAhead from "../../components/TypeAhead.jsx";
+import MapPicker from "../../components/MapPicker.jsx";
 import "../Roles/RoleModal.scss";
 
 const ALERT_MINUTE_OPTIONS = [5, 10, 15, 20, 25, 30].map((minutes) => ({
@@ -304,6 +305,28 @@ export default function StudentModal({
                     )}
                   </div>
                 ) : null}
+              </div>
+
+              <div className="form-row">
+                <div className="form-field is-full">
+                  <label>Home Location (Map)</label>
+                  <MapPicker
+                    points={[
+                      {
+                        key: "home",
+                        label: "Home",
+                        latitude: homeLatitude,
+                        longitude: homeLongitude,
+                      },
+                    ]}
+                    onChange={(key, lat, lng) => {
+                      setHomeLatitude(String(lat));
+                      setHomeLongitude(String(lng));
+                    }}
+                    disabled={isSubmitting}
+                    mode="center"
+                  />
+                </div>
               </div>
 
               <div className="form-row">

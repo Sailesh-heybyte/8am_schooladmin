@@ -433,7 +433,7 @@ export default function MapPicker({
               points.find((point) => point.key === activeKey).label
             } point. Drag a pin to adjust it.`
           : isCenterMode
-            ? "Drag the map to put the pin on the stop. You can also click a spot or type the coordinates."
+            ? "Drag the map to put the pin on the location. You can also click a spot or type the coordinates."
             : "Click the map to place the pin. Drag it to adjust."}
       </p>
     </div>
